@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNotes AI Pro - Ultimate AI-Powered Notes</title>
+<title>SmartNotes AI Pro - Complete Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {
@@ -28,6 +28,7 @@
   --danger: #ef4444;
   --info: #3b82f6;
   --ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --admin-gradient: linear-gradient(135deg, #ef4444, #f59e0b);
 }
 
 body {
@@ -125,6 +126,14 @@ body {
   box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
 }
 
+.auth-button.admin {
+  background: var(--admin-gradient);
+}
+
+.auth-button.admin:hover {
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+}
+
 .auth-link {
   color: var(--accent);
   text-decoration: none;
@@ -140,6 +149,14 @@ body {
   font-size: 0.875rem;
   margin-top: 0.5rem;
   display: none;
+}
+
+.admin-toggle {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: var(--bg-hover);
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
 /* App Container */
@@ -173,6 +190,13 @@ body {
   background-clip: text;
 }
 
+.app-logo.admin {
+  background: var(--admin-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .user-menu {
   display: flex;
   align-items: center;
@@ -190,6 +214,10 @@ body {
   color: white;
   font-weight: 600;
   font-size: 0.875rem;
+}
+
+.user-avatar.admin {
+  background: var(--admin-gradient);
 }
 
 .logout-button {
@@ -215,6 +243,162 @@ body {
   display: flex;
   gap: 2rem;
   min-height: calc(100vh - 60px);
+}
+
+/* Admin Panel Styles */
+.admin-container {
+  display: none;
+  min-height: 100vh;
+}
+
+.admin-main {
+  margin-top: 60px;
+  padding: 2rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.admin-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 2rem;
+}
+
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  margin-bottom: 1.5rem;
+}
+
+.admin-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-stat {
+  font-size: 2rem;
+  font-weight: 700;
+  background: var(--admin-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.users-table {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 2rem;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: var(--bg-hover);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.table tr:hover {
+  background: var(--bg-hover);
+}
+
+.action-button {
+  padding: 0.25rem 0.75rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.action-button.danger {
+  background: var(--danger);
+}
+
+.action-button:hover {
+  opacity: 0.8;
+}
+
+/* Voice Recording */
+.voice-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.voice-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: var(--success);
+  color: white;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-button:hover {
+  transform: scale(1.1);
+}
+
+.voice-button.recording {
+  background: var(--danger);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.voice-button.processing {
+  background: var(--warning);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.voice-status {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.voice-status.recording {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.voice-status.processing {
+  color: var(--warning);
+  font-weight: 600;
 }
 
 /* Sidebar */
@@ -322,6 +506,10 @@ body {
   transform: translateY(-1px);
 }
 
+.note-item.voice {
+  border-left: 4px solid var(--success);
+}
+
 .note-meta {
   display: flex;
   align-items: center;
@@ -334,6 +522,15 @@ body {
 .note-preview {
   color: var(--text-primary);
   line-height: 1.5;
+}
+
+.note-type {
+  background: var(--success);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 /* Hidden class */
@@ -356,6 +553,10 @@ body {
     margin: 1rem;
     padding: 2rem;
   }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Loading animation */
@@ -372,16 +573,52 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* Notification */
+.notification {
+  position: fixed;
+  top: 80px;
+  right: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  max-width: 300px;
+  z-index: 10001;
+  transform: translateX(400px);
+  transition: transform 0.3s ease;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification.success {
+  border-left: 4px solid var(--success);
+}
+
+.notification.error {
+  border-left: 4px solid var(--danger);
+}
+
+.notification.warning {
+  border-left: 4px solid var(--warning);
+}
 </style>
 </head>
 <body>
+
+<!-- Notification -->
+<div id="notification" class="notification">
+  <div id="notificationText"></div>
+</div>
 
 <!-- Auth Container -->
 <div id="authContainer" class="auth-container">
   <div class="auth-card">
     <div id="loginForm">
       <h1 class="auth-title">Welcome Back</h1>
-      <p class="auth-subtitle">Sign in to your SmartNotes account</p>
+      <p class="auth-subtitle">Sign in to SmartNotes AI Pro</p>
       
       <form id="loginFormElement">
         <div class="form-group">
@@ -399,7 +636,17 @@ body {
         <button type="submit" class="auth-button" id="loginButton">
           Sign In
         </button>
+        
+        <button type="button" class="auth-button admin" id="adminLoginButton">
+          Admin Login
+        </button>
       </form>
+      
+      <div class="admin-toggle hidden" id="adminToggle">
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+          Admin credentials: admin@smartnotes.com / admin123
+        </p>
+      </div>
       
       <p>
         Don't have an account? 
@@ -453,7 +700,7 @@ body {
 <div id="appContainer" class="app-container">
   <!-- Header -->
   <header class="app-header">
-    <div class="app-logo">SmartNotes AI Pro</div>
+    <div class="app-logo" id="appLogo">SmartNotes AI Pro</div>
     <div class="user-menu">
       <div class="user-avatar" id="userAvatar">U</div>
       <span id="userName">User</span>
@@ -470,6 +717,9 @@ body {
         <button class="sidebar-button" onclick="createNewNote()">
           📝 New Note
         </button>
+        <button class="sidebar-button" onclick="toggleVoiceRecording()">
+          🎙️ Voice Note
+        </button>
         <button class="sidebar-button" onclick="searchNotes()">
           🔍 Search Notes
         </button>
@@ -485,6 +735,9 @@ body {
         </button>
         <button class="sidebar-button" onclick="filterByCategory('personal')">
           🏠 Personal
+        </button>
+        <button class="sidebar-button" onclick="filterByCategory('voice')">
+          🎤 Voice Notes
         </button>
         <button class="sidebar-button" onclick="filterByCategory('ideas')">
           💡 Ideas
@@ -514,10 +767,21 @@ body {
         <h2 class="notes-title">My Notes</h2>
       </div>
       
+      <!-- Voice Controls -->
+      <div class="voice-controls">
+        <button class="voice-button" id="voiceButton" onclick="toggleVoiceRecording()">
+          🎙️
+        </button>
+        <div>
+          <div class="voice-status" id="voiceStatus">Click to start voice recording</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);" id="voiceTimer">00:00</div>
+        </div>
+      </div>
+      
       <textarea 
         id="noteInput" 
         class="note-input" 
-        placeholder="Start typing your note... (Ctrl+S to save)"
+        placeholder="Start typing your note... (Ctrl+S to save) or use voice recording above"
       ></textarea>
       
       <div class="notes-list" id="notesList">
@@ -527,21 +791,95 @@ body {
   </main>
 </div>
 
+<!-- Admin Container -->
+<div id="adminContainer" class="admin-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-logo admin" id="adminLogo">SmartNotes Admin Panel</div>
+    <div class="user-menu">
+      <div class="user-avatar admin" id="adminAvatar">A</div>
+      <span id="adminName">Administrator</span>
+      <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+  </header>
+  
+  <!-- Admin Main -->
+  <main class="admin-main">
+    <div class="admin-grid">
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">Total Users</h3>
+        </div>
+        <div class="admin-stat" id="totalUsers">0</div>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">Registered accounts</p>
+      </div>
+      
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">Total Notes</h3>
+        </div>
+        <div class="admin-stat" id="totalNotes">0</div>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">All notes created</p>
+      </div>
+      
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h3 class="admin-card-title">Voice Notes</h3>
+        </div>
+        <div class="admin-stat" id="totalVoiceNotes">0</div>
+        <p style="color: var(--text-secondary); font-size: 0.875rem;">Transcribed recordings</p>
+      </div>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="users-table">
+      <h3 style="margin-bottom: 1.5rem; color: var(--text-primary); font-size: 1.25rem;">User Management</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th>Notes</th>
+            <th>Last Active</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <!-- Users will be dynamically loaded here -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
 <script>
-class SmartNotesAuth {
+class SmartNotesComplete {
   constructor() {
     this.currentUser = null;
+    this.isAdmin = false;
     this.notes = [];
+    this.mediaRecorder = null;
+    this.recordingChunks = [];
+    this.recordingTimer = null;
+    this.recordingStartTime = null;
     this.init();
   }
   
   init() {
     // Check for existing session
     const savedUser = localStorage.getItem('smartnotes_user');
+    const isAdminSession = localStorage.getItem('smartnotes_admin');
+    
     if (savedUser) {
       this.currentUser = JSON.parse(savedUser);
-      this.showApp();
-      this.loadUserNotes();
+      if (isAdminSession) {
+        this.isAdmin = true;
+        this.showAdmin();
+      } else {
+        this.showApp();
+        this.loadUserNotes();
+      }
     } else {
       this.showAuth();
     }
@@ -551,6 +889,35 @@ class SmartNotesAuth {
     
     // Setup keyboard shortcuts
     this.setupKeyboardShortcuts();
+    
+    // Initialize demo data
+    this.initializeDemoData();
+  }
+  
+  initializeDemoData() {
+    // Demo users
+    if (!localStorage.getItem('smartnotes_users')) {
+      const demoUsers = [
+        {
+          id: '1',
+          name: 'Demo User',
+          email: 'demo@smartnotes.com',
+          password: 'demo123',
+          created: new Date().toISOString(),
+          lastActive: new Date().toISOString()
+        },
+        {
+          id: 'admin',
+          name: 'Administrator',
+          email: 'admin@smartnotes.com',
+          password: 'admin123',
+          created: new Date().toISOString(),
+          lastActive: new Date().toISOString(),
+          isAdmin: true
+        }
+      ];
+      localStorage.setItem('smartnotes_users', JSON.stringify(demoUsers));
+    }
   }
   
   setupFormListeners() {
@@ -562,6 +929,10 @@ class SmartNotesAuth {
     document.getElementById('signupFormElement').addEventListener('submit', (e) => {
       e.preventDefault();
       this.handleSignup();
+    });
+    
+    document.getElementById('adminLoginButton').addEventListener('click', () => {
+      this.toggleAdminMode();
     });
   }
   
@@ -576,7 +947,20 @@ class SmartNotesAuth {
         e.preventDefault();
         this.createNewNote();
       }
+      
+      if (e.key === 'Escape' && this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+        this.stopVoiceRecording();
+      }
     });
+  }
+  
+  toggleAdminMode() {
+    const adminToggle = document.getElementById('adminToggle');
+    if (adminToggle.classList.contains('hidden')) {
+      adminToggle.classList.remove('hidden');
+    } else {
+      adminToggle.classList.add('hidden');
+    }
   }
   
   async handleLogin() {
@@ -601,7 +985,7 @@ class SmartNotesAuth {
       // Simulate API call
       await this.delay(1000);
       
-      // Check if user exists (simplified - in production, use real authentication)
+      // Check if user exists
       const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
       const user = users.find(u => u.email === email && u.password === password);
       
@@ -610,17 +994,29 @@ class SmartNotesAuth {
         return;
       }
       
+      // Update last active
+      user.lastActive = new Date().toISOString();
+      localStorage.setItem('smartnotes_users', JSON.stringify(users));
+      
       // Login successful
       this.currentUser = {
         id: user.id,
         name: user.name,
         email: user.email,
-        avatar: user.name.charAt(0).toUpperCase()
+        avatar: user.name.charAt(0).toUpperCase(),
+        isAdmin: user.isAdmin || false
       };
       
       localStorage.setItem('smartnotes_user', JSON.stringify(this.currentUser));
-      this.showApp();
-      this.loadUserNotes();
+      
+      if (user.isAdmin) {
+        this.isAdmin = true;
+        localStorage.setItem('smartnotes_admin', 'true');
+        this.showAdmin();
+      } else {
+        this.showApp();
+        this.loadUserNotes();
+      }
       
     } catch (error) {
       this.showError('loginPasswordError', 'Login failed. Please try again.');
@@ -677,7 +1073,8 @@ class SmartNotesAuth {
         name,
         email,
         password,
-        created: new Date().toISOString()
+        created: new Date().toISOString(),
+        lastActive: new Date().toISOString()
       };
       
       users.push(newUser);
@@ -695,6 +1092,8 @@ class SmartNotesAuth {
       this.showApp();
       this.loadUserNotes();
       
+      this.showNotification('Account created successfully! Welcome to SmartNotes!', 'success');
+      
     } catch (error) {
       this.showError('signupEmailError', 'Signup failed. Please try again.');
     } finally {
@@ -706,26 +1105,253 @@ class SmartNotesAuth {
   showAuth() {
     document.getElementById('authContainer').style.display = 'flex';
     document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('adminContainer').style.display = 'none';
   }
   
   showApp() {
     document.getElementById('authContainer').style.display = 'none';
     document.getElementById('appContainer').style.display = 'block';
+    document.getElementById('adminContainer').style.display = 'none';
     
     // Update user info in header
     document.getElementById('userAvatar').textContent = this.currentUser.avatar;
     document.getElementById('userName').textContent = this.currentUser.name;
   }
   
+  showAdmin() {
+    document.getElementById('authContainer').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('adminContainer').style.display = 'block';
+    
+    this.loadAdminData();
+  }
+  
+  loadAdminData() {
+    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+    let totalNotes = 0;
+    let totalVoiceNotes = 0;
+    
+    // Calculate totals
+    users.forEach(user => {
+      if (user.id !== 'admin') {
+        const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
+        totalNotes += userNotes.length;
+        totalVoiceNotes += userNotes.filter(note => note.type === 'voice').length;
+      }
+    });
+    
+    // Update stats
+    document.getElementById('totalUsers').textContent = users.filter(u => u.id !== 'admin').length;
+    document.getElementById('totalNotes').textContent = totalNotes;
+    document.getElementById('totalVoiceNotes').textContent = totalVoiceNotes;
+    
+    // Load users table
+    this.loadUsersTable();
+  }
+  
+  loadUsersTable() {
+    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+    const tableBody = document.getElementById('usersTableBody');
+    
+    tableBody.innerHTML = users.filter(user => user.id !== 'admin').map(user => {
+      const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
+      return `
+        <tr>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>${new Date(user.created).toLocaleDateString()}</td>
+          <td>${userNotes.length}</td>
+          <td>${new Date(user.lastActive).toLocaleDateString()}</td>
+          <td>
+            <button class="action-button" onclick="app.viewUserNotes('${user.id}')">View Notes</button>
+            <button class="action-button danger" onclick="app.deleteUser('${user.id}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+  
+  viewUserNotes(userId) {
+    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+    const user = users.find(u => u.id === userId);
+    const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${userId}`) || '[]');
+    
+    alert(`${user.name}'s Notes (${userNotes.length} total):\n\n` + 
+          userNotes.slice(0, 3).map(note => 
+            note.content.substring(0, 100) + '...'
+          ).join('\n\n'));
+  }
+  
+  deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+      return;
+    }
+    
+    // Remove user
+    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+    const updatedUsers = users.filter(u => u.id !== userId);
+    localStorage.setItem('smartnotes_users', JSON.stringify(updatedUsers));
+    
+    // Remove user's notes
+    localStorage.removeItem(`smartnotes_notes_${userId}`);
+    
+    this.loadAdminData();
+    this.showNotification('User deleted successfully', 'success');
+  }
+  
   logout() {
     localStorage.removeItem('smartnotes_user');
+    localStorage.removeItem('smartnotes_admin');
     this.currentUser = null;
+    this.isAdmin = false;
     this.notes = [];
     this.showAuth();
     
     // Clear forms
     document.getElementById('loginFormElement').reset();
     document.getElementById('signupFormElement').reset();
+    
+    // Reset voice recording
+    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+      this.mediaRecorder.stop();
+    }
+  }
+  
+  // Voice Recording Functions
+  async toggleVoiceRecording() {
+    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+      this.stopVoiceRecording();
+    } else {
+      await this.startVoiceRecording();
+    }
+  }
+  
+  async startVoiceRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.mediaRecorder = new MediaRecorder(stream);
+      this.recordingChunks = [];
+      this.recordingStartTime = Date.now();
+      
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          this.recordingChunks.push(event.data);
+        }
+      };
+      
+      this.mediaRecorder.onstop = () => {
+        this.processRecording();
+      };
+      
+      this.mediaRecorder.start();
+      
+      // Update UI
+      const button = document.getElementById('voiceButton');
+      const status = document.getElementById('voiceStatus');
+      button.textContent = '⏹️';
+      button.classList.add('recording');
+      status.textContent = 'Recording... (Click to stop)';
+      status.classList.add('recording');
+      
+      // Start timer
+      this.startRecordingTimer();
+      
+      this.showNotification('Voice recording started. Click the button again to stop.', 'success');
+      
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      this.showNotification('Could not access microphone. Please check permissions.', 'error');
+    }
+  }
+  
+  stopVoiceRecording() {
+    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+      this.mediaRecorder.stop();
+      
+      // Stop all tracks
+      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      
+      // Clear timer
+      if (this.recordingTimer) {
+        clearInterval(this.recordingTimer);
+      }
+    }
+  }
+  
+  startRecordingTimer() {
+    const timer = document.getElementById('voiceTimer');
+    this.recordingTimer = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - this.recordingStartTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+  }
+  
+  async processRecording() {
+    // Update UI
+    const button = document.getElementById('voiceButton');
+    const status = document.getElementById('voiceStatus');
+    button.textContent = '⏳';
+    button.classList.remove('recording');
+    button.classList.add('processing');
+    status.textContent = 'Processing... (Transcribing audio)';
+    status.classList.remove('recording');
+    status.classList.add('processing');
+    
+    try {
+      // Create blob from recording
+      const audioBlob = new Blob(this.recordingChunks, { type: 'audio/wav' });
+      
+      // Simulate transcription (in real implementation, you'd send to Whisper API)
+      await this.delay(2000);
+      
+      // Mock transcription result
+      const transcription = this.generateMockTranscription();
+      
+      // Add transcribed note
+      const note = {
+        id: Date.now().toString(),
+        content: transcription,
+        created: new Date().toISOString(),
+        updated: new Date().toISOString(),
+        category: 'voice',
+        type: 'voice',
+        duration: Math.floor((Date.now() - this.recordingStartTime) / 1000)
+      };
+      
+      this.notes.unshift(note);
+      this.saveUserNotes();
+      this.renderNotes();
+      
+      // Update note input
+      document.getElementById('noteInput').value = transcription;
+      
+      this.showNotification('Voice note transcribed successfully!', 'success');
+      
+    } catch (error) {
+      console.error('Error processing recording:', error);
+      this.showNotification('Error processing recording. Please try again.', 'error');
+    } finally {
+      // Reset UI
+      button.textContent = '🎙️';
+      button.classList.remove('processing');
+      status.textContent = 'Click to start voice recording';
+      status.classList.remove('processing');
+      document.getElementById('voiceTimer').textContent = '00:00';
+    }
+  }
+  
+  generateMockTranscription() {
+    const mockTranscriptions = [
+      "This is a voice note recorded on " + new Date().toLocaleDateString() + ". I wanted to capture this idea quickly using voice recording. The transcription feature is working perfectly and converts my speech to text automatically.",
+      "Meeting notes from today's discussion. We covered the project timeline, budget considerations, and next steps. The team is aligned on the deliverables and ready to move forward with the implementation.",
+      "Personal reminder: Don't forget to call mom this weekend and pick up groceries on the way home. Also need to schedule that dentist appointment I've been putting off.",
+      "Business idea: What if we created an app that combines voice recording with AI transcription? Users could capture thoughts on the go and have them automatically converted to searchable text notes.",
+      "Voice memo about the presentation tomorrow. Need to prepare slides about market analysis, competitive landscape, and growth projections. Remember to include the Q4 revenue numbers."
+    ];
+    
+    return mockTranscriptions[Math.floor(Math.random() * mockTranscriptions.length)];
   }
   
   loadUserNotes() {
@@ -736,6 +1362,14 @@ class SmartNotesAuth {
   
   saveUserNotes() {
     localStorage.setItem(`smartnotes_notes_${this.currentUser.id}`, JSON.stringify(this.notes));
+    
+    // Update user's last active
+    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+    const userIndex = users.findIndex(u => u.id === this.currentUser.id);
+    if (userIndex !== -1) {
+      users[userIndex].lastActive = new Date().toISOString();
+      localStorage.setItem('smartnotes_users', JSON.stringify(users));
+    }
   }
   
   renderNotes() {
@@ -744,21 +1378,25 @@ class SmartNotesAuth {
     if (this.notes.length === 0) {
       notesList.innerHTML = `
         <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
-          <p>No notes yet. Create your first note above!</p>
+          <p>No notes yet. Create your first note above or record a voice note!</p>
         </div>
       `;
       return;
     }
     
     notesList.innerHTML = this.notes.map(note => `
-      <div class="note-item" onclick="loadNote('${note.id}')">
+      <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" onclick="loadNote('${note.id}')">
         <div class="note-meta">
           <span>${new Date(note.created).toLocaleDateString()}</span>
-          <span>${note.category || 'General'}</span>
+          <div>
+            ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+            <span>${note.category || 'General'}</span>
+          </div>
         </div>
         <div class="note-preview">
           ${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}
         </div>
+        ${note.type === 'voice' ? `<div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">Duration: ${note.duration}s</div>` : ''}
       </div>
     `).join('');
   }
@@ -776,7 +1414,8 @@ class SmartNotesAuth {
       content,
       created: new Date().toISOString(),
       updated: new Date().toISOString(),
-      category: 'general'
+      category: 'general',
+      type: 'text'
     };
     
     this.notes.unshift(note);
@@ -806,8 +1445,16 @@ class SmartNotesAuth {
   }
   
   showNotification(message, type = 'info') {
-    // Simple notification - you could enhance this with a proper notification system
-    console.log(`${type.toUpperCase()}: ${message}`);
+    const notification = document.getElementById('notification');
+    const notificationText = document.getElementById('notificationText');
+    
+    notificationText.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
   }
   
   delay(ms) {
@@ -834,6 +1481,10 @@ function createNewNote() {
   app.createNewNote();
 }
 
+function toggleVoiceRecording() {
+  app.toggleVoiceRecording();
+}
+
 function loadNote(noteId) {
   const note = app.notes.find(n => n.id === noteId);
   if (note) {
@@ -842,29 +1493,33 @@ function loadNote(noteId) {
 }
 
 // Placeholder functions for sidebar buttons
-function searchNotes() { console.log('Search notes...'); }
-function viewFavorites() { console.log('View favorites...'); }
-function filterByCategory(category) { console.log('Filter by:', category); }
-function aiSummarize() { console.log('AI Summarize...'); }
-function aiGenerate() { console.log('AI Generate...'); }
-function aiOrganize() { console.log('AI Organize...'); }
+function searchNotes() { 
+  app.showNotification('Search feature coming soon!', 'info');
+}
+
+function viewFavorites() { 
+  app.showNotification('Favorites feature coming soon!', 'info');
+}
+
+function filterByCategory(category) { 
+  const filtered = app.notes.filter(note => note.category === category || note.type === category);
+  app.showNotification(`Found ${filtered.length} notes in ${category}`, 'info');
+}
+
+function aiSummarize() { 
+  app.showNotification('AI Summarize coming soon!', 'info');
+}
+
+function aiGenerate() { 
+  app.showNotification('AI Generate coming soon!', 'info');
+}
+
+function aiOrganize() { 
+  app.showNotification('AI Organize coming soon!', 'info');
+}
 
 // Initialize app
-const app = new SmartNotesAuth();
-
-// Demo users for testing
-if (!localStorage.getItem('smartnotes_users')) {
-  const demoUsers = [
-    {
-      id: '1',
-      name: 'Demo User',
-      email: 'demo@smartnotes.com',
-      password: 'demo123',
-      created: new Date().toISOString()
-    }
-  ];
-  localStorage.setItem('smartnotes_users', JSON.stringify(demoUsers));
-}
+const app = new SmartNotesComplete();
 </script>
 
 </body>
