@@ -35,528 +35,258 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
-  display: flex;
   -webkit-font-smoothing: antialiased;
 }
 
-/* AI Assistant Panel */
-.ai-panel {
+/* Auth Container */
+.auth-container {
   position: fixed;
-  right: 0;
   top: 0;
-  width: 400px;
+  left: 0;
+  width: 100%;
   height: 100vh;
-  background: var(--bg-secondary);
-  border-left: 1px solid var(--border);
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-}
-
-.ai-panel.open {
-  transform: translateX(0);
-}
-
-.ai-panel-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--ai-gradient);
-  color: white;
-}
-
-.ai-panel-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.ai-close-btn {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  color: white;
-  cursor: pointer;
+  background: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  z-index: 10000;
 }
 
-.ai-close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* AI Chat Interface */
-.ai-chat {
-  flex: 1;
-  display: none;
-  flex-direction: column;
-}
-
-.ai-chat.active {
-  display: flex;
-}
-
-.ai-chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-}
-
-.ai-chat-message {
-  margin-bottom: 1rem;
-  display: flex;
-  gap: 0.75rem;
-}
-
-.ai-chat-message.user {
-  justify-content: flex-end;
-}
-
-.ai-chat-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-  flex-shrink: 0;
-}
-
-.ai-chat-avatar.ai {
-  background: var(--ai-gradient);
-  color: white;
-}
-
-.ai-chat-avatar.user {
-  background: var(--accent);
-  color: white;
-}
-
-.ai-chat-bubble {
-  max-width: 80%;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
-  line-height: 1.4;
-}
-
-.ai-chat-bubble.ai {
+.auth-card {
   background: var(--bg-card);
+  padding: 3rem;
+  border-radius: 16px;
   border: 1px solid var(--border);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
-.ai-chat-bubble.user {
-  background: var(--accent);
-  color: white;
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: var(--ai-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.ai-chat-input-container {
-  padding: 1rem;
-  border-top: 1px solid var(--border);
-  display: flex;
-  gap: 0.5rem;
+.auth-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
 }
 
-.ai-chat-input {
-  flex: 1;
-  padding: 0.75rem;
-  background: var(--bg-card);
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text-primary);
-  font-size: 0.875rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
   outline: none;
-}
-
-.ai-chat-input:focus {
-  border-color: var(--accent);
-}
-
-.ai-chat-send {
-  padding: 0.75rem 1rem;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ai-chat-send:hover {
-  background: var(--accent-hover);
-}
-
-.ai-features {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem;
-}
-
-.ai-feature-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  transition: all 0.2s;
-}
-
-.ai-feature-card:hover {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.ai-feature-title {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.ai-feature-desc {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.75rem;
-}
-
-.ai-btn {
+.auth-button {
   width: 100%;
-  padding: 0.75rem;
-  background: var(--accent);
+  padding: 0.75rem 1rem;
+  background: var(--ai-gradient);
   border: none;
   border-radius: 8px;
   color: white;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ai-btn:hover {
-  background: var(--accent-hover);
-}
-
-.ai-result {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
-  font-size: 0.875rem;
-  line-height: 1.6;
-}
-
-/* Voice Recording */
-.voice-recorder {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
+  transition: all 0.2s ease;
   margin-bottom: 1rem;
 }
 
-.voice-controls {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
+.auth-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
 }
 
-.voice-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
+.auth-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
 }
 
-.record-btn {
-  background: var(--danger);
-  color: white;
-  font-size: 1.25rem;
+.auth-link:hover {
+  color: var(--accent-hover);
 }
 
-.record-btn.recording {
-  animation: pulse-record 1.5s infinite;
-}
-
-@keyframes pulse-record {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-}
-
-.voice-timer {
+.error-message {
+  color: var(--danger);
   font-size: 0.875rem;
-  color: var(--text-secondary);
-  min-width: 60px;
-  text-align: center;
+  margin-top: 0.5rem;
+  display: none;
 }
 
-/* Language Selector */
-.language-selector {
-  padding: 1rem;
+/* App Container */
+.app-container {
+  display: none;
+  min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 1000;
 }
 
-.language-select {
-  width: 100%;
-  padding: 0.5rem;
-  background: var(--bg-card);
+.app-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: var(--ai-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--ai-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background: var(--bg-hover);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text-primary);
   font-size: 0.875rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+/* Main Content */
+.main-content {
+  margin-top: 60px;
+  padding: 2rem;
+  display: flex;
+  gap: 2rem;
+  min-height: calc(100vh - 60px);
 }
 
 /* Sidebar */
 .sidebar {
   width: 280px;
   background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 100;
-  transition: transform 0.3s ease;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  height: fit-content;
 }
 
-.sidebar-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border);
+.sidebar-section {
+  margin-bottom: 2rem;
 }
 
 .sidebar-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.sidebar-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Notes Area */
+.notes-area {
+  flex: 1;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.notes-header {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  margin-bottom: 2rem;
+}
+
+.notes-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sidebar-subtitle {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-/* Search */
-.search-container {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  outline: none;
-  transition: all 0.2s;
-}
-
-.search-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-/* Categories */
-.categories {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-}
-
-.category-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.25rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.category-item:hover {
-  background: var(--bg-hover);
-}
-
-.category-item.active {
-  background: var(--accent);
-  color: white;
-}
-
-.category-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  margin-right: 0.75rem;
-}
-
-.category-info {
-  flex: 1;
-}
-
-.category-name {
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.category-count {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  margin-left: 280px;
-  margin-right: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  transition: margin-right 0.3s ease;
-}
-
-.main-content.ai-open {
-  margin-right: 400px;
-}
-
-/* Editor Header */
-.editor-header {
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.editor-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn:hover {
-  background: var(--bg-hover);
-}
-
-.btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.btn-primary:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
-}
-
-.btn-ai {
-  background: var(--ai-gradient);
-  border: none;
-  color: white;
-}
-
-.btn-ai:hover {
-  opacity: 0.9;
-}
-
-/* Editor */
-.editor-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-  overflow: hidden;
-}
-
-.note-title {
-  width: 100%;
-  padding: 0.5rem 0;
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  font-size: 1.75rem;
-  font-weight: 600;
-  outline: none;
   margin-bottom: 1rem;
 }
 
-.note-meta {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.category-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  background: var(--bg-card);
-  border-radius: 16px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-
-.note-editor {
+.note-input {
   width: 100%;
-  flex: 1;
+  min-height: 200px;
   padding: 1rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -564,1786 +294,577 @@ body {
   color: var(--text-primary);
   font-size: 1rem;
   line-height: 1.6;
-  resize: none;
-  outline: none;
+  resize: vertical;
   font-family: inherit;
 }
 
-.note-editor:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-/* AI Writing Assistant */
-.ai-writing-toolbar {
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  display: flex;
-  gap: 0.5rem;
-  background: var(--bg-card);
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.ai-toolbar-btn {
-  padding: 0.5rem 0.75rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.ai-toolbar-btn:hover {
-  background: var(--accent);
-  color: white;
+.note-input:focus {
+  outline: none;
   border-color: var(--accent);
 }
 
-/* Export Options */
-.export-options {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.export-format {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-
-.export-btn {
-  padding: 0.5rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-}
-
-.export-btn:hover {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
-}
-
-/* Category Colors */
-.cat-business { background: #3b82f6; }
-.cat-personal { background: #10b981; }
-.cat-ideas { background: #f59e0b; }
-.cat-tasks { background: #ef4444; }
-.cat-learning { background: #8b5cf6; }
-.cat-finance { background: #06b6d4; }
-.cat-health { background: #ec4899; }
-.cat-meetings { background: #14b8a6; }
-.cat-projects { background: #f97316; }
-.cat-general { background: #6b7280; }
-
-/* Notes List */
 .notes-list {
-  flex: 1;
-  overflow-y: auto;
+  margin-top: 2rem;
 }
 
 .note-item {
+  background: var(--bg-card);
   padding: 1rem;
-  border-bottom: 1px solid var(--border);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
+  transition: all 0.2s ease;
 }
 
 .note-item:hover {
-  background: var(--bg-hover);
+  border-color: var(--accent);
+  transform: translateY(-1px);
 }
 
-.note-item.active {
-  background: var(--bg-card);
-  border-left: 3px solid var(--accent);
-}
-
-.note-item-title {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.note-item-preview {
+.note-meta {
+  display: flex;
+  align-items: center;
+  justify-content: between;
+  margin-bottom: 0.5rem;
   font-size: 0.875rem;
   color: var(--text-secondary);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.note-item-date {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 0.5rem;
+.note-preview {
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
-.note-item-lang {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: 0.7rem;
-  padding: 0.125rem 0.375rem;
-  background: var(--bg-hover);
-  border-radius: 4px;
-  color: var(--text-secondary);
+/* Hidden class */
+.hidden {
+  display: none !important;
 }
 
-/* New Note Button */
-.new-note-btn {
-  position: fixed;
-  bottom: 2rem;
-  left: 300px;
-  width: 56px;
-  height: 56px;
-  background: var(--accent);
-  border: none;
-  border-radius: 50%;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 150;
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .sidebar {
+    width: 100%;
+  }
+  
+  .auth-card {
+    margin: 1rem;
+    padding: 2rem;
+  }
 }
 
-.new-note-btn:hover {
-  background: var(--accent-hover);
-  transform: scale(1.05);
-}
-
-/* Voice Button */
-.voice-note-btn {
-  position: fixed;
-  bottom: 2rem;
-  left: 370px;
-  width: 48px;
-  height: 48px;
-  background: var(--danger);
-  border: none;
-  border-radius: 50%;
-  color: white;
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 150;
-}
-
-.voice-note-btn:hover {
-  transform: scale(1.05);
-}
-
-/* Auto-categorization indicator */
-.auto-cat-indicator {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  padding: 0.75rem 1.25rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  opacity: 0;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  z-index: 200;
-}
-
-.auto-cat-indicator.show {
-  opacity: 1;
-}
-
-.ai-icon {
-  width: 24px;
-  height: 24px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-/* Toast */
-.toast {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  padding: 1rem 1.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: all 0.3s;
-  z-index: 300;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Loading spinner */
-.spinner {
+/* Loading animation */
+.loading {
+  display: inline-block;
   width: 20px;
   height: 20px;
   border: 2px solid var(--border);
-  border-top-color: var(--accent);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  border-top-color: var(--accent);
+  animation: spin 0.8s ease-in-out infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* Tabs */
-.ai-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 1rem;
-}
-
-.ai-tab {
-  flex: 1;
-  padding: 0.75rem;
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.ai-tab:hover {
-  color: var(--text-primary);
-}
-
-.ai-tab.active {
-  color: var(--accent);
-}
-
-.ai-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--accent);
-}
-
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
-
-/* Empty State */
-.empty-state {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 2rem;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.empty-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-}
-
-.empty-text {
-  font-size: 0.875rem;
-  max-width: 400px;
-}
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <h1 class="sidebar-title">
-      <span style="font-size: 1.5rem;">🧠</span> SmartNotes AI Pro
-    </h1>
-    <p class="sidebar-subtitle">Ultimate AI-powered notes</p>
-  </div>
-
-  <div class="search-container">
-    <input type="text" class="search-input" placeholder="Search notes..." id="searchInput">
-  </div>
-
-  <div class="categories" id="categoriesList">
-    <div class="category-item active" data-category="all">
-      <div class="category-icon" style="background: var(--accent);">📝</div>
-      <div class="category-info">
-        <div class="category-name">All Notes</div>
-        <div class="category-count" id="all-count">0 notes</div>
-      </div>
+<!-- Auth Container -->
+<div id="authContainer" class="auth-container">
+  <div class="auth-card">
+    <div id="loginForm">
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Sign in to your SmartNotes account</p>
+      
+      <form id="loginFormElement">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" class="form-input" required>
+          <div class="error-message" id="loginEmailError"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="form-input" required>
+          <div class="error-message" id="loginPasswordError"></div>
+        </div>
+        
+        <button type="submit" class="auth-button" id="loginButton">
+          Sign In
+        </button>
+      </form>
+      
+      <p>
+        Don't have an account? 
+        <a href="#" class="auth-link" onclick="showSignup()">Sign up</a>
+      </p>
     </div>
     
-    <div class="category-item" data-category="business">
-      <div class="category-icon cat-business">💼</div>
-      <div class="category-info">
-        <div class="category-name">Business</div>
-        <div class="category-count" id="business-count">0 notes</div>
-      </div>
-    </div>
-
-    <div class="category-item" data-category="personal">
-      <div class="category-icon cat-personal">👤</div>
-      <div class="category-info">
-        <div class="category-name">Personal</div>
-        <div class="category-count" id="personal-count">0 notes</div>
-      </div>
-    </div>
-
-    <div class="category-item" data-category="ideas">
-      <div class="category-icon cat-ideas">💡</div>
-      <div class="category-info">
-        <div class="category-name">Ideas</div>
-        <div class="category-count" id="ideas-count">0 notes</div>
-      </div>
-    </div>
-
-    <div class="category-item" data-category="tasks">
-      <div class="category-icon cat-tasks">✅</div>
-      <div class="category-info">
-        <div class="category-name">Tasks</div>
-        <div class="category-count" id="tasks-count">0 notes</div>
-      </div>
-    </div>
-
-    <div class="category-item" data-category="learning">
-      <div class="category-icon cat-learning">📚</div>
-      <div class="category-info">
-        <div class="category-name">Learning</div>
-        <div class="category-count" id="learning-count">0 notes</div>
-      </div>
-    </div>
-
-    <div class="category-item" data-category="finance">
-      <div class="category-icon cat-finance">💰</div>
-      <div class="category-info">
-        <div class="category-name">Finance</div>
-        <div class="category-count" id="finance-count">0 notes</div>
-      </div>
+    <div id="signupForm" class="hidden">
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-subtitle">Join SmartNotes and boost your productivity</p>
+      
+      <form id="signupFormElement">
+        <div class="form-group">
+          <label class="form-label" for="signupName">Full Name</label>
+          <input type="text" id="signupName" class="form-input" required>
+          <div class="error-message" id="signupNameError"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" class="form-input" required>
+          <div class="error-message" id="signupEmailError"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" class="form-input" required>
+          <div class="error-message" id="signupPasswordError"></div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="signupConfirmPassword">Confirm Password</label>
+          <input type="password" id="signupConfirmPassword" class="form-input" required>
+          <div class="error-message" id="signupConfirmPasswordError"></div>
+        </div>
+        
+        <button type="submit" class="auth-button" id="signupButton">
+          Create Account
+        </button>
+      </form>
+      
+      <p>
+        Already have an account? 
+        <a href="#" class="auth-link" onclick="showLogin()">Sign in</a>
+      </p>
     </div>
   </div>
 </div>
 
-<!-- Main Content -->
-<div class="main-content" id="mainContent">
-  <!-- Editor Header -->
-  <div class="editor-header">
-    <div class="editor-title" id="editorTitle">New Note</div>
-    <div class="editor-actions">
-      <button class="btn" onclick="app.deleteNote()" id="deleteBtn" style="display:none;">
-        <span>🗑️</span> Delete
-      </button>
-      <button class="btn" onclick="app.exportNote()">
-        <span>📄</span> Export
-      </button>
-      <button class="btn btn-ai" onclick="app.toggleAIPanel()">
-        <span>🤖</span> AI Assistant
-      </button>
-      <button class="btn btn-primary" onclick="app.saveNote()">
-        <span>💾</span> Save
-      </button>
+<!-- App Container -->
+<div id="appContainer" class="app-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-logo">SmartNotes AI Pro</div>
+    <div class="user-menu">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <span id="userName">User</span>
+      <button class="logout-button" onclick="logout()">Logout</button>
     </div>
-  </div>
-
-  <!-- Editor Container -->
-  <div class="editor-container" id="editorContainer" style="position: relative;">
-    <input type="text" class="note-title" placeholder="Note Title..." id="noteTitle">
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Quick Actions</h3>
+        <button class="sidebar-button" onclick="createNewNote()">
+          📝 New Note
+        </button>
+        <button class="sidebar-button" onclick="searchNotes()">
+          🔍 Search Notes
+        </button>
+        <button class="sidebar-button" onclick="viewFavorites()">
+          ⭐ Favorites
+        </button>
+      </div>
+      
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Categories</h3>
+        <button class="sidebar-button" onclick="filterByCategory('work')">
+          💼 Work
+        </button>
+        <button class="sidebar-button" onclick="filterByCategory('personal')">
+          🏠 Personal
+        </button>
+        <button class="sidebar-button" onclick="filterByCategory('ideas')">
+          💡 Ideas
+        </button>
+        <button class="sidebar-button" onclick="filterByCategory('archive')">
+          📦 Archive
+        </button>
+      </div>
+      
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">AI Tools</h3>
+        <button class="sidebar-button" onclick="aiSummarize()">
+          🤖 AI Summarize
+        </button>
+        <button class="sidebar-button" onclick="aiGenerate()">
+          ✨ Generate Ideas
+        </button>
+        <button class="sidebar-button" onclick="aiOrganize()">
+          📊 Auto-Organize
+        </button>
+      </div>
+    </aside>
     
-    <div class="note-meta">
-      <div class="meta-item">
-        <span>📅</span>
-        <span id="noteDate">Just now</span>
-      </div>
-      <div class="meta-item">
-        <span>🏷️</span>
-        <span class="category-tag" id="categoryTag">
-          <span class="category-icon" style="width: 16px; height: 16px; font-size: 0.75rem;">📝</span>
-          <span id="categoryName">Uncategorized</span>
-        </span>
-      </div>
-      <div class="meta-item">
-        <span>📊</span>
-        <span id="wordCount">0 words</span>
-      </div>
-      <div class="meta-item">
-        <span>🌐</span>
-        <select id="noteLanguage" class="language-select" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-          <option value="de">Deutsch</option>
-          <option value="zh">中文</option>
-          <option value="ja">日本語</option>
-          <option value="ko">한국어</option>
-          <option value="ar">العربية</option>
-        </select>
-      </div>
-    </div>
-    
-    <textarea class="note-editor" id="noteEditor" placeholder="Start typing your note... AI will help with suggestions, auto-completion, and categorization."></textarea>
-    
-    <!-- AI Writing Toolbar -->
-    <div class="ai-writing-toolbar">
-      <button class="ai-toolbar-btn" onclick="app.aiComplete()">✨ Complete</button>
-      <button class="ai-toolbar-btn" onclick="app.aiImprove()">📝 Improve</button>
-      <button class="ai-toolbar-btn" onclick="app.aiSummarize()">📋 Summarize</button>
-      <button class="ai-toolbar-btn" onclick="app.aiExpand()">➕ Expand</button>
-      <button class="ai-toolbar-btn" onclick="app.aiTranslate()">🌐 Translate</button>
-    </div>
-  </div>
-
-  <!-- Empty State -->
-  <div class="empty-state" id="emptyState" style="display:none;">
-    <div class="empty-icon">📝</div>
-    <h2 class="empty-title">No note selected</h2>
-    <p class="empty-text">Create a new note or select one from the sidebar to get started.</p>
-  </div>
-</div>
-
-<!-- AI Assistant Panel -->
-<div class="ai-panel" id="aiPanel">
-  <div class="ai-panel-header">
-    <h2 class="ai-panel-title">
-      <span>🤖</span> AI Assistant
-    </h2>
-    <button class="ai-close-btn" onclick="app.toggleAIPanel()">×</button>
-  </div>
-  
-  <!-- Tabs -->
-  <div class="ai-tabs">
-    <button class="ai-tab active" onclick="app.switchTab('features')">Features</button>
-    <button class="ai-tab" onclick="app.switchTab('chat')">AI Chat</button>
-    <button class="ai-tab" onclick="app.switchTab('voice')">Voice</button>
-  </div>
-  
-  <!-- Features Tab -->
-  <div class="tab-content active" id="features-tab">
-    <div class="ai-features">
-      <!-- Quick Actions -->
-      <div class="ai-feature-card">
-        <h3 class="ai-feature-title">
-          <span>⚡</span> Quick Actions
-        </h3>
-        <p class="ai-feature-desc">Let AI help you write better notes</p>
-        <button class="ai-btn" onclick="app.aiGenerateIdeas()">💡 Generate Ideas</button>
+    <!-- Notes Area -->
+    <section class="notes-area">
+      <div class="notes-header">
+        <h2 class="notes-title">My Notes</h2>
       </div>
       
-      <!-- Note Analysis -->
-      <div class="ai-feature-card">
-        <h3 class="ai-feature-title">
-          <span>📊</span> Note Analysis
-        </h3>
-        <p class="ai-feature-desc">Get insights from your current note</p>
-        <button class="ai-btn" onclick="app.aiAnalyzeNote()">🔍 Analyze Note</button>
-        <div id="analysisResult" style="display:none;"></div>
-      </div>
+      <textarea 
+        id="noteInput" 
+        class="note-input" 
+        placeholder="Start typing your note... (Ctrl+S to save)"
+      ></textarea>
       
-      <!-- Smart Search -->
-      <div class="ai-feature-card">
-        <h3 class="ai-feature-title">
-          <span>🔎</span> Smart Search
-        </h3>
-        <p class="ai-feature-desc">Ask questions about all your notes</p>
-        <input type="text" class="search-input" placeholder="What did I write about..." id="aiSearchInput" style="margin-bottom: 0.5rem;">
-        <button class="ai-btn" onclick="app.aiSmartSearch()">Search with AI</button>
-        <div id="searchResults" style="display:none;"></div>
+      <div class="notes-list" id="notesList">
+        <!-- Notes will be dynamically loaded here -->
       </div>
-      
-      <!-- Extract Action Items -->
-      <div class="ai-feature-card">
-        <h3 class="ai-feature-title">
-          <span>✅</span> Extract Action Items
-        </h3>
-        <p class="ai-feature-desc">Find all tasks and to-dos in your notes</p>
-        <button class="ai-btn" onclick="app.aiExtractTasks()">Extract Tasks</button>
-        <div id="tasksResult" style="display:none;"></div>
-      </div>
-      
-      <!-- Export Options -->
-      <div class="export-options">
-        <h3 class="ai-feature-title">
-          <span>📤</span> Export with AI Formatting
-        </h3>
-        <p class="ai-feature-desc">Export your note in various formats</p>
-        <div class="export-format">
-          <button class="export-btn" onclick="app.exportAs('markdown')">📝 Markdown</button>
-          <button class="export-btn" onclick="app.exportAs('pdf')">📄 PDF</button>
-          <button class="export-btn" onclick="app.exportAs('html')">🌐 HTML</button>
-          <button class="export-btn" onclick="app.exportAs('docx')">📃 Word</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- AI Chat Tab -->
-  <div class="tab-content" id="chat-tab">
-    <div class="ai-chat active">
-      <div class="ai-chat-messages" id="chatMessages">
-        <div class="ai-chat-message ai">
-          <div class="ai-chat-avatar ai">🤖</div>
-          <div class="ai-chat-bubble ai">
-            Hello! I'm your AI assistant. Ask me anything about your notes or get help with writing!
-          </div>
-        </div>
-      </div>
-      <div class="ai-chat-input-container">
-        <input type="text" class="ai-chat-input" id="chatInput" placeholder="Ask me anything...">
-        <button class="ai-chat-send" onclick="app.sendChatMessage()">Send</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Voice Tab -->
-  <div class="tab-content" id="voice-tab">
-    <div class="ai-features">
-      <!-- Voice Recorder -->
-      <div class="voice-recorder">
-        <h3 class="ai-feature-title">
-          <span>🎙️</span> Voice to Text
-        </h3>
-        <p class="ai-feature-desc">Record your voice and AI will transcribe it</p>
-        <div class="voice-controls">
-          <button class="voice-btn record-btn" id="recordBtn" onclick="app.toggleRecording()">
-            <span id="recordIcon">🎙️</span>
-          </button>
-          <span class="voice-timer" id="voiceTimer">00:00</span>
-        </div>
-        <div id="transcriptionResult" style="display:none;"></div>
-      </div>
-      
-      <!-- Language Settings -->
-      <div class="ai-feature-card">
-        <h3 class="ai-feature-title">
-          <span>🌐</span> Multi-Language Support
-        </h3>
-        <p class="ai-feature-desc">Set your preferred language for AI features</p>
-        <div class="language-selector">
-          <label style="display: block; margin-bottom: 0.5rem; font-size: 0.875rem;">AI Response Language:</label>
-          <select id="aiLanguage" class="language-select">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="zh">中文</option>
-            <option value="ja">日本語</option>
-            <option value="ko">한국어</option>
-            <option value="ar">العربية</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- New Note Button -->
-<button class="new-note-btn" onclick="app.createNewNote()">+</button>
-
-<!-- Voice Note Button -->
-<button class="voice-note-btn" onclick="app.startVoiceNote()">🎙️</button>
-
-<!-- Auto-categorization Indicator -->
-<div class="auto-cat-indicator" id="autoCatIndicator">
-  <div class="ai-icon">🤖</div>
-  <span id="aiStatusText">AI is thinking...</span>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-  <div class="toast-icon"></div>
-  <span id="toastMessage">Note saved!</span>
+    </section>
+  </main>
 </div>
 
 <script>
-// SmartNotes AI Pro - Ultimate AI-powered note taking app
-class SmartNotesAIPro {
+class SmartNotesAuth {
   constructor() {
-    this.notes = JSON.parse(localStorage.getItem('smartnotes_ai_pro_data')) || [];
-    this.currentNote = null;
-    this.selectedCategory = 'all';
-    this.autoCatTimeout = null;
-    this.aiPanelOpen = false;
-    this.recording = false;
-    this.recordingStartTime = null;
-    this.recordingTimer = null;
-    this.currentTab = 'features';
-    this.chatHistory = [];
-    this.currentLanguage = 'en';
-    this.mediaRecorder = null;
-    this.audioChunks = [];
-    
-    this.categoryKeywords = {
-      business: ['business', 'work', 'meeting', 'client', 'project', 'revenue', 'sales', 'marketing', 'strategy', 'company', 'startup', 'freelance', 'contract', 'invoice', 'proposal', 'partnership', 'customer', 'product', 'service'],
-      personal: ['personal', 'family', 'home', 'birthday', 'vacation', 'hobby', 'friend', 'girlfriend', 'boyfriend', 'wife', 'husband', 'kids', 'parents', 'weekend', 'relax'],
-      ideas: ['idea', 'concept', 'brainstorm', 'innovation', 'creative', 'what if', 'could', 'maybe', 'think', 'imagine', 'possibility', 'inspiration'],
-      tasks: ['todo', 'task', 'need to', 'must', 'should', 'deadline', 'complete', 'finish', 'do', 'action', 'reminder', 'follow up', 'asap', 'urgent'],
-      learning: ['learn', 'study', 'course', 'tutorial', 'book', 'article', 'research', 'understand', 'practice', 'skill', 'education', 'training'],
-      finance: ['money', 'budget', 'expense', 'income', 'invest', 'savings', 'cost', 'price', 'payment', 'bill', 'tax', 'profit', '$', 'dollar']
-    };
-    
-    this.translations = {
-      es: { complete: 'Completar', improve: 'Mejorar', summarize: 'Resumir', expand: 'Expandir' },
-      fr: { complete: 'Compléter', improve: 'Améliorer', summarize: 'Résumer', expand: 'Développer' },
-      de: { complete: 'Vervollständigen', improve: 'Verbessern', summarize: 'Zusammenfassen', expand: 'Erweitern' }
-    };
-    
+    this.currentUser = null;
+    this.notes = [];
     this.init();
   }
   
   init() {
-    this.bindEvents();
-    this.updateCategoryCounts();
-    this.loadNotesList();
-    this.loadSampleNotes();
+    // Check for existing session
+    const savedUser = localStorage.getItem('smartnotes_user');
+    if (savedUser) {
+      this.currentUser = JSON.parse(savedUser);
+      this.showApp();
+      this.loadUserNotes();
+    } else {
+      this.showAuth();
+    }
     
-    // Auto-save every 5 seconds
-    setInterval(() => {
-      if (this.currentNote && this.hasUnsavedChanges()) {
-        this.saveNote(true);
-      }
-    }, 5000);
+    // Setup form listeners
+    this.setupFormListeners();
     
-    // Update word count
-    setInterval(() => {
-      this.updateWordCount();
-    }, 1000);
+    // Setup keyboard shortcuts
+    this.setupKeyboardShortcuts();
   }
   
-  bindEvents() {
-    // Category selection
-    document.querySelectorAll('.category-item').forEach(item => {
-      item.addEventListener('click', (e) => {
-        this.selectCategory(e.currentTarget.dataset.category);
-      });
+  setupFormListeners() {
+    document.getElementById('loginFormElement').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleLogin();
     });
     
-    // Search
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      this.searchNotes(e.target.value);
+    document.getElementById('signupFormElement').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleSignup();
     });
-    
-    // Auto-categorization
-    document.getElementById('noteEditor').addEventListener('input', () => {
-      this.scheduleAutoCategory();
-    });
-    
-    // Keyboard shortcuts
+  }
+  
+  setupKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        this.saveNote();
+        this.saveCurrentNote();
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+      
+      if (e.ctrlKey && e.key === 'n') {
         e.preventDefault();
         this.createNewNote();
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        document.getElementById('searchInput').focus();
-      }
-      if ((e.ctrlKey || e.metaKey) && e.key === ' ') {
-        e.preventDefault();
-        this.aiComplete();
-      }
-    });
-    
-    // Chat input enter key
-    document.getElementById('chatInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        this.sendChatMessage();
-      }
-    });
-    
-    // AI search input enter key
-    document.getElementById('aiSearchInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        this.aiSmartSearch();
-      }
-    });
-    
-    // Language change
-    document.getElementById('noteLanguage').addEventListener('change', (e) => {
-      this.currentLanguage = e.target.value;
-      if (this.currentNote) {
-        this.currentNote.language = this.currentLanguage;
-      }
     });
   }
   
-  loadSampleNotes() {
-    if (this.notes.length === 0) {
-      const sampleNotes = [
-        {
-          id: '1',
-          title: 'Welcome to SmartNotes AI Pro',
-          content: 'This is your AI-powered note-taking app! Try these features:\n\n• Voice recording - Click the microphone button\n• AI completion - Type and press Ctrl+Space\n• Auto-categorization - Watch as your notes are automatically organized\n• Multi-language support - Switch languages anytime\n• AI chat - Ask questions about your notes\n• Export options - Save in multiple formats',
-          category: 'learning',
-          created: new Date().toISOString(),
-          updated: new Date().toISOString(),
-          language: 'en'
-        },
-        {
-          id: '2',
-          title: 'Project Ideas for $1M Goal',
-          content: 'Ideas to reach the million dollar goal:\n\n1. AI automation services for businesses\n2. Create and sell digital products\n3. Build a SaaS platform\n4. Freelance consulting at premium rates\n5. Create online courses\n\nNeed to focus on scalable solutions that can generate passive income.',
-          category: 'ideas',
-          created: new Date().toISOString(),
-          updated: new Date().toISOString(),
-          language: 'en'
-        }
-      ];
+  async handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    // Clear previous errors
+    this.clearErrors(['loginEmailError', 'loginPasswordError']);
+    
+    // Basic validation
+    if (!email || !password) {
+      this.showError('loginEmailError', 'Please fill in all fields');
+      return;
+    }
+    
+    // Show loading
+    const button = document.getElementById('loginButton');
+    button.innerHTML = '<div class="loading"></div> Signing in...';
+    button.disabled = true;
+    
+    try {
+      // Simulate API call
+      await this.delay(1000);
       
-      this.notes = sampleNotes;
-      localStorage.setItem('smartnotes_ai_pro_data', JSON.stringify(this.notes));
+      // Check if user exists (simplified - in production, use real authentication)
+      const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (!user) {
+        this.showError('loginPasswordError', 'Invalid email or password');
+        return;
+      }
+      
+      // Login successful
+      this.currentUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.name.charAt(0).toUpperCase()
+      };
+      
+      localStorage.setItem('smartnotes_user', JSON.stringify(this.currentUser));
+      this.showApp();
+      this.loadUserNotes();
+      
+    } catch (error) {
+      this.showError('loginPasswordError', 'Login failed. Please try again.');
+    } finally {
+      button.innerHTML = 'Sign In';
+      button.disabled = false;
     }
   }
   
-  selectCategory(category) {
-    this.selectedCategory = category;
-    document.querySelectorAll('.category-item').forEach(item => {
-      item.classList.toggle('active', item.dataset.category === category);
-    });
-    this.loadNotesList();
-  }
-  
-  loadNotesList() {
-    const filteredNotes = this.selectedCategory === 'all' 
-      ? this.notes 
-      : this.notes.filter(n => n.category === this.selectedCategory);
+  async handleSignup() {
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
     
-    const sidebar = document.getElementById('sidebar');
-    let notesListEl = sidebar.querySelector('.notes-list');
+    // Clear previous errors
+    this.clearErrors(['signupNameError', 'signupEmailError', 'signupPasswordError', 'signupConfirmPasswordError']);
     
-    if (!notesListEl) {
-      notesListEl = document.createElement('div');
-      notesListEl.className = 'notes-list';
-      sidebar.appendChild(notesListEl);
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+      this.showError('signupNameError', 'Please fill in all fields');
+      return;
     }
     
-    if (filteredNotes.length === 0) {
-      notesListEl.innerHTML = `
-        <div class="empty-state" style="padding: 2rem; text-align: center;">
-          <div class="empty-icon" style="font-size: 2rem; opacity: 0.5;">📭</div>
-          <p style="color: var(--text-secondary); font-size: 0.875rem;">No notes in this category</p>
+    if (password !== confirmPassword) {
+      this.showError('signupConfirmPasswordError', 'Passwords do not match');
+      return;
+    }
+    
+    if (password.length < 6) {
+      this.showError('signupPasswordError', 'Password must be at least 6 characters');
+      return;
+    }
+    
+    // Show loading
+    const button = document.getElementById('signupButton');
+    button.innerHTML = '<div class="loading"></div> Creating account...';
+    button.disabled = true;
+    
+    try {
+      // Simulate API call
+      await this.delay(1500);
+      
+      // Check if user already exists
+      const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+      if (users.find(u => u.email === email)) {
+        this.showError('signupEmailError', 'Account with this email already exists');
+        return;
+      }
+      
+      // Create new user
+      const newUser = {
+        id: Date.now().toString(),
+        name,
+        email,
+        password,
+        created: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('smartnotes_users', JSON.stringify(users));
+      
+      // Auto login
+      this.currentUser = {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        avatar: newUser.name.charAt(0).toUpperCase()
+      };
+      
+      localStorage.setItem('smartnotes_user', JSON.stringify(this.currentUser));
+      this.showApp();
+      this.loadUserNotes();
+      
+    } catch (error) {
+      this.showError('signupEmailError', 'Signup failed. Please try again.');
+    } finally {
+      button.innerHTML = 'Create Account';
+      button.disabled = false;
+    }
+  }
+  
+  showAuth() {
+    document.getElementById('authContainer').style.display = 'flex';
+    document.getElementById('appContainer').style.display = 'none';
+  }
+  
+  showApp() {
+    document.getElementById('authContainer').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    
+    // Update user info in header
+    document.getElementById('userAvatar').textContent = this.currentUser.avatar;
+    document.getElementById('userName').textContent = this.currentUser.name;
+  }
+  
+  logout() {
+    localStorage.removeItem('smartnotes_user');
+    this.currentUser = null;
+    this.notes = [];
+    this.showAuth();
+    
+    // Clear forms
+    document.getElementById('loginFormElement').reset();
+    document.getElementById('signupFormElement').reset();
+  }
+  
+  loadUserNotes() {
+    const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${this.currentUser.id}`) || '[]');
+    this.notes = userNotes;
+    this.renderNotes();
+  }
+  
+  saveUserNotes() {
+    localStorage.setItem(`smartnotes_notes_${this.currentUser.id}`, JSON.stringify(this.notes));
+  }
+  
+  renderNotes() {
+    const notesList = document.getElementById('notesList');
+    
+    if (this.notes.length === 0) {
+      notesList.innerHTML = `
+        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+          <p>No notes yet. Create your first note above!</p>
         </div>
       `;
-    } else {
-      notesListEl.innerHTML = filteredNotes.map(note => `
-        <div class="note-item ${this.currentNote?.id === note.id ? 'active' : ''}" 
-             onclick="app.loadNote('${note.id}')">
-          <div class="note-item-title">${note.title || 'Untitled'}</div>
-          <div class="note-item-preview">${note.content.substring(0, 100)}...</div>
-          <div class="note-item-date">${this.formatDate(note.updated)}</div>
-          ${note.language && note.language !== 'en' ? `<span class="note-item-lang">${note.language.toUpperCase()}</span>` : ''}
-        </div>
-      `).join('');
+      return;
     }
+    
+    notesList.innerHTML = this.notes.map(note => `
+      <div class="note-item" onclick="loadNote('${note.id}')">
+        <div class="note-meta">
+          <span>${new Date(note.created).toLocaleDateString()}</span>
+          <span>${note.category || 'General'}</span>
+        </div>
+        <div class="note-preview">
+          ${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  saveCurrentNote() {
+    const content = document.getElementById('noteInput').value.trim();
+    
+    if (!content) {
+      this.showNotification('Please write something first!', 'warning');
+      return;
+    }
+    
+    const note = {
+      id: Date.now().toString(),
+      content,
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
+      category: 'general'
+    };
+    
+    this.notes.unshift(note);
+    this.saveUserNotes();
+    this.renderNotes();
+    
+    document.getElementById('noteInput').value = '';
+    this.showNotification('Note saved successfully!', 'success');
   }
   
   createNewNote() {
-    this.currentNote = {
-      id: Date.now().toString(),
-      title: '',
-      content: '',
-      category: 'general',
-      created: new Date().toISOString(),
-      updated: new Date().toISOString(),
-      language: this.currentLanguage
-    };
-    
-    document.getElementById('noteTitle').value = '';
-    document.getElementById('noteEditor').value = '';
-    document.getElementById('noteDate').textContent = 'Just now';
-    document.getElementById('categoryName').textContent = 'General';
-    document.getElementById('deleteBtn').style.display = 'none';
-    document.getElementById('wordCount').textContent = '0 words';
-    document.getElementById('noteLanguage').value = this.currentLanguage;
-    
-    document.getElementById('editorContainer').style.display = 'flex';
-    document.getElementById('emptyState').style.display = 'none';
-    
-    document.getElementById('noteTitle').focus();
+    document.getElementById('noteInput').value = '';
+    document.getElementById('noteInput').focus();
   }
   
-  loadNote(noteId) {
-    const note = this.notes.find(n => n.id === noteId);
-    if (!note) return;
-    
-    this.currentNote = note;
-    document.getElementById('noteTitle').value = note.title;
-    document.getElementById('noteEditor').value = note.content;
-    document.getElementById('noteDate').textContent = this.formatDate(note.updated);
-    document.getElementById('categoryName').textContent = this.getCategoryName(note.category);
-    document.getElementById('deleteBtn').style.display = 'block';
-    document.getElementById('noteLanguage').value = note.language || 'en';
-    
-    document.getElementById('editorContainer').style.display = 'flex';
-    document.getElementById('emptyState').style.display = 'none';
-    
-    this.updateCategoryTag(note.category);
-    this.updateWordCount();
-    this.loadNotesList();
+  showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
   }
   
-  saveNote(autoSave = false) {
-    if (!this.currentNote) return;
-    
-    const title = document.getElementById('noteTitle').value.trim();
-    const content = document.getElementById('noteEditor').value.trim();
-    
-    if (!title && !content) {
-      if (!autoSave) this.showToast('Please add a title or content', 'error');
-      return;
-    }
-    
-    this.currentNote.title = title || 'Untitled';
-    this.currentNote.content = content;
-    this.currentNote.updated = new Date().toISOString();
-    this.currentNote.category = this.categorizeContent(content + ' ' + title);
-    this.currentNote.language = document.getElementById('noteLanguage').value;
-    
-    const existingIndex = this.notes.findIndex(n => n.id === this.currentNote.id);
-    if (existingIndex >= 0) {
-      this.notes[existingIndex] = this.currentNote;
-    } else {
-      this.notes.unshift(this.currentNote);
-    }
-    
-    localStorage.setItem('smartnotes_ai_pro_data', JSON.stringify(this.notes));
-    
-    this.updateCategoryCounts();
-    this.loadNotesList();
-    
-    if (!autoSave) {
-      this.showToast('Note saved successfully!', 'success');
-    }
-  }
-  
-  deleteNote() {
-    if (!this.currentNote) return;
-    
-    if (confirm('Are you sure you want to delete this note?')) {
-      this.notes = this.notes.filter(n => n.id !== this.currentNote.id);
-      localStorage.setItem('smartnotes_ai_pro_data', JSON.stringify(this.notes));
-      
-      this.currentNote = null;
-      document.getElementById('editorContainer').style.display = 'none';
-      document.getElementById('emptyState').style.display = 'flex';
-      
-      this.updateCategoryCounts();
-      this.loadNotesList();
-      this.showToast('Note deleted', 'info');
-    }
-  }
-  
-  // AI Features
-  aiComplete() {
-    const editor = document.getElementById('noteEditor');
-    const content = editor.value;
-    const cursorPos = editor.selectionStart;
-    const beforeCursor = content.substring(0, cursorPos);
-    
-    this.showAIStatus('AI is completing your thought...');
-    
-    setTimeout(() => {
-      const completions = {
-        'I need to': ' complete this task by the end of the day to stay on schedule.',
-        'The project': ' requires immediate attention to meet our deadline.',
-        'We should': ' consider all options before making a final decision.',
-        'This will': ' significantly improve our productivity and efficiency.',
-        'To achieve': ' our goals, we need to focus on consistent daily actions.'
-      };
-      
-      let completion = ' and this leads to better outcomes overall.';
-      
-      for (const [start, end] of Object.entries(completions)) {
-        if (beforeCursor.trim().endsWith(start)) {
-          completion = end;
-          break;
-        }
-      }
-      
-      const newContent = content.substring(0, cursorPos) + completion + content.substring(cursorPos);
-      editor.value = newContent;
-      editor.selectionStart = cursorPos + completion.length;
-      editor.selectionEnd = cursorPos + completion.length;
-      
-      this.hideAIStatus();
-      this.showToast('AI completed your thought!', 'success');
-    }, 1500);
-  }
-  
-  aiImprove() {
-    const editor = document.getElementById('noteEditor');
-    const content = editor.value;
-    
-    if (!content.trim()) {
-      this.showToast('Please write something first', 'error');
-      return;
-    }
-    
-    this.showAIStatus('AI is improving your writing...');
-    
-    setTimeout(() => {
-      let improved = content
-        .replace(/\bi\b/g, 'I')
-        .replace(/\bu\b/g, 'you')
-        .replace(/\bur\b/g, 'your')
-        .replace(/\bdont\b/g, "don't")
-        .replace(/\bcant\b/g, "can't")
-        .replace(/\bwont\b/g, "won't")
-        .replace(/\s+/g, ' ')
-        .replace(/([.!?])\s*([a-z])/g, (match, p1, p2) => p1 + ' ' + p2.toUpperCase());
-      
-      // Capitalize first letter
-      improved = improved.charAt(0).toUpperCase() + improved.slice(1);
-      
-      editor.value = improved;
-      this.hideAIStatus();
-      this.showToast('Writing improved!', 'success');
-    }, 1500);
-  }
-  
-  aiSummarize() {
-    const content = document.getElementById('noteEditor').value;
-    
-    if (!content.trim()) {
-      this.showToast('Nothing to summarize', 'error');
-      return;
-    }
-    
-    this.showAIStatus('AI is creating a summary...');
-    
-    setTimeout(() => {
-      const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 10);
-      let summary;
-      
-      if (sentences.length === 0) {
-        summary = content;
-      } else if (sentences.length <= 3) {
-        summary = `Key point: ${sentences[0].trim()}`;
-      } else {
-        const keyPoints = sentences
-          .slice(0, 3)
-          .map((s, i) => `${i + 1}. ${s.trim()}`)
-          .join('\n');
-        summary = `Summary:\n${keyPoints}\n\nMain takeaway: ${sentences[sentences.length - 1].trim()}`;
-      }
-      
-      this.toggleAIPanel(true);
-      const resultDiv = document.getElementById('analysisResult');
-      resultDiv.innerHTML = `<div class="ai-result"><strong>Summary:</strong><br><br>${summary.replace(/\n/g, '<br>')}</div>`;
-      resultDiv.style.display = 'block';
-      
-      this.hideAIStatus();
-      this.showToast('Summary created!', 'success');
-    }, 2000);
-  }
-  
-  aiExpand() {
-    const editor = document.getElementById('noteEditor');
-    const content = editor.value;
-    
-    if (!content.trim()) {
-      this.showToast('Please write something to expand', 'error');
-      return;
-    }
-    
-    this.showAIStatus('AI is expanding your ideas...');
-    
-    setTimeout(() => {
-      const expansion = `
-
-Additional considerations:
-
-• Implementation timeline and milestones
-• Resource requirements and budget estimates  
-• Potential challenges and mitigation strategies
-• Key stakeholders and their responsibilities
-• Success metrics and evaluation criteria
-• Next steps and action items
-
-This expanded framework provides a comprehensive approach to achieving your objectives.`;
-      
-      editor.value = content + expansion;
-      
-      this.hideAIStatus();
-      this.showToast('Content expanded!', 'success');
-    }, 2000);
-  }
-  
-  aiTranslate() {
-    const content = document.getElementById('noteEditor').value;
-    const targetLang = document.getElementById('noteLanguage').value;
-    
-    if (!content.trim()) {
-      this.showToast('Nothing to translate', 'error');
-      return;
-    }
-    
-    if (targetLang === 'en') {
-      this.showToast('Already in English', 'info');
-      return;
-    }
-    
-    this.showAIStatus(`AI is translating to ${this.getLanguageName(targetLang)}...`);
-    
-    setTimeout(() => {
-      const translations = {
-        es: 'Esta es una traducción de ejemplo al español.',
-        fr: 'Ceci est un exemple de traduction en français.',
-        de: 'Dies ist eine Beispielübersetzung ins Deutsche.',
-        zh: '这是一个中文翻译示例。',
-        ja: 'これは日本語への翻訳例です。',
-        ko: '이것은 한국어 번역 예시입니다.',
-        ar: 'هذا مثال على الترجمة إلى العربية.'
-      };
-      
-      const translated = translations[targetLang] || content;
-      
-      this.toggleAIPanel(true);
-      const resultDiv = document.getElementById('analysisResult');
-      resultDiv.innerHTML = `<div class="ai-result"><strong>Translation (${this.getLanguageName(targetLang)}):</strong><br><br>${translated}</div>`;
-      resultDiv.style.display = 'block';
-      
-      this.hideAIStatus();
-      this.showToast('Translation complete!', 'success');
-    }, 2000);
-  }
-  
-  aiGenerateIdeas() {
-    const title = document.getElementById('noteTitle').value || 'your topic';
-    
-    this.showAIStatus('AI is generating ideas...');
-    
-    setTimeout(() => {
-      const ideas = [
-        `💡 Research current market trends related to ${title}`,
-        `💡 Create a detailed action plan with measurable goals`,
-        `💡 Identify potential partnerships and collaborations`,
-        `💡 Develop a unique value proposition for ${title}`,
-        `💡 Analyze competitors and find your differentiator`,
-        `💡 Build a prototype or minimum viable product`,
-        `💡 Create content to establish thought leadership`
-      ];
-      
-      const resultDiv = document.getElementById('analysisResult');
-      resultDiv.innerHTML = `<div class="ai-result"><strong>Generated Ideas:</strong><br><br>${ideas.join('<br>')}</div>`;
-      resultDiv.style.display = 'block';
-      
-      this.hideAIStatus();
-      this.showToast('Ideas generated!', 'success');
-    }, 2000);
-  }
-  
-  aiAnalyzeNote() {
-    const content = document.getElementById('noteEditor').value;
-    
-    if (!content.trim()) {
-      this.showToast('No content to analyze', 'error');
-      return;
-    }
-    
-    this.showAIStatus('AI is analyzing your note...');
-    
-    setTimeout(() => {
-      const wordCount = content.trim().split(/\s+/).length;
-      const sentences = content.split(/[.!?]+/).filter(s => s.trim()).length;
-      const category = this.categorizeContent(content);
-      const readingTime = Math.ceil(wordCount / 200);
-      const sentiment = this.analyzeSentiment(content);
-      const keywords = this.extractKeywords(content);
-      
-      const analysis = `
-        <div class="ai-result">
-          <strong>Note Analysis:</strong><br><br>
-          📊 <strong>Statistics:</strong><br>
-          • Words: ${wordCount}<br>
-          • Sentences: ${sentences}<br>
-          • Reading time: ~${readingTime} minute${readingTime > 1 ? 's' : ''}<br><br>
-          
-          🏷️ <strong>Category:</strong> ${this.getCategoryName(category)}<br>
-          😊 <strong>Sentiment:</strong> ${sentiment}<br>
-          🔑 <strong>Keywords:</strong> ${keywords.join(', ')}<br><br>
-          
-          📈 <strong>Suggestions:</strong><br>
-          ${wordCount < 50 ? '• Add more detail to make your note more comprehensive<br>' : ''}
-          ${sentences < 3 ? '• Consider breaking up long sentences for better readability<br>' : ''}
-          • Use AI expand feature to add more context
-        </div>
-      `;
-      
-      const resultDiv = document.getElementById('analysisResult');
-      resultDiv.innerHTML = analysis;
-      resultDiv.style.display = 'block';
-      
-      this.hideAIStatus();
-    }, 2500);
-  }
-  
-  aiSmartSearch() {
-    const query = document.getElementById('aiSearchInput').value.trim();
-    
-    if (!query) {
-      this.showToast('Please enter a search query', 'error');
-      return;
-    }
-    
-    this.showAIStatus('AI is searching your notes...');
-    
-    setTimeout(() => {
-      const results = this.notes.filter(note => {
-        const searchContent = `${note.title} ${note.content}`.toLowerCase();
-        const queryWords = query.toLowerCase().split(' ');
-        return queryWords.every(word => searchContent.includes(word));
-      });
-      
-      const resultDiv = document.getElementById('searchResults');
-      
-      if (results.length === 0) {
-        resultDiv.innerHTML = `<div class="ai-result">No notes found for "${query}"<br><br>Try using different keywords or create a new note about this topic.</div>`;
-      } else {
-        const resultHTML = results.slice(0, 5).map(note => {
-          const preview = note.content.substring(0, 100);
-          const highlightedPreview = this.highlightSearchTerms(preview, query);
-          
-          return `
-            <div style="margin-bottom: 1rem; padding: 0.75rem; background: var(--bg-card); border-radius: 8px; cursor: pointer;" 
-                 onclick="app.loadNote('${note.id}')">
-              <div style="font-weight: 600; margin-bottom: 0.25rem;">${note.title || 'Untitled'}</div>
-              <div style="font-size: 0.875rem; color: var(--text-secondary);">${highlightedPreview}...</div>
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-                ${this.getCategoryName(note.category)} • ${this.formatDate(note.updated)}
-              </div>
-            </div>
-          `;
-        }).join('');
-        
-        resultDiv.innerHTML = `
-          <div class="ai-result">
-            <strong>Found ${results.length} note${results.length > 1 ? 's' : ''}:</strong><br><br>
-            ${resultHTML}
-            ${results.length > 5 ? `<br><em>Showing top 5 results</em>` : ''}
-          </div>
-        `;
-      }
-      
-      resultDiv.style.display = 'block';
-      this.hideAIStatus();
-    }, 1500);
-  }
-  
-  aiExtractTasks() {
-    this.showAIStatus('AI is extracting tasks...');
-    
-    setTimeout(() => {
-      const tasks = [];
-      const taskPatterns = /(?:todo|task|need to|must|should|deadline|complete|finish)[\s:]+([^\n.!?]+)/gi;
-      
-      this.notes.forEach(note => {
-        let match;
-        while ((match = taskPatterns.exec(note.content)) !== null) {
-          tasks.push({
-            task: match[1].trim(),
-            note: note.title || 'Untitled',
-            noteId: note.id,
-            date: note.updated
-          });
-        }
-      });
-      
-      const resultDiv = document.getElementById('tasksResult');
-      
-      if (tasks.length === 0) {
-        resultDiv.innerHTML = '<div class="ai-result">No tasks found in your notes<br><br>Tasks are detected when you use words like: todo, task, need to, must, should, deadline</div>';
-      } else {
-        const tasksHTML = tasks.slice(0, 10).map(task => `
-          <div style="margin-bottom: 0.75rem; padding: 0.5rem; background: var(--bg-hover); border-radius: 6px;">
-            ✅ ${task.task}<br>
-            <small style="opacity: 0.7;">From: <span style="cursor: pointer; text-decoration: underline;" 
-                   onclick="app.loadNote('${task.noteId}')">${task.note}</span> • ${this.formatDate(task.date)}</small>
-          </div>
-        `).join('');
-        
-        resultDiv.innerHTML = `
-          <div class="ai-result">
-            <strong>Extracted ${tasks.length} task${tasks.length > 1 ? 's' : ''}:</strong><br><br>
-            ${tasksHTML}
-            ${tasks.length > 10 ? `<br><em>Showing first 10 tasks</em>` : ''}
-          </div>
-        `;
-      }
-      
-      resultDiv.style.display = 'block';
-      this.hideAIStatus();
-    }, 2000);
-  }
-  
-  // Voice Recording
-  startVoiceNote() {
-    this.createNewNote();
-    this.toggleAIPanel(true);
-    this.switchTab('voice');
-    setTimeout(() => this.toggleRecording(), 100);
-  }
-  
-  async toggleRecording() {
-    if (!this.recording) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        this.mediaRecorder = new MediaRecorder(stream);
-        this.audioChunks = [];
-        
-        this.mediaRecorder.ondataavailable = (event) => {
-          this.audioChunks.push(event.data);
-        };
-        
-        this.mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
-          this.transcribeAudio(audioBlob);
-          stream.getTracks().forEach(track => track.stop());
-        };
-        
-        this.mediaRecorder.start();
-        this.recording = true;
-        this.recordingStartTime = Date.now();
-        
-        document.getElementById('recordBtn').classList.add('recording');
-        document.getElementById('recordIcon').textContent = '⏹️';
-        
-        this.updateRecordingTimer();
-        this.showToast('Recording started...', 'info');
-        
-      } catch (err) {
-        this.showToast('Microphone access denied', 'error');
-      }
-    } else {
-      this.mediaRecorder.stop();
-      this.recording = false;
-      
-      document.getElementById('recordBtn').classList.remove('recording');
-      document.getElementById('recordIcon').textContent = '🎙️';
-      
-      clearInterval(this.recordingTimer);
-      document.getElementById('voiceTimer').textContent = '00:00';
-    }
-  }
-  
-  updateRecordingTimer() {
-    this.recordingTimer = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - this.recordingStartTime) / 1000);
-      const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
-      const seconds = (elapsed % 60).toString().padStart(2, '0');
-      document.getElementById('voiceTimer').textContent = `${minutes}:${seconds}`;
-    }, 1000);
-  }
-  
-  transcribeAudio(audioBlob) {
-    this.showAIStatus('AI is transcribing your voice...');
-    
-    setTimeout(() => {
-      const transcription = "This is a simulated transcription of your voice recording. In a real implementation, this would use speech-to-text AI to convert your audio into text.";
-      
-      const resultDiv = document.getElementById('transcriptionResult');
-      resultDiv.innerHTML = `
-        <div class="ai-result">
-          <strong>Transcription:</strong><br><br>
-          ${transcription}<br><br>
-          <button class="ai-btn" onclick="app.addTranscriptionToNote()">Add to Note</button>
-        </div>
-      `;
-      resultDiv.style.display = 'block';
-      
-      this.lastTranscription = transcription;
-      this.hideAIStatus();
-      this.showToast('Transcription complete!', 'success');
-    }, 2000);
-  }
-  
-  addTranscriptionToNote() {
-    if (this.lastTranscription) {
-      const editor = document.getElementById('noteEditor');
-      const currentContent = editor.value;
-      editor.value = currentContent + (currentContent ? '\n\n' : '') + this.lastTranscription;
-      
-      document.getElementById('transcriptionResult').style.display = 'none';
-      this.showToast('Transcription added to note!', 'success');
-    }
-  }
-  
-  // Chat functionality
-  sendChatMessage() {
-    const input = document.getElementById('chatInput');
-    const message = input.value.trim();
-    
-    if (!message) return;
-    
-    this.addChatMessage(message, 'user');
-    input.value = '';
-    
-    this.showAIStatus('AI is thinking...');
-    
-    setTimeout(() => {
-      let response;
-      
-      if (message.toLowerCase().includes('help')) {
-        response = "I can help you with:\n• Writing and improving notes\n• Organizing and categorizing\n• Finding information\n• Extracting tasks\n• Translating content\n• Voice transcription\n\nWhat would you like to do?";
-      } else if (message.toLowerCase().includes('note')) {
-        response = `You have ${this.notes.length} notes. The most recent one is "${this.notes[0]?.title || 'Untitled'}". Would you like me to help you create, search, or organize your notes?`;
-      } else if (message.toLowerCase().includes('task')) {
-        response = "I can extract all tasks from your notes. Just click the 'Extract Tasks' button in the Features tab, or I can do it for you now.";
-      } else {
-        response = `I understand you're asking about "${message}". I'm here to help with your notes, writing, and organization. What specific assistance do you need?`;
-      }
-      
-      this.addChatMessage(response, 'ai');
-      this.hideAIStatus();
-    }, 1500);
-  }
-  
-  addChatMessage(message, sender) {
-    const messagesDiv = document.getElementById('chatMessages');
-    const messageHTML = `
-      <div class="ai-chat-message ${sender}">
-        ${sender === 'ai' ? '<div class="ai-chat-avatar ai">🤖</div>' : ''}
-        <div class="ai-chat-bubble ${sender}">${message.replace(/\n/g, '<br>')}</div>
-        ${sender === 'user' ? '<div class="ai-chat-avatar user">👤</div>' : ''}
-      </div>
-    `;
-    
-    messagesDiv.insertAdjacentHTML('beforeend', messageHTML);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    
-    this.chatHistory.push({ message, sender, timestamp: new Date().toISOString() });
-  }
-  
-  // Export functionality
-  exportNote() {
-    if (!this.currentNote) {
-      this.showToast('No note to export', 'error');
-      return;
-    }
-    
-    this.toggleAIPanel(true);
-    this.switchTab('features');
-  }
-  
-  exportAs(format) {
-    if (!this.currentNote) {
-      this.showToast('No note to export', 'error');
-      return;
-    }
-    
-    const { title, content } = this.currentNote;
-    const filename = (title || 'untitled').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    
-    switch (format) {
-      case 'markdown':
-        this.downloadFile(`# ${title}\n\n${content}`, `${filename}.md`, 'text/markdown');
-        break;
-        
-      case 'html':
-        const html = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>${title}</title>
-  <style>body{font-family:sans-serif;max-width:800px;margin:40px auto;padding:20px;}</style>
-</head>
-<body>
-  <h1>${title}</h1>
-  <p>${content.replace(/\n/g, '<br>')}</p>
-</body>
-</html>`;
-        this.downloadFile(html, `${filename}.html`, 'text/html');
-        break;
-        
-      case 'pdf':
-        this.showToast('PDF export would open print dialog in real implementation', 'info');
-        window.print();
-        break;
-        
-      case 'docx':
-        this.showToast('Word export would generate .docx file in real implementation', 'info');
-        break;
-    }
-    
-    this.showToast(`Note exported as ${format.toUpperCase()}!`, 'success');
-  }
-  
-  downloadFile(content, filename, contentType) {
-    const blob = new Blob([content], { type: contentType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-  
-  // Helper functions
-  categorizeContent(text) {
-    const lowerText = text.toLowerCase();
-    const scores = {};
-    
-    for (const [category, keywords] of Object.entries(this.categoryKeywords)) {
-      scores[category] = 0;
-      keywords.forEach(keyword => {
-        const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
-        const matches = lowerText.match(regex);
-        if (matches) {
-          scores[category] += matches.length;
-        }
-      });
-    }
-    
-    let maxScore = 0;
-    let bestCategory = 'general';
-    
-    for (const [category, score] of Object.entries(scores)) {
-      if (score > maxScore) {
-        maxScore = score;
-        bestCategory = category;
-      }
-    }
-    
-    return bestCategory;
-  }
-  
-  analyzeSentiment(text) {
-    const positive = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'love', 'happy', 'success', 'achieve', 'accomplished', 'progress'];
-    const negative = ['bad', 'terrible', 'awful', 'hate', 'fail', 'problem', 'issue', 'difficult', 'hard', 'struggle', 'worry', 'concern'];
-    
-    const lowerText = text.toLowerCase();
-    let positiveScore = 0;
-    let negativeScore = 0;
-    
-    positive.forEach(word => {
-      if (lowerText.includes(word)) positiveScore++;
-    });
-    
-    negative.forEach(word => {
-      if (lowerText.includes(word)) negativeScore++;
-    });
-    
-    if (positiveScore > negativeScore + 2) return 'Very Positive 😄';
-    if (positiveScore > negativeScore) return 'Positive 😊';
-    if (negativeScore > positiveScore) return 'Negative 😟';
-    return 'Neutral 😐';
-  }
-  
-  extractKeywords(text) {
-    const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were'];
-    const words = text.toLowerCase().match(/\b[a-z]+\b/g) || [];
-    const wordCount = {};
-    
-    words.forEach(word => {
-      if (!stopWords.includes(word) && word.length > 3) {
-        wordCount[word] = (wordCount[word] || 0) + 1;
-      }
-    });
-    
-    return Object.entries(wordCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([word]) => word);
-  }
-  
-  highlightSearchTerms(text, query) {
-    const terms = query.split(' ').filter(t => t.length > 2);
-    let highlighted = text;
-    
-    terms.forEach(term => {
-      const regex = new RegExp(`(${term})`, 'gi');
-      highlighted = highlighted.replace(regex, '<mark style="background: var(--warning); color: black;">$1</mark>');
-    });
-    
-    return highlighted;
-  }
-  
-  scheduleAutoCategory() {
-    if (this.autoCatTimeout) {
-      clearTimeout(this.autoCatTimeout);
-    }
-    
-    this.autoCatTimeout = setTimeout(() => {
-      const content = document.getElementById('noteEditor').value;
-      const title = document.getElementById('noteTitle').value;
-      const category = this.categorizeContent(content + ' ' + title);
-      
-      if (category !== (this.currentNote?.category || 'general')) {
-        this.showAIStatus('AI is categorizing...');
-        
-        setTimeout(() => {
-          this.updateCategoryTag(category);
-          if (this.currentNote) {
-            this.currentNote.category = category;
-          }
-          this.hideAIStatus();
-        }, 1000);
-      }
-    }, 2000);
-  }
-  
-  updateCategoryTag(category) {
-    const categoryIcons = {
-      business: '💼',
-      personal: '👤',
-      ideas: '💡',
-      tasks: '✅',
-      learning: '📚',
-      finance: '💰',
-      health: '🏃',
-      meetings: '🤝',
-      projects: '🚀',
-      general: '📝'
-    };
-    
-    const icon = categoryIcons[category] || '📝';
-    document.getElementById('categoryName').textContent = this.getCategoryName(category);
-    document.querySelector('.category-tag .category-icon').textContent = icon;
-  }
-  
-  getCategoryName(category) {
-    return category.charAt(0).toUpperCase() + category.slice(1);
-  }
-  
-  getLanguageName(code) {
-    const languages = {
-      en: 'English',
-      es: 'Spanish',
-      fr: 'French',
-      de: 'German',
-      zh: 'Chinese',
-      ja: 'Japanese',
-      ko: 'Korean',
-      ar: 'Arabic'
-    };
-    return languages[code] || code;
-  }
-  
-  updateCategoryCounts() {
-    const counts = {};
-    this.notes.forEach(note => {
-      counts[note.category] = (counts[note.category] || 0) + 1;
-    });
-    
-    document.getElementById('all-count').textContent = `${this.notes.length} notes`;
-    
-    ['business', 'personal', 'ideas', 'tasks', 'learning', 'finance'].forEach(cat => {
-      const count = counts[cat] || 0;
-      const el = document.getElementById(`${cat}-count`);
-      if (el) el.textContent = `${count} notes`;
+  clearErrors(errorIds) {
+    errorIds.forEach(id => {
+      const errorElement = document.getElementById(id);
+      errorElement.style.display = 'none';
     });
   }
   
-  updateWordCount() {
-    const content = document.getElementById('noteEditor').value;
-    const words = content.trim() ? content.trim().split(/\s+/).length : 0;
-    document.getElementById('wordCount').textContent = `${words} words`;
+  showNotification(message, type = 'info') {
+    // Simple notification - you could enhance this with a proper notification system
+    console.log(`${type.toUpperCase()}: ${message}`);
   }
   
-  searchNotes(query) {
-    if (!query) {
-      this.loadNotesList();
-      return;
-    }
-    
-    const filtered = this.notes.filter(note => 
-      note.title.toLowerCase().includes(query.toLowerCase()) ||
-      note.content.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    const notesListEl = document.querySelector('.notes-list');
-    if (!notesListEl) return;
-    
-    if (filtered.length === 0) {
-      notesListEl.innerHTML = `
-        <div class="empty-state" style="padding: 2rem; text-align: center;">
-          <div class="empty-icon" style="font-size: 2rem; opacity: 0.5;">🔍</div>
-          <p style="color: var(--text-secondary); font-size: 0.875rem;">No notes found</p>
-        </div>
-      `;
-    } else {
-      notesListEl.innerHTML = filtered.map(note => `
-        <div class="note-item ${this.currentNote?.id === note.id ? 'active' : ''}" 
-             onclick="app.loadNote('${note.id}')">
-          <div class="note-item-title">${note.title || 'Untitled'}</div>
-          <div class="note-item-preview">${note.content.substring(0, 100)}...</div>
-          <div class="note-item-date">${this.formatDate(note.updated)}</div>
-        </div>
-      `).join('');
-    }
-  }
-  
-  hasUnsavedChanges() {
-    if (!this.currentNote) return false;
-    
-    const title = document.getElementById('noteTitle').value;
-    const content = document.getElementById('noteEditor').value;
-    
-    return title !== this.currentNote.title || content !== this.currentNote.content;
-  }
-  
-  formatDate(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} min ago`;
-    if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hours ago`;
-    
-    return date.toLocaleDateString();
-  }
-  
-  showAIStatus(message) {
-    const indicator = document.getElementById('autoCatIndicator');
-    document.getElementById('aiStatusText').textContent = message;
-    indicator.classList.add('show');
-  }
-  
-  hideAIStatus() {
-    const indicator = document.getElementById('autoCatIndicator');
-    indicator.classList.remove('show');
-  }
-  
-  showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    
-    toast.className = `toast ${type}`;
-    toastMessage.textContent = message;
-    toast.classList.add('show');
-    
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
-  }
-  
-  toggleAIPanel(open) {
-    const panel = document.getElementById('aiPanel');
-    const mainContent = document.getElementById('mainContent');
-    
-    if (open === undefined) {
-      this.aiPanelOpen = !this.aiPanelOpen;
-    } else {
-      this.aiPanelOpen = open;
-    }
-    
-    if (this.aiPanelOpen) {
-      panel.classList.add('open');
-      mainContent.classList.add('ai-open');
-    } else {
-      panel.classList.remove('open');
-      mainContent.classList.remove('ai-open');
-    }
-  }
-  
-  switchTab(tabName) {
-    this.currentTab = tabName;
-    
-    document.querySelectorAll('.ai-tab').forEach(tab => {
-      tab.classList.remove('active');
-    });
-    
-    document.querySelectorAll('.tab-content').forEach(content => {
-      content.classList.remove('active');
-    });
-    
-    const activeTab = Array.from(document.querySelectorAll('.ai-tab')).find(tab => 
-      tab.textContent.toLowerCase().includes(tabName.toLowerCase())
-    );
-    
-    if (activeTab) {
-      activeTab.classList.add('active');
-    }
-    
-    document.getElementById(`${tabName}-tab`).classList.add('active');
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 
+// Global functions for button clicks
+function showLogin() {
+  document.getElementById('loginForm').classList.remove('hidden');
+  document.getElementById('signupForm').classList.add('hidden');
+}
+
+function showSignup() {
+  document.getElementById('signupForm').classList.remove('hidden');
+  document.getElementById('loginForm').classList.add('hidden');
+}
+
+function logout() {
+  app.logout();
+}
+
+function createNewNote() {
+  app.createNewNote();
+}
+
+function loadNote(noteId) {
+  const note = app.notes.find(n => n.id === noteId);
+  if (note) {
+    document.getElementById('noteInput').value = note.content;
+  }
+}
+
+// Placeholder functions for sidebar buttons
+function searchNotes() { console.log('Search notes...'); }
+function viewFavorites() { console.log('View favorites...'); }
+function filterByCategory(category) { console.log('Filter by:', category); }
+function aiSummarize() { console.log('AI Summarize...'); }
+function aiGenerate() { console.log('AI Generate...'); }
+function aiOrganize() { console.log('AI Organize...'); }
+
 // Initialize app
-const app = new SmartNotesAIPro();
+const app = new SmartNotesAuth();
+
+// Demo users for testing
+if (!localStorage.getItem('smartnotes_users')) {
+  const demoUsers = [
+    {
+      id: '1',
+      name: 'Demo User',
+      email: 'demo@smartnotes.com',
+      password: 'demo123',
+      created: new Date().toISOString()
+    }
+  ];
+  localStorage.setItem('smartnotes_users', JSON.stringify(demoUsers));
+}
 </script>
 
 </body>
