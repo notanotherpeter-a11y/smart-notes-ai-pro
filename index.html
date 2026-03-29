@@ -734,24 +734,43 @@ body {
       </div>
       
       <div class="sidebar-section">
-        <h3 class="sidebar-title">Categories</h3>
-        <button class="sidebar-button" onclick="filterByCategory('work')">
-          💼 Work
+        <h3 class="sidebar-title">Schedule & Time</h3>
+        <button class="sidebar-button" onclick="filterByTimeRange('today')">
+          📅 Today
         </button>
-        <button class="sidebar-button" onclick="filterByCategory('personal')">
-          🏠 Personal
+        <button class="sidebar-button" onclick="filterByTimeRange('yesterday')">
+          🕐 Yesterday
+        </button>
+        <button class="sidebar-button" onclick="filterByTimeRange('week')">
+          📆 This Week
+        </button>
+        <button class="sidebar-button" onclick="filterByTimeRange('month')">
+          🗓️ This Month
+        </button>
+        <button class="sidebar-button" onclick="filterByTimeRange('older')">
+          📜 Older
         </button>
         <button class="sidebar-button" onclick="filterByCategory('voice')">
           🎤 Voice Notes
         </button>
-        <button class="sidebar-button" onclick="filterByCategory('ideas')">
-          💡 Ideas
+      </div>
+      
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Schedule Type</h3>
+        <button class="sidebar-button" onclick="filterBySchedule('morning')">
+          🌅 Morning Notes
         </button>
-        <button class="sidebar-button" onclick="filterByCategory('tasks')">
-          ✅ Tasks
+        <button class="sidebar-button" onclick="filterBySchedule('afternoon')">
+          ☀️ Afternoon Notes
         </button>
-        <button class="sidebar-button" onclick="filterByCategory('archive')">
-          📦 Archive
+        <button class="sidebar-button" onclick="filterBySchedule('evening')">
+          🌆 Evening Notes
+        </button>
+        <button class="sidebar-button" onclick="filterBySchedule('urgent')">
+          🔥 Urgent/Today
+        </button>
+        <button class="sidebar-button" onclick="filterBySchedule('scheduled')">
+          ⏰ Scheduled Tasks
         </button>
       </div>
       
@@ -813,7 +832,7 @@ body {
       ></textarea>
       
       <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
-        <span>Tip: Use keywords like 'meeting', 'idea', 'task' for auto-categorization</span>
+        <span>Tip: Use keywords like 'urgent', 'schedule', 'reminder' for smart time categorization</span>
         <span id="charCount">0 characters</span>
       </div>
       
@@ -1412,7 +1431,7 @@ class SmartNotesComplete {
         content: transcription,
         created: new Date().toISOString(),
         updated: new Date().toISOString(),
-        category: 'voice',
+        category: this.categorizeNote(transcription),
         type: 'voice',
         duration: duration,
         audioSize: audioBlob.size,
@@ -1526,7 +1545,7 @@ class SmartNotesComplete {
           <span>${new Date(note.created).toLocaleDateString()}</span>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
             ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
-            <span>${note.category || 'General'}</span>
+            <span>${this.getCategoryDisplay(note.category, note.created)}</span>
             <button class="favorite-btn" onclick="app.toggleFavorite('${note.id}')" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: ${note.favorite ? '#f59e0b' : '#666'};">
               ${note.favorite ? '⭐' : '☆'}
             </button>
@@ -1563,7 +1582,7 @@ class SmartNotesComplete {
       content,
       created: new Date().toISOString(),
       updated: new Date().toISOString(),
-      category: 'general',
+      category: this.categorizeNote(content),
       type: 'text'
     };
     
@@ -1749,11 +1768,10 @@ class SmartNotesComplete {
     
     await this.delay(3000);
     
-    // Auto-categorize notes
+    // Auto-categorize notes by schedule and content
     this.notes.forEach(note => {
-      if (!note.category || note.category === 'general') {
-        note.category = this.categorizeNote(note.content);
-      }
+      // Re-categorize all notes with new schedule system
+      note.category = this.categorizeNote(note.content);
     });
     
     this.saveUserNotes();
@@ -1825,18 +1843,147 @@ class SmartNotesComplete {
   
   categorizeNote(content) {
     const text = content.toLowerCase();
+    const now = new Date();
+    const hour = now.getHours();
     
-    if (text.includes('meeting') || text.includes('call') || text.includes('team') || text.includes('project')) {
-      return 'work';
-    } else if (text.includes('idea') || text.includes('brainstorm') || text.includes('think') || text.includes('concept')) {
-      return 'ideas';
-    } else if (text.includes('family') || text.includes('friend') || text.includes('personal') || text.includes('reminder')) {
-      return 'personal';
-    } else if (text.includes('todo') || text.includes('task') || text.includes('deadline') || text.includes('schedule')) {
-      return 'tasks';
-    } else {
-      return 'general';
+    // Check for urgent/time-sensitive keywords
+    if (text.includes('urgent') || text.includes('asap') || text.includes('today') || text.includes('now') || text.includes('deadline')) {
+      return 'urgent';
     }
+    
+    // Check for scheduled items
+    if (text.includes('schedule') || text.includes('appointment') || text.includes('meeting') || 
+        text.includes('call at') || text.includes('reminder') || text.includes('todo')) {
+      return 'scheduled';
+    }
+    
+    // Auto-categorize by time of creation
+    if (hour >= 5 && hour < 12) {
+      return 'morning';
+    } else if (hour >= 12 && hour < 17) {
+      return 'afternoon';
+    } else if (hour >= 17 && hour < 22) {
+      return 'evening';
+    } else {
+      return 'late-night';
+    }
+  }
+  
+  // Time-based filtering
+  filterByTimeRange(range) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const weekAgo = new Date(today);
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const monthAgo = new Date(today);
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    
+    let filtered = [];
+    
+    switch(range) {
+      case 'today':
+        filtered = this.notes.filter(note => new Date(note.created) >= today);
+        break;
+      case 'yesterday':
+        filtered = this.notes.filter(note => {
+          const noteDate = new Date(note.created);
+          return noteDate >= yesterday && noteDate < today;
+        });
+        break;
+      case 'week':
+        filtered = this.notes.filter(note => new Date(note.created) >= weekAgo);
+        break;
+      case 'month':
+        filtered = this.notes.filter(note => new Date(note.created) >= monthAgo);
+        break;
+      case 'older':
+        filtered = this.notes.filter(note => new Date(note.created) < monthAgo);
+        break;
+      default:
+        filtered = this.notes;
+    }
+    
+    if (filtered.length === 0) {
+      this.showNotification(`No notes found for ${range}`, 'warning');
+      return;
+    }
+    
+    this.showFilteredNotes(filtered, `${range} notes`);
+  }
+  
+  // Schedule-based filtering  
+  filterBySchedule(schedule) {
+    let filtered = [];
+    
+    switch(schedule) {
+      case 'morning':
+        filtered = this.notes.filter(note => note.category === 'morning');
+        break;
+      case 'afternoon':
+        filtered = this.notes.filter(note => note.category === 'afternoon');
+        break;
+      case 'evening':
+        filtered = this.notes.filter(note => note.category === 'evening');
+        break;
+      case 'urgent':
+        filtered = this.notes.filter(note => note.category === 'urgent');
+        break;
+      case 'scheduled':
+        filtered = this.notes.filter(note => note.category === 'scheduled');
+        break;
+      default:
+        filtered = this.notes;
+    }
+    
+    if (filtered.length === 0) {
+      this.showNotification(`No ${schedule} notes found`, 'warning');
+      return;
+    }
+    
+    this.showFilteredNotes(filtered, `${schedule} notes`);
+  }
+  
+  // Helper function to show filtered notes
+  showFilteredNotes(filtered, title) {
+    const originalNotes = [...this.notes];
+    this.notes = filtered;
+    this.renderNotes();
+    
+    this.showNotification(`Showing ${filtered.length} ${title}`, 'success');
+    
+    setTimeout(() => {
+      const resetButton = document.createElement('button');
+      resetButton.textContent = '← Show All Notes';
+      resetButton.className = 'sidebar-button';
+      resetButton.style.marginBottom = '1rem';
+      resetButton.onclick = () => {
+        this.notes = originalNotes;
+        this.renderNotes();
+        resetButton.remove();
+        this.showNotification('Showing all notes', 'info');
+      };
+      document.getElementById('notesList').prepend(resetButton);
+    }, 100);
+  }
+  
+  // Get user-friendly category display
+  getCategoryDisplay(category, created) {
+    const createdDate = new Date(created);
+    const timeStr = createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    const categoryMap = {
+      'morning': `🌅 Morning ${timeStr}`,
+      'afternoon': `☀️ Afternoon ${timeStr}`,
+      'evening': `🌆 Evening ${timeStr}`,
+      'late-night': `🌙 Late Night ${timeStr}`,
+      'urgent': `🔥 Urgent ${timeStr}`,
+      'scheduled': `⏰ Scheduled ${timeStr}`,
+      'voice': `🎤 Voice ${timeStr}`,
+    };
+    
+    return categoryMap[category] || `📝 ${timeStr}`;
   }
   
   // Toggle favorite status
@@ -2090,6 +2237,14 @@ function viewFavorites() {
 
 function filterByCategory(category) { 
   app.filterByCategory(category);
+}
+
+function filterByTimeRange(range) {
+  app.filterByTimeRange(range);
+}
+
+function filterBySchedule(schedule) {
+  app.filterBySchedule(schedule);
 }
 
 function aiSummarize() { 
