@@ -30,6 +30,54 @@
   font-size: 0.875rem;
   font-weight: 500;
 }
+
+/* Time Tabs */
+.time-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+
+.time-tab {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.time-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.time-tab.active {
+  background: var(--bg-card);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .time-tabs {
+    padding: 1rem 1rem 0;
+    gap: 0.25rem;
+  }
+  
+  .time-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
 </style>
 </head>
 <body>
@@ -157,6 +205,18 @@
             <button class="btn btn-danger" onclick="deleteSelectedNotes()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Delete Selected</button>
           </div>
         </div>
+        
+        <!-- Time Period Tabs -->
+        <div class="time-tabs">
+          <button class="time-tab active" data-period="all" onclick="switchTab('all')">📋 All Notes</button>
+          <button class="time-tab" data-period="today" onclick="switchTab('today')">📅 Today</button>
+          <button class="time-tab" data-period="yesterday" onclick="switchTab('yesterday')">🕐 Yesterday</button>
+          <button class="time-tab" data-period="thisWeek" onclick="switchTab('thisWeek')">📆 This Week</button>
+          <button class="time-tab" data-period="thisMonth" onclick="switchTab('thisMonth')">🗓️ This Month</button>
+          <button class="time-tab" data-period="older" onclick="switchTab('older')">📜 Older</button>
+          <button class="time-tab" data-period="voice" onclick="switchTab('voice')">🎙️ Voice</button>
+        </div>
+        
         <div class="card-content">
           <div id="notesList">
             <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
@@ -175,6 +235,7 @@
 <script src="shared.js"></script>
 <script>
 let selectedNotes = new Set();
+let currentTimeFilter = 'all';
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
@@ -204,70 +265,96 @@ function loadNotes() {
 
 function renderNotes() {
   const container = document.getElementById('notesList');
-  const notes = smartApp.notes || [];
+  let notes = smartApp.notes || [];
+  
+  // Filter notes based on current tab
+  notes = filterNotesByTab(notes, currentTimeFilter);
   
   if (notes.length === 0) {
+    const emptyMessage = currentTimeFilter === 'all' ? 
+      'No notes yet' : 
+      `No notes in ${getTabDisplayName(currentTimeFilter).toLowerCase()}`;
+    
     container.innerHTML = `
       <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
         <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-        <h3 style="margin-bottom: 0.5rem;">No notes yet</h3>
-        <p>Create your first note above or try voice input!</p>
+        <h3 style="margin-bottom: 0.5rem;">${emptyMessage}</h3>
+        <p>${currentTimeFilter === 'all' ? 'Create your first note above or try voice input!' : 'Try selecting a different time period'}</p>
       </div>
     `;
     return;
   }
   
-  // Group notes by time periods
-  const groups = groupNotesByTime(notes);
-  
-  let html = '';
-  
-  // Render each time group
-  Object.entries(groups).forEach(([period, groupNotes]) => {
-    if (groupNotes.length === 0) return;
+  // For 'all' tab, group by time periods
+  if (currentTimeFilter === 'all') {
+    const groups = groupNotesByTime(notes);
+    let html = '';
     
-    const titles = {
-      today: 'Today',
-      yesterday: 'Yesterday', 
-      thisWeek: 'Previous 7 Days',
-      thisMonth: 'Previous 30 Days',
-      older: 'Older'
-    };
+    Object.entries(groups).forEach(([period, groupNotes]) => {
+      if (groupNotes.length === 0) return;
+      
+      const titles = {
+        today: 'Today',
+        yesterday: 'Yesterday', 
+        thisWeek: 'Previous 7 Days',
+        thisMonth: 'Previous 30 Days',
+        older: 'Older'
+      };
+      
+      html += `
+        <div class="timeline-group">
+          <h3 class="timeline-header">
+            ${titles[period]}
+          </h3>
+          <div style="display: grid; gap: 1rem;">
+            ${groupNotes.map(note => renderNoteItem(note)).join('')}
+          </div>
+        </div>
+      `;
+    });
     
-    html += `
+    container.innerHTML = html;
+  } else {
+    // For specific time periods, show flat list with single header
+    const header = getTabDisplayName(currentTimeFilter);
+    let html = `
       <div class="timeline-group">
         <h3 class="timeline-header">
-          ${titles[period]}
+          ${header} (${notes.length})
         </h3>
         <div style="display: grid; gap: 1rem;">
-          ${groupNotes.map(note => `
-            <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
-              <div class="note-header">
-                <div class="note-meta">
-                  <input type="checkbox" 
-                         onchange="toggleNoteSelection('${note.id}')"
-                         ${selectedNotes.has(note.id) ? 'checked' : ''}
-                         style="margin-right: 0.5rem;">
-                  ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
-                  <span class="note-time">${formatNoteTime(note.created)}</span>
-                  <span style="text-transform: capitalize; color: var(--text-muted); font-size: 0.875rem;">${note.category}</span>
-                </div>
-                <div class="note-actions">
-                  <button class="note-action-btn" onclick="editNote('${note.id}')">Edit</button>
-                  <button class="note-action-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
-                </div>
-              </div>
-              <div class="note-content" onclick="expandNote('${note.id}')">
-                ${formatNoteContent(note.content)}
-              </div>
-            </div>
-          `).join('')}
+          ${notes.map(note => renderNoteItem(note)).join('')}
         </div>
       </div>
     `;
-  });
-  
-  container.innerHTML = html;
+    
+    container.innerHTML = html;
+  }
+}
+
+function renderNoteItem(note) {
+  return `
+    <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
+      <div class="note-header">
+        <div class="note-meta">
+          <input type="checkbox" 
+                 onchange="toggleNoteSelection('${note.id}')"
+                 ${selectedNotes.has(note.id) ? 'checked' : ''}
+                 style="margin-right: 0.5rem;">
+          ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+          <span class="note-time">${formatNoteTime(note.created)}</span>
+          <span style="text-transform: capitalize; color: var(--text-muted); font-size: 0.875rem;">${note.category}</span>
+        </div>
+        <div class="note-actions">
+          <button class="note-action-btn" onclick="editNote('${note.id}')">Edit</button>
+          <button class="note-action-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="note-content" onclick="expandNote('${note.id}')">
+        ${formatNoteContent(note.content)}
+      </div>
+    </div>
+  `;
 }
 
 function groupNotesByTime(notes) {
@@ -430,6 +517,77 @@ function updateCharCount() {
   } else {
     counter.style.color = 'var(--text-muted)';
   }
+}
+
+function switchTab(period) {
+  // Update active tab styling
+  document.querySelectorAll('.time-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelector(`[data-period="${period}"]`).classList.add('active');
+  
+  // Update current filter and re-render
+  currentTimeFilter = period;
+  selectedNotes.clear(); // Clear selections when switching tabs
+  renderNotes();
+}
+
+function filterNotesByTab(notes, period) {
+  if (period === 'all') return notes;
+  if (period === 'voice') return notes.filter(note => note.type === 'voice');
+  
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+  
+  return notes.filter(note => {
+    const noteDate = new Date(note.created);
+    const noteDateOnly = new Date(noteDate.getFullYear(), noteDate.getMonth(), noteDate.getDate());
+    
+    switch(period) {
+      case 'today':
+        return noteDateOnly.getTime() === today.getTime();
+      case 'yesterday':
+        return noteDateOnly.getTime() === yesterday.getTime();
+      case 'thisWeek':
+        return noteDate >= weekAgo && noteDateOnly.getTime() < today.getTime();
+      case 'thisMonth':
+        return noteDate >= monthAgo && noteDate < weekAgo;
+      case 'older':
+        return noteDate < monthAgo;
+      default:
+        return true;
+    }
+  });
+}
+
+function getTabDisplayName(period) {
+  const names = {
+    all: 'All Notes',
+    today: 'Today',
+    yesterday: 'Yesterday',
+    thisWeek: 'This Week',
+    thisMonth: 'This Month',
+    older: 'Older Notes',
+    voice: 'Voice Notes'
+  };
+  return names[period] || period;
+}
+
+function addQuickPrefix(prefix) {
+  const input = document.getElementById('noteInput');
+  const currentValue = input.value;
+  
+  if (currentValue.trim() === '') {
+    input.value = prefix;
+  } else {
+    input.value = prefix + currentValue;
+  }
+  
+  input.focus();
+  updateCharCount();
 }
 </script>
 
