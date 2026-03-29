@@ -346,6 +346,15 @@ body {
     justify-content: space-between;
     gap: 0.5rem;
   }
+  
+  .delete-btn {
+    opacity: 1 !important;
+    font-size: 1.3rem !important;
+  }
+  
+  .note-meta {
+    flex-wrap: wrap;
+  }
 }
 
 .voice-button {
@@ -500,6 +509,16 @@ body {
 .note-item:hover {
   border-color: var(--accent);
   transform: translateY(-1px);
+}
+
+.note-item:hover .delete-btn {
+  opacity: 1 !important;
+}
+
+.delete-btn:hover {
+  color: var(--danger) !important;
+  transform: scale(1.2);
+  opacity: 1 !important;
 }
 
 .note-item.voice {
@@ -746,6 +765,16 @@ body {
         </button>
         <button class="sidebar-button" onclick="aiOrganize()">
           📊 Auto-Organize
+        </button>
+      </div>
+      
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">Manage</h3>
+        <button class="sidebar-button" onclick="app.clearAllNotes()" style="color: var(--danger);">
+          🗑️ Clear All Notes
+        </button>
+        <button class="sidebar-button" onclick="app.deleteOldNotes()">
+          🧹 Delete Old Notes
         </button>
       </div>
     </aside>
@@ -1455,11 +1484,14 @@ class SmartNotesComplete {
       <div class="note-item ${note.type === 'voice' ? 'voice' : ''}">
         <div class="note-meta">
           <span>${new Date(note.created).toLocaleDateString()}</span>
-          <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
             ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
             <span>${note.category || 'General'}</span>
             <button class="favorite-btn" onclick="app.toggleFavorite('${note.id}')" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: ${note.favorite ? '#f59e0b' : '#666'};">
               ${note.favorite ? '⭐' : '☆'}
+            </button>
+            <button class="delete-btn" onclick="app.deleteNote('${note.id}')" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--danger); opacity: 0.7; margin-left: auto;" title="Delete note">
+              🗑️
             </button>
           </div>
         </div>
@@ -1774,6 +1806,34 @@ class SmartNotesComplete {
     }
   }
   
+  // Delete note function
+  deleteNote(noteId) {
+    const note = this.notes.find(n => n.id === noteId);
+    if (!note) return;
+    
+    // Show confirmation dialog
+    const notePreview = note.content.substring(0, 50) + (note.content.length > 50 ? '...' : '');
+    const confirmDelete = confirm(`Delete this note?\n\n"${notePreview}"\n\nThis action cannot be undone.`);
+    
+    if (confirmDelete) {
+      // Remove from notes array
+      this.notes = this.notes.filter(n => n.id !== noteId);
+      
+      // Clear note input if this note was being edited
+      const currentNoteContent = document.getElementById('noteInput').value;
+      if (currentNoteContent === note.content) {
+        document.getElementById('noteInput').value = '';
+        updateCharCount();
+      }
+      
+      // Save and re-render
+      this.saveUserNotes();
+      this.renderNotes();
+      
+      this.showNotification('Note deleted successfully', 'success');
+    }
+  }
+  
   // Test microphone access
   async testMicrophone() {
     this.showNotification('Testing microphone access...', 'info');
@@ -1843,6 +1903,49 @@ class SmartNotesComplete {
       }
       
       this.showNotification(message, 'error');
+    }
+  }
+  
+  // Clear all notes
+  clearAllNotes() {
+    if (this.notes.length === 0) {
+      this.showNotification('No notes to delete!', 'warning');
+      return;
+    }
+    
+    const confirmDelete = confirm(`Delete ALL ${this.notes.length} notes?\n\nThis action cannot be undone!`);
+    
+    if (confirmDelete) {
+      this.notes = [];
+      document.getElementById('noteInput').value = '';
+      updateCharCount();
+      this.saveUserNotes();
+      this.renderNotes();
+      
+      this.showNotification('All notes deleted', 'success');
+    }
+  }
+  
+  // Delete notes older than 30 days
+  deleteOldNotes() {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const oldNotes = this.notes.filter(note => new Date(note.created) < thirtyDaysAgo);
+    
+    if (oldNotes.length === 0) {
+      this.showNotification('No notes older than 30 days found', 'info');
+      return;
+    }
+    
+    const confirmDelete = confirm(`Delete ${oldNotes.length} notes older than 30 days?\n\nThis action cannot be undone!`);
+    
+    if (confirmDelete) {
+      this.notes = this.notes.filter(note => new Date(note.created) >= thirtyDaysAgo);
+      this.saveUserNotes();
+      this.renderNotes();
+      
+      this.showNotification(`Deleted ${oldNotes.length} old notes`, 'success');
     }
   }
   
