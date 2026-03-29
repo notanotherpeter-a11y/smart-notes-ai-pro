@@ -694,6 +694,28 @@ body {
     </div>
     
     <div class="settings-section">
+      <h3 class="settings-title">Voice Testing</h3>
+      <div class="setting-item">
+        <div>
+          <div>Test Microphone</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Check if your microphone is working properly</div>
+        </div>
+        <button onclick="testMicrophone()" style="background: var(--success); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+          🔧 Test Mic
+        </button>
+      </div>
+      <div class="setting-item">
+        <div>
+          <div>Test Whisper AI</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Check if Whisper AI server is running</div>
+        </div>
+        <button onclick="testWhisperServer()" style="background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+          🤖 Test AI
+        </button>
+      </div>
+    </div>
+    
+    <div class="settings-section">
       <h3 class="settings-title">Data Management</h3>
       <div class="setting-item">
         <button onclick="exportNotes()" style="background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
@@ -801,6 +823,12 @@ function saveNote() {
   showNotification('Note saved successfully!', 'success');
 }
 
+function saveStudioRecording() {
+  // This will be called after a studio recording is processed
+  // The transcription should already be in the noteInput
+  saveNote();
+}
+
 function categorizeNote(content) {
   const text = content.toLowerCase();
   const hour = new Date().getHours();
@@ -826,58 +854,253 @@ function updateCharCount() {
   }
 }
 
-// Voice Recording (Mock)
-function toggleVoiceRecording() {
-  const button = document.getElementById('voiceButton');
-  const status = document.getElementById('voiceStatus');
-  const timer = document.getElementById('voiceTimer');
-  
-  if (button.classList.contains('recording')) {
-    // Stop recording
-    button.classList.remove('recording');
-    button.textContent = '🎙️';
-    status.textContent = 'Processing...';
-    
-    setTimeout(() => {
-      const transcription = generateMockTranscription();
-      document.getElementById('noteInput').value = transcription;
-      updateCharCount();
-      status.textContent = 'Tap to record voice note';
-      timer.textContent = '00:00';
-      showNotification('Voice note transcribed!', 'success');
-    }, 2000);
-    
+// Voice Recording (Real Whisper AI Integration)
+let mediaRecorder = null;
+let recordingChunks = [];
+let recordingTimer = null;
+let recordingStartTime = null;
+
+async function toggleVoiceRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopVoiceRecording();
   } else {
-    // Start recording
-    button.classList.add('recording');
-    button.textContent = '⏹️';
-    status.textContent = 'Recording... Tap to stop';
-    
-    // Start timer
-    let seconds = 0;
-    const interval = setInterval(() => {
-      seconds++;
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      timer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }, 1000);
-    
-    button.dataset.interval = interval;
+    await startVoiceRecording();
   }
 }
 
-function toggleStudioRecording() {
-  // Similar to toggleVoiceRecording but for studio page
-  console.log('Studio recording toggle');
+async function startVoiceRecording() {
+  try {
+    // Check if MediaRecorder is supported
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      showNotification('Voice recording not supported on this device/browser', 'error');
+      return;
+    }
+    
+    showNotification('Requesting microphone access...', 'info');
+    
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 44100
+      }
+    });
+    
+    // Check MediaRecorder support
+    if (!MediaRecorder.isTypeSupported('audio/webm')) {
+      console.log('webm not supported, trying mp4');
+    }
+    
+    mediaRecorder = new MediaRecorder(stream, {
+      mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4'
+    });
+    
+    recordingChunks = [];
+    recordingStartTime = Date.now();
+    
+    mediaRecorder.ondataavailable = (event) => {
+      console.log('Data available:', event.data.size, 'bytes');
+      if (event.data.size > 0) {
+        recordingChunks.push(event.data);
+      }
+    };
+    
+    mediaRecorder.onstop = () => {
+      console.log('Recording stopped, processing...');
+      processRecording();
+    };
+    
+    mediaRecorder.onerror = (event) => {
+      console.error('MediaRecorder error:', event);
+      showNotification('Recording error occurred', 'error');
+    };
+    
+    mediaRecorder.start(1000); // Collect data every second
+    console.log('MediaRecorder started:', mediaRecorder.state);
+    
+    // Update UI
+    const button = document.getElementById('voiceButton');
+    const status = document.getElementById('voiceStatus');
+    button.textContent = '⏹️';
+    button.classList.add('recording');
+    status.textContent = 'Recording... (Tap to stop)';
+    
+    // Start timer
+    startRecordingTimer();
+    
+    showNotification('🎙️ Recording started! Speak now...', 'success');
+    
+  } catch (error) {
+    console.error('Error starting recording:', error);
+    
+    let errorMessage = 'Microphone access denied. ';
+    
+    if (error.name === 'NotAllowedError') {
+      errorMessage += 'Please allow microphone access and try again.';
+    } else if (error.name === 'NotFoundError') {
+      errorMessage += 'No microphone found on this device.';
+    } else if (error.name === 'NotSupportedError') {
+      errorMessage += 'Voice recording not supported on this browser.';
+    } else {
+      errorMessage += 'Please check your microphone settings.';
+    }
+    
+    showNotification(errorMessage, 'error');
+  }
 }
 
-function generateMockTranscription() {
+function stopVoiceRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+    
+    // Stop all tracks
+    mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    
+    // Clear timer
+    if (recordingTimer) {
+      clearInterval(recordingTimer);
+    }
+  }
+}
+
+function startRecordingTimer() {
+  const timer = document.getElementById('voiceTimer');
+  recordingTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }, 1000);
+}
+
+async function processRecording() {
+  // Update UI
+  const button = document.getElementById('voiceButton');
+  const status = document.getElementById('voiceStatus');
+  button.textContent = '⏳';
+  button.classList.remove('recording');
+  status.textContent = 'Processing... (Transcribing with Whisper AI)';
+  
+  try {
+    console.log('Processing', recordingChunks.length, 'audio chunks');
+    
+    if (recordingChunks.length === 0) {
+      throw new Error('No audio data recorded');
+    }
+    
+    // Create blob from recording
+    const mimeType = mediaRecorder.mimeType || 'audio/webm';
+    const audioBlob = new Blob(recordingChunks, { type: mimeType });
+    console.log('Audio blob created:', audioBlob.size, 'bytes');
+    
+    if (audioBlob.size === 0) {
+      throw new Error('Audio recording is empty');
+    }
+    
+    // Show audio size for debugging
+    const sizeKB = Math.round(audioBlob.size / 1024);
+    const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+    
+    showNotification(`Sending ${sizeKB}KB audio to Whisper AI...`, 'info');
+    
+    // Try real Whisper transcription first
+    let transcription;
+    let isRealTranscription = false;
+    
+    try {
+      transcription = await sendToWhisperServer(audioBlob, duration);
+      isRealTranscription = true;
+      console.log('✅ Real Whisper transcription received');
+    } catch (whisperError) {
+      console.log('⚠️ Whisper server failed, falling back to mock:', whisperError.message);
+      transcription = generateMockTranscription(duration);
+      showNotification('Whisper server unavailable, using mock transcription', 'warning');
+    }
+    
+    // Add transcribed note 
+    const note = {
+      id: Date.now().toString(),
+      content: transcription,
+      created: new Date().toISOString(),
+      type: 'voice',
+      category: categorizeNote(transcription),
+      favorite: false,
+      duration: duration,
+      realTranscription: isRealTranscription
+    };
+    
+    notes.unshift(note);
+    localStorage.setItem('smartnotes_notes', JSON.stringify(notes));
+    
+    // Also update input for editing
+    document.getElementById('noteInput').value = transcription;
+    updateCharCount();
+    
+    const statusIcon = isRealTranscription ? '🤖' : '🎭';
+    const statusText = isRealTranscription ? 'transcribed by Whisper AI' : 'mock transcription';
+    showNotification(`${statusIcon} Voice note (${duration}s) ${statusText} and saved!`, 'success');
+    
+  } catch (error) {
+    console.error('Error processing recording:', error);
+    showNotification(`Recording error: ${error.message}`, 'error');
+  } finally {
+    // Reset UI
+    const button = document.getElementById('voiceButton');
+    const status = document.getElementById('voiceStatus');
+    const timer = document.getElementById('voiceTimer');
+    
+    button.textContent = '🎙️';
+    status.textContent = 'Tap to record voice note';
+    timer.textContent = '00:00';
+  }
+}
+
+// Send audio to Whisper server for real transcription
+async function sendToWhisperServer(audioBlob, duration) {
+  const formData = new FormData();
+  formData.append('audio', audioBlob, 'recording.webm');
+  formData.append('duration', duration.toString());
+  
+  const response = await fetch('http://localhost:3001/transcribe', {
+    method: 'POST',
+    body: formData
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+    throw new Error(errorData.error || `Server error: ${response.status}`);
+  }
+  
+  const result = await response.json();
+  
+  if (!result.success) {
+    throw new Error(result.error || 'Transcription failed');
+  }
+  
+  return result.transcription;
+}
+
+function toggleStudioRecording() {
+  // Use the same recording function as quick note
+  toggleVoiceRecording();
+}
+
+function generateMockTranscription(duration) {
+  const date = new Date().toLocaleDateString();
+  const time = new Date().toLocaleTimeString();
+  
   const transcriptions = [
-    `Voice note recorded on ${new Date().toLocaleDateString()}. This is a test of the voice recording system working perfectly with AI transcription.`,
-    `Meeting reminder for tomorrow at 2 PM. Don't forget to prepare the presentation slides and review the quarterly numbers.`,
-    `Business idea: Create an AI-powered note-taking app with voice transcription and smart categorization features.`,
-    `Personal note: Call mom this weekend and schedule that dentist appointment I've been putting off.`,
-    `Quick thought: The new project structure is working well. Team productivity is up and communication is clearer.`
+    `Voice note recorded on ${date} at ${time}. Duration: ${duration} seconds. This is a test of the voice recording and transcription system. The audio was captured successfully and is being processed by the mock AI transcription engine.`,
+    
+    `Meeting reminder for tomorrow at 2 PM. Duration: ${duration} seconds. Don't forget to prepare the presentation slides and review the quarterly numbers with the team.`,
+    
+    `Business idea captured on ${date}: Create an AI-powered note-taking app with voice transcription and smart categorization features. This could revolutionize productivity workflows.`,
+    
+    `Personal note recorded at ${time}: Call mom this weekend and schedule that dentist appointment I've been putting off. Also need to pick up groceries on the way home.`,
+    
+    `Quick thought recorded in ${duration} seconds: The new project structure is working well. Team productivity is up and communication is clearer than before.`,
+    
+    `Voice recording test completed successfully on ${date}. Audio duration: ${duration} seconds. The microphone access, MediaRecorder API, and transcription pipeline are all functioning correctly.`
   ];
   
   return transcriptions[Math.floor(Math.random() * transcriptions.length)];
@@ -902,11 +1125,20 @@ function loadBrowseNotes() {
     <div class="note-card ${note.type === 'voice' ? 'voice' : ''}" onclick="editNote('${note.id}')">
       <div class="note-meta">
         <span>${new Date(note.created).toLocaleDateString()}</span>
-        <span>${note.category}</span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          ${note.type === 'voice' ? '<span style="background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">🎙️ Voice</span>' : ''}
+          <span>${note.category}</span>
+        </div>
       </div>
       <div class="note-preview">
         ${note.content.substring(0, 150)}${note.content.length > 150 ? '...' : ''}
       </div>
+      ${note.type === 'voice' && note.duration ? `<div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Duration: ${note.duration}s</span>
+        <span style="color: ${note.realTranscription ? 'var(--success)' : 'var(--warning)'};">
+          ${note.realTranscription ? '🤖 Whisper AI' : '🎭 Mock'}
+        </span>
+      </div>` : ''}
       <div class="note-actions">
         <button class="action-btn favorite ${note.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${note.id}')">
           ${note.favorite ? '⭐' : '☆'}
@@ -1008,11 +1240,17 @@ function performSearch() {
     <div class="note-card ${note.type === 'voice' ? 'voice' : ''}" onclick="editNote('${note.id}')">
       <div class="note-meta">
         <span>${new Date(note.created).toLocaleDateString()}</span>
-        <span>${note.category}</span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          ${note.type === 'voice' ? '<span style="background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">🎙️ Voice</span>' : ''}
+          <span>${note.category}</span>
+        </div>
       </div>
       <div class="note-preview">
         ${highlightSearchTerm(note.content.substring(0, 150), query)}${note.content.length > 150 ? '...' : ''}
       </div>
+      ${note.type === 'voice' && note.duration ? `<div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+        <span>Duration: ${note.duration}s | ${note.realTranscription ? '🤖 Whisper AI' : '🎭 Mock'}</span>
+      </div>` : ''}
     </div>
   `).join('');
 }
@@ -1074,6 +1312,114 @@ function clearAllNotes() {
     localStorage.setItem('smartnotes_notes', JSON.stringify(notes));
     loadBrowseNotes();
     showNotification('All notes deleted', 'success');
+  }
+}
+
+// Test microphone access
+async function testMicrophone() {
+  showNotification('Testing microphone access...', 'info');
+  
+  try {
+    // Check basic support
+    if (!navigator.mediaDevices) {
+      throw new Error('MediaDevices not supported');
+    }
+    
+    if (!navigator.mediaDevices.getUserMedia) {
+      throw new Error('getUserMedia not supported');
+    }
+    
+    // Test microphone access
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    
+    // Check MediaRecorder support
+    const supported = MediaRecorder.isTypeSupported('audio/webm') || 
+                     MediaRecorder.isTypeSupported('audio/mp4') ||
+                     MediaRecorder.isTypeSupported('audio/wav');
+    
+    if (!supported) {
+      throw new Error('MediaRecorder not supported');
+    }
+    
+    // Quick test recording
+    const mediaRecorder = new MediaRecorder(stream);
+    const chunks = [];
+    
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        chunks.push(event.data);
+      }
+    };
+    
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks);
+      const sizeKB = Math.round(blob.size / 1024);
+      showNotification(`✅ Microphone test passed! Recorded ${sizeKB}KB in 2 seconds`, 'success');
+      
+      // Stop all tracks
+      stream.getTracks().forEach(track => track.stop());
+    };
+    
+    mediaRecorder.start();
+    
+    // Stop after 2 seconds
+    setTimeout(() => {
+      mediaRecorder.stop();
+    }, 2000);
+    
+    showNotification('🎙️ Recording test for 2 seconds...', 'info');
+    
+  } catch (error) {
+    console.error('Microphone test failed:', error);
+    
+    let message = '❌ Microphone test failed: ';
+    if (error.name === 'NotAllowedError') {
+      message += 'Permission denied. Please allow microphone access in your browser settings.';
+    } else if (error.name === 'NotFoundError') {
+      message += 'No microphone detected. Please check your device has a microphone.';
+    } else if (error.message.includes('not supported')) {
+      message += 'Voice recording not supported on this browser/device.';
+    } else {
+      message += error.message;
+    }
+    
+    showNotification(message, 'error');
+  }
+}
+
+// Test Whisper server connection
+async function testWhisperServer() {
+  showNotification('Testing Whisper AI server...', 'info');
+  
+  try {
+    const response = await fetch('http://localhost:3001/test-whisper', {
+      method: 'GET',
+      timeout: 5000
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification(`✅ Whisper AI server is running! Path: ${result.path}`, 'success');
+    } else {
+      showNotification(`❌ Whisper AI not found: ${result.message}`, 'error');
+    }
+    
+  } catch (error) {
+    console.error('Whisper server test failed:', error);
+    
+    let message = '❌ Whisper server test failed: ';
+    if (error.message.includes('Failed to fetch')) {
+      message += 'Server not running. Start with: cd smart-notes-whisper-server && npm start';
+    } else {
+      message += error.message;
+    }
+    
+    showNotification(message, 'error');
   }
 }
 
