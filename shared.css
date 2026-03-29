@@ -397,7 +397,7 @@ body {
   .mobile-menu-btn {
     position: fixed;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     z-index: 1001;
     background: var(--bg-card);
     border: 1px solid var(--border);
