@@ -562,6 +562,11 @@ body {
   
   .sidebar {
     width: 100%;
+    order: 2; /* Move sidebar below notes on mobile */
+  }
+  
+  .notes-area {
+    order: 1; /* Prioritize notes area on mobile */
   }
   
   .auth-card {
@@ -571,6 +576,26 @@ body {
 
   .admin-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .test-controls {
+    display: none !important;
+  }
+  
+  .note-input {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    min-height: 120px;
+  }
+}
+
+/* Desktop only - show test controls, hide quick actions */
+@media (min-width: 769px) {
+  .test-controls {
+    display: flex !important;
+  }
+  
+  .quick-actions {
+    display: none !important;
   }
 }
 
@@ -801,43 +826,69 @@ body {
     <!-- Notes Area -->
     <section class="notes-area">
       <div class="notes-header">
-        <h2 class="notes-title">My Notes</h2>
+        <h2 class="notes-title">Quick Note</h2>
       </div>
       
+      <!-- MOVED TO TOP: Input Area for Instant Access -->
+      <textarea 
+        id="noteInput" 
+        class="note-input" 
+        placeholder="Type your note here or tap 🎙️ for voice..."
+        oninput="updateCharCount()"
+        style="margin-bottom: 1rem;"
+      ></textarea>
+      
       <!-- Voice Controls & Save Button -->
-      <div class="voice-controls">
+      <div class="voice-controls" style="margin-bottom: 1.5rem;">
         <button class="voice-button" id="voiceButton" onclick="toggleVoiceRecording()">
           🎙️
         </button>
         <div>
-          <div class="voice-status" id="voiceStatus">Click to start voice recording</div>
+          <div class="voice-status" id="voiceStatus">Tap to record voice note</div>
           <div style="font-size: 0.75rem; color: var(--text-muted);" id="voiceTimer">00:00</div>
         </div>
-        <button class="sidebar-button" onclick="app.testMicrophone()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
-          🔧 Test Mic
-        </button>
-        <button class="sidebar-button" onclick="app.testWhisperServer()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
-          🤖 Test AI
-        </button>
         <button class="sidebar-button" onclick="app.saveCurrentNote()" style="margin-left: auto; width: auto; padding: 0.75rem 1.5rem;">
           💾 Save Note
         </button>
       </div>
       
-      <textarea 
-        id="noteInput" 
-        class="note-input" 
-        placeholder="Start typing your note... Click 💾 Save Note button when finished, or use voice recording above"
-        oninput="updateCharCount()"
-      ></textarea>
+      <!-- Quick Action Buttons for Mobile -->
+      <div class="quick-actions" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+        <button onclick="app.insertQuickText('TODO: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+          ✅ Todo
+        </button>
+        <button onclick="app.insertQuickText('URGENT: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+          🔥 Urgent
+        </button>
+        <button onclick="app.insertQuickText('MEETING: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+          📅 Meeting
+        </button>
+        <button onclick="app.insertQuickText('IDEA: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+          💡 Idea
+        </button>
+      </div>
       
-      <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
-        <span>Tip: Use keywords like 'urgent', 'schedule', 'reminder' for smart time categorization</span>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; font-size: 0.75rem; color: var(--text-muted);">
+        <span>💡 Keywords: 'urgent', 'schedule', 'reminder'</span>
         <span id="charCount">0 characters</span>
       </div>
       
-      <div class="notes-list" id="notesList">
-        <!-- Notes will be dynamically loaded here -->
+      <!-- Test Buttons (Hidden on Mobile) -->
+      <div class="test-controls" style="margin-bottom: 2rem; display: none;">
+        <button class="sidebar-button" onclick="app.testMicrophone()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
+          🔧 Test Mic
+        </button>
+        <button class="sidebar-button" onclick="app.testWhisperServer()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem;">
+          🤖 Test AI
+        </button>
+      </div>
+      
+      <!-- Notes List -->
+      <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
+        <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Recent Notes</h3>
+        <div class="notes-list" id="notesList">
+          <!-- Notes will be dynamically loaded here -->
+        </div>
       </div>
     </section>
   </main>
@@ -1159,6 +1210,16 @@ class SmartNotesComplete {
     // Update user info in header
     document.getElementById('userAvatar').textContent = this.currentUser.avatar;
     document.getElementById('userName').textContent = this.currentUser.name;
+    
+    // Auto-focus input on mobile for instant note-taking
+    setTimeout(() => {
+      if (window.innerWidth <= 768) {
+        const noteInput = document.getElementById('noteInput');
+        if (noteInput) {
+          noteInput.focus();
+        }
+      }
+    }, 500);
   }
   
   showAdmin() {
@@ -1597,6 +1658,26 @@ class SmartNotesComplete {
   createNewNote() {
     document.getElementById('noteInput').value = '';
     document.getElementById('noteInput').focus();
+  }
+  
+  // Insert quick text templates
+  insertQuickText(text) {
+    const noteInput = document.getElementById('noteInput');
+    const currentText = noteInput.value;
+    
+    // Add quick text at beginning or after existing content
+    if (currentText.trim() === '') {
+      noteInput.value = text;
+    } else {
+      noteInput.value = currentText + '\n\n' + text;
+    }
+    
+    // Focus and move cursor to end
+    noteInput.focus();
+    noteInput.setSelectionRange(noteInput.value.length, noteInput.value.length);
+    
+    // Update character count
+    updateCharCount();
   }
   
   showError(elementId, message) {
