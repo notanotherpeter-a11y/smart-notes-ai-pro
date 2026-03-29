@@ -148,58 +148,6 @@
         </div>
       </div>
       
-      <!-- Filters -->
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">🔍 Filters</h2>
-          <button class="btn btn-secondary" onclick="clearFilters()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Clear All</button>
-        </div>
-        <div class="card-content">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            
-            <!-- Type Filter -->
-            <div>
-              <label class="form-label" style="font-size: 0.875rem;">Type</label>
-              <select class="form-input" id="typeFilter" onchange="applyFilters()" style="padding: 0.5rem;">
-                <option value="all">All Types</option>
-                <option value="text">Text Notes</option>
-                <option value="voice">Voice Notes</option>
-              </select>
-            </div>
-            
-            <!-- Category Filter -->
-            <div>
-              <label class="form-label" style="font-size: 0.875rem;">Category</label>
-              <select class="form-input" id="categoryFilter" onchange="applyFilters()" style="padding: 0.5rem;">
-                <option value="all">All Categories</option>
-              </select>
-            </div>
-            
-            <!-- Date Filter -->
-            <div>
-              <label class="form-label" style="font-size: 0.875rem;">Date Range</label>
-              <select class="form-input" id="dateFilter" onchange="applyFilters()" style="padding: 0.5rem;">
-                <option value="all">All Time</option>
-                <option value="today">Today</option>
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-              </select>
-            </div>
-            
-            <!-- Sort Order -->
-            <div>
-              <label class="form-label" style="font-size: 0.875rem;">Sort By</label>
-              <select class="form-input" id="sortFilter" onchange="applyFilters()" style="padding: 0.5rem;">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="updated">Recently Updated</option>
-              </select>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-      
       <!-- Notes List -->
       <div class="card">
         <div class="card-header">
@@ -226,14 +174,12 @@
 
 <script src="shared.js"></script>
 <script>
-let filteredNotes = [];
 let selectedNotes = new Set();
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
   if (smartApp && smartApp.currentUser) {
     loadNotes();
-    populateFilters();
     
     // Show admin nav if user is admin
     if (smartApp.isAdmin) {
@@ -253,51 +199,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadNotes() {
   if (!smartApp) return;
-  
-  filteredNotes = [...smartApp.notes];
   renderNotes();
-}
-
-function populateFilters() {
-  if (!smartApp) return;
-  
-  // Populate category filter
-  const categoryFilter = document.getElementById('categoryFilter');
-  const categories = [...new Set(smartApp.notes.map(note => note.category))];
-  
-  // Clear existing options except "All Categories"
-  categoryFilter.innerHTML = '<option value="all">All Categories</option>';
-  
-  categories.forEach(category => {
-    const option = document.createElement('option');
-    option.value = category;
-    option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
-    categoryFilter.appendChild(option);
-  });
 }
 
 function renderNotes() {
   const container = document.getElementById('notesList');
+  const notes = smartApp.notes || [];
   
-  if (filteredNotes.length === 0) {
+  if (notes.length === 0) {
     container.innerHTML = `
       <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
         <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-        <h3 style="margin-bottom: 0.5rem;">No notes found</h3>
-        <p>Try adjusting your filters or create a new note!</p>
+        <h3 style="margin-bottom: 0.5rem;">No notes yet</h3>
+        <p>Create your first note above or try voice input!</p>
       </div>
     `;
     return;
   }
   
-  // Group filtered notes by time periods
-  const groups = groupFilteredNotesByTime(filteredNotes);
+  // Group notes by time periods
+  const groups = groupNotesByTime(notes);
   
   let html = '';
   
   // Render each time group
-  Object.entries(groups).forEach(([period, notes]) => {
-    if (notes.length === 0) return;
+  Object.entries(groups).forEach(([period, groupNotes]) => {
+    if (groupNotes.length === 0) return;
     
     const titles = {
       today: 'Today',
@@ -313,7 +240,7 @@ function renderNotes() {
           ${titles[period]}
         </h3>
         <div style="display: grid; gap: 1rem;">
-          ${notes.map(note => `
+          ${groupNotes.map(note => `
             <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
               <div class="note-header">
                 <div class="note-meta">
@@ -343,7 +270,7 @@ function renderNotes() {
   container.innerHTML = html;
 }
 
-function groupFilteredNotesByTime(notes) {
+function groupNotesByTime(notes) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
@@ -405,9 +332,8 @@ function addNote() {
     }
     updateCharCount();
     
-    // Reload notes and filters
+    // Reload notes
     loadNotes();
-    populateFilters();
   }
 }
 
@@ -419,7 +345,6 @@ function editNote(noteId) {
   if (newContent !== null && newContent.trim() !== note.content) {
     if (smartApp.updateNote(noteId, newContent.trim())) {
       loadNotes();
-      populateFilters();
     }
   }
 }
@@ -429,7 +354,6 @@ function deleteNote(noteId) {
     if (smartApp.deleteNote(noteId)) {
       selectedNotes.delete(noteId);
       loadNotes();
-      populateFilters();
     }
   }
 }
@@ -474,64 +398,9 @@ function deleteSelectedNotes() {
     
     selectedNotes.clear();
     loadNotes();
-    populateFilters();
     
     smartApp.showNotification(`${deletedCount} notes deleted`, 'success');
   }
-}
-
-function applyFilters() {
-  if (!smartApp) return;
-  
-  const typeFilter = document.getElementById('typeFilter').value;
-  const categoryFilter = document.getElementById('categoryFilter').value;
-  const dateFilter = document.getElementById('dateFilter').value;
-  const sortFilter = document.getElementById('sortFilter').value;
-  
-  // Start with all notes
-  let filtered = [...smartApp.notes];
-  
-  // Apply type filter
-  if (typeFilter !== 'all') {
-    filtered = filtered.filter(note => note.type === typeFilter);
-  }
-  
-  // Apply category filter
-  if (categoryFilter !== 'all') {
-    filtered = filtered.filter(note => note.category === categoryFilter);
-  }
-  
-  // Apply date filter
-  if (dateFilter !== 'all') {
-    filtered = smartApp.filterNotesByDate(dateFilter).filter(note => 
-      filtered.includes(note)
-    );
-  }
-  
-  // Apply sort
-  switch (sortFilter) {
-    case 'oldest':
-      filtered.sort((a, b) => new Date(a.created) - new Date(b.created));
-      break;
-    case 'updated':
-      filtered.sort((a, b) => new Date(b.updated) - new Date(a.updated));
-      break;
-    default: // newest
-      filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
-  }
-  
-  filteredNotes = filtered;
-  selectedNotes.clear();
-  renderNotes();
-}
-
-function clearFilters() {
-  document.getElementById('typeFilter').value = 'all';
-  document.getElementById('categoryFilter').value = 'all';
-  document.getElementById('dateFilter').value = 'all';
-  document.getElementById('sortFilter').value = 'newest';
-  
-  applyFilters();
 }
 
 function expandNote(noteId) {
