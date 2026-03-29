@@ -189,15 +189,68 @@ class SmartNotesCore {
     }
   }
   
+  // Grammar auto-correction function
+  autoCorrectGrammar(text) {
+    let corrected = text;
+    
+    // Basic grammar corrections
+    const corrections = [
+      // Capitalization fixes
+      [/^([a-z])/, (match, p1) => p1.toUpperCase()], // Capitalize first letter
+      [/\.\s+([a-z])/g, (match, p1) => '. ' + p1.toUpperCase()], // Capitalize after periods
+      [/\!\s+([a-z])/g, (match, p1) => '! ' + p1.toUpperCase()], // Capitalize after exclamation
+      [/\?\s+([a-z])/g, (match, p1) => '? ' + p1.toUpperCase()], // Capitalize after question
+      
+      // Common word corrections
+      [/\bi\b/g, 'I'], // Lowercase 'i' to 'I'
+      [/\bim\b/gi, "I'm"], // 'im' to "I'm"
+      [/\bive\b/gi, "I've"], // 'ive' to "I've"
+      [/\bill\b/gi, "I'll"], // 'ill' to "I'll"
+      [/\bwont\b/gi, "won't"], // 'wont' to "won't"
+      [/\bcant\b/gi, "can't"], // 'cant' to "can't"
+      [/\bdont\b/gi, "don't"], // 'dont' to "don't"
+      [/\bisnt\b/gi, "isn't"], // 'isnt' to "isn't"
+      [/\barent\b/gi, "aren't"], // 'arent' to "aren't"
+      [/\bwasnt\b/gi, "wasn't"], // 'wasnt' to "wasn't"
+      [/\bwerent\b/gi, "weren't"], // 'werent' to "weren't"
+      [/\bhasnt\b/gi, "hasn't"], // 'hasnt' to "hasn't"
+      [/\bhavent\b/gi, "haven't"], // 'havent' to "haven't"
+      [/\bhadnt\b/gi, "hadn't"], // 'hadnt' to "hadn't"
+      [/\bwouldnt\b/gi, "wouldn't"], // 'wouldnt' to "wouldn't"
+      [/\bcouldnt\b/gi, "couldn't"], // 'couldnt' to "couldn't"
+      [/\bshouldnt\b/gi, "shouldn't"], // 'shouldnt' to "shouldn't"
+      
+      // Multiple spaces to single space
+      [/\s+/g, ' '],
+      
+      // Remove space before punctuation
+      [/\s+([.!?,:;])/g, '$1'],
+      
+      // Add space after punctuation if missing
+      [/([.!?])([A-Za-z])/g, '$1 $2'],
+      [/([,:;])([A-Za-z])/g, '$1 $2'],
+    ];
+    
+    // Apply all corrections
+    corrections.forEach(([pattern, replacement]) => {
+      corrected = corrected.replace(pattern, replacement);
+    });
+    
+    return corrected.trim();
+  }
+  
   addNote(content, type = 'text') {
     if (!this.currentUser) return false;
     
+    // Auto-correct grammar for both voice and text notes
+    const correctedContent = this.autoCorrectGrammar(content);
+    
     const note = {
       id: Date.now().toString(),
-      content: content.trim(),
+      content: correctedContent,
       created: new Date().toISOString(),
       updated: new Date().toISOString(),
-      category: this.categorizeNote(content),
+      category: this.categorizeNote(correctedContent),
       type: type
     };
     
@@ -212,12 +265,15 @@ class SmartNotesCore {
     const noteIndex = this.notes.findIndex(note => note.id === noteId);
     
     if (noteIndex !== -1) {
-      this.notes[noteIndex].content = content.trim();
+      // Auto-correct grammar when updating notes
+      const correctedContent = this.autoCorrectGrammar(content);
+      
+      this.notes[noteIndex].content = correctedContent;
       this.notes[noteIndex].updated = new Date().toISOString();
-      this.notes[noteIndex].category = this.categorizeNote(content);
+      this.notes[noteIndex].category = this.categorizeNote(correctedContent);
       
       this.saveUserNotes();
-      this.showNotification('Note updated!', 'success');
+      this.showNotification('Note updated with grammar correction!', 'success');
       return true;
     }
     
@@ -281,27 +337,31 @@ class SmartNotesCore {
     const hour = new Date().getHours();
     const text = content.toLowerCase();
     
-    // Priority-based categorization
+    // Time-based primary categorization
+    let timeCategory;
+    if (hour < 12) timeCategory = 'morning';
+    else if (hour < 17) timeCategory = 'afternoon';
+    else timeCategory = 'evening';
+    
+    // Add keyword suffix for special notes
     if (text.includes('urgent') || text.includes('asap') || text.includes('important')) {
-      return 'urgent';
+      return timeCategory + '-urgent';
     }
     
     if (text.includes('todo') || text.includes('task') || text.includes('remind')) {
-      return 'scheduled';
+      return timeCategory + '-task';
     }
     
     if (text.includes('meeting') || text.includes('call') || text.includes('appointment')) {
-      return 'meeting';
+      return timeCategory + '-meeting';
     }
     
     if (text.includes('idea') || text.includes('thought') || text.includes('brainstorm')) {
-      return 'idea';
+      return timeCategory + '-idea';
     }
     
-    // Time-based fallback
-    if (hour < 12) return 'morning';
-    if (hour < 17) return 'afternoon';
-    return 'evening';
+    // Pure time-based category
+    return timeCategory;
   }
   
   // Statistics
@@ -523,7 +583,17 @@ class VoiceAI {
       }
       
       if (finalTranscript) {
-        this.currentTranscript = (this.currentTranscript || '') + finalTranscript;
+        // Apply grammar correction to voice input
+        const correctedFinalTranscript = this.app.autoCorrectGrammar(finalTranscript);
+        this.currentTranscript = (this.currentTranscript || '') + correctedFinalTranscript;
+        
+        // Update input field with corrected text
+        if (noteInput) {
+          noteInput.value = (this.app.autoCorrectGrammar(this.currentTranscript) || '') + interimTranscript;
+          if (typeof updateCharCount === 'function') {
+            updateCharCount();
+          }
+        }
       }
     };
     

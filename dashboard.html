@@ -299,11 +299,19 @@ function loadCategoriesBreakdown(categories) {
 }
 
 function getCategoryIcon(category) {
+  // Handle time-based categories with suffixes
+  if (category.includes('morning')) return '🌅';
+  if (category.includes('afternoon')) return '☀️';
+  if (category.includes('evening')) return '🌙';
+  
+  // Handle suffix types
+  if (category.includes('urgent')) return '🚨';
+  if (category.includes('task')) return '📅';
+  if (category.includes('meeting')) return '🤝';
+  if (category.includes('idea')) return '💡';
+  
+  // Legacy support and fallback
   const icons = {
-    urgent: '🚨',
-    scheduled: '📅',
-    meeting: '🤝',
-    idea: '💡',
     morning: '🌅',
     afternoon: '☀️',
     evening: '🌙',

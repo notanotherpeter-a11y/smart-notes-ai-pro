@@ -105,13 +105,13 @@
             <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
                 <span style="font-size: 1.5rem;">🚨</span>
-                <strong style="color: var(--text-primary);">Urgent Category</strong>
+                <strong style="color: var(--text-primary);">Urgent Suffix</strong>
               </div>
               <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Notes containing keywords: <code>urgent</code>, <code>asap</code>, <code>important</code>
+                Keywords <code>urgent</code>, <code>asap</code>, <code>important</code> add "-urgent" suffix
               </p>
               <div style="display: flex; gap: 0.5rem;">
-                <span class="note-type" style="background: var(--danger);">High Priority</span>
+                <span class="note-type" style="background: var(--danger);">Time-urgent</span>
                 <span style="color: var(--text-muted); font-size: 0.875rem;" id="urgentCount">0 notes</span>
               </div>
             </div>
@@ -119,13 +119,13 @@
             <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
                 <span style="font-size: 1.5rem;">📅</span>
-                <strong style="color: var(--text-primary);">Scheduled Category</strong>
+                <strong style="color: var(--text-primary);">Task Suffix</strong>
               </div>
               <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Notes containing keywords: <code>todo</code>, <code>task</code>, <code>remind</code>
+                Keywords <code>todo</code>, <code>task</code>, <code>remind</code> add "-task" suffix
               </p>
               <div style="display: flex; gap: 0.5rem;">
-                <span class="note-type" style="background: var(--info);">Scheduled</span>
+                <span class="note-type" style="background: var(--info);">Time-task</span>
                 <span style="color: var(--text-muted); font-size: 0.875rem;" id="scheduledCount">0 notes</span>
               </div>
             </div>
@@ -133,13 +133,13 @@
             <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
                 <span style="font-size: 1.5rem;">🤝</span>
-                <strong style="color: var(--text-primary);">Meeting Category</strong>
+                <strong style="color: var(--text-primary);">Meeting Suffix</strong>
               </div>
               <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Notes containing keywords: <code>meeting</code>, <code>call</code>, <code>appointment</code>
+                Keywords <code>meeting</code>, <code>call</code>, <code>appointment</code> add "-meeting" suffix
               </p>
               <div style="display: flex; gap: 0.5rem;">
-                <span class="note-type" style="background: var(--warning);">Meeting</span>
+                <span class="note-type" style="background: var(--warning);">Time-meeting</span>
                 <span style="color: var(--text-muted); font-size: 0.875rem;" id="meetingCount">0 notes</span>
               </div>
             </div>
@@ -147,13 +147,13 @@
             <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
                 <span style="font-size: 1.5rem;">💡</span>
-                <strong style="color: var(--text-primary);">Idea Category</strong>
+                <strong style="color: var(--text-primary);">Idea Suffix</strong>
               </div>
               <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Notes containing keywords: <code>idea</code>, <code>thought</code>, <code>brainstorm</code>
+                Keywords <code>idea</code>, <code>thought</code>, <code>brainstorm</code> add "-idea" suffix
               </p>
               <div style="display: flex; gap: 0.5rem;">
-                <span class="note-type" style="background: var(--success);">Idea</span>
+                <span class="note-type" style="background: var(--success);">Time-idea</span>
                 <span style="color: var(--text-muted); font-size: 0.875rem;" id="ideaCount">0 notes</span>
               </div>
             </div>
@@ -161,16 +161,19 @@
             <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
                 <span style="font-size: 1.5rem;">⏰</span>
-                <strong style="color: var(--text-primary);">Time-Based Categories</strong>
+                <strong style="color: var(--text-primary);">Time-Based Categories (Primary)</strong>
               </div>
               <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
-                Notes are automatically categorized by creation time if no keywords match
+                All notes are primarily categorized by creation time, with optional keyword suffixes
               </p>
               <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <span class="note-type" style="background: var(--accent);">Morning (6-12)</span>
-                <span class="note-type" style="background: var(--accent);">Afternoon (12-17)</span>
-                <span class="note-type" style="background: var(--accent);">Evening (17-24)</span>
+                <span class="note-type" style="background: var(--accent);">Morning (0-12h)</span>
+                <span class="note-type" style="background: var(--accent);">Afternoon (12-17h)</span>
+                <span class="note-type" style="background: var(--accent);">Evening (17-24h)</span>
               </div>
+              <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">
+                Examples: "morning", "afternoon-urgent", "evening-task", "morning-meeting"
+              </p>
             </div>
             
           </div>
@@ -485,11 +488,19 @@ function renderCategoryBrowser() {
 }
 
 function getCategoryIcon(category) {
+  // Handle time-based categories with suffixes
+  if (category.includes('morning')) return '🌅';
+  if (category.includes('afternoon')) return '☀️';
+  if (category.includes('evening')) return '🌙';
+  
+  // Handle suffix types
+  if (category.includes('urgent')) return '🚨';
+  if (category.includes('task')) return '📅';
+  if (category.includes('meeting')) return '🤝';
+  if (category.includes('idea')) return '💡';
+  
+  // Legacy support and fallback
   const icons = {
-    urgent: '🚨',
-    scheduled: '📅',
-    meeting: '🤝',
-    idea: '💡',
     morning: '🌅',
     afternoon: '☀️',
     evening: '🌙',
