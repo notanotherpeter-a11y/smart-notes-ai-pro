@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Voice AI Edition</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item active">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@email.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Notes</h1>
+      <p class="content-subtitle">Create and manage your notes</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- Note Creation -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">✨ Create New Note</h2>
+        </div>
+        <div class="card-content">
+          
+          <!-- Voice Controls -->
+          <div class="voice-controls">
+            <button class="voice-button" id="voiceButton" onclick="toggleVoice()">🎙️</button>
+            <div>
+              <div class="voice-status" id="voiceStatus">Click to start voice input</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Powered by Web Speech API</div>
+            </div>
+          </div>
+          
+          <!-- Text Input -->
+          <div class="form-group">
+            <textarea 
+              class="form-input form-textarea" 
+              id="noteInput" 
+              placeholder="Type your note here or use voice input above..."
+              maxlength="2000"
+              oninput="updateCharCount()"
+              style="min-height: 120px;"
+            ></textarea>
+          </div>
+          
+          <!-- Input Actions -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="addQuickPrefix('📋 TODO: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Todo</button>
+              <button class="btn btn-secondary" onclick="addQuickPrefix('🚨 URGENT: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Urgent</button>
+              <button class="btn btn-secondary" onclick="addQuickPrefix('🤝 MEETING: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Meeting</button>
+              <button class="btn btn-secondary" onclick="addQuickPrefix('💡 IDEA: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Idea</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span style="color: var(--text-muted); font-size: 0.75rem;" id="charCount">0 / 2000</span>
+              <button class="btn btn-primary" onclick="addNote()">Add Note</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🔍 Filters</h2>
+          <button class="btn btn-secondary" onclick="clearFilters()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Clear All</button>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            
+            <!-- Type Filter -->
+            <div>
+              <label class="form-label" style="font-size: 0.875rem;">Type</label>
+              <select class="form-input" id="typeFilter" onchange="applyFilters()" style="padding: 0.5rem;">
+                <option value="all">All Types</option>
+                <option value="text">Text Notes</option>
+                <option value="voice">Voice Notes</option>
+              </select>
+            </div>
+            
+            <!-- Category Filter -->
+            <div>
+              <label class="form-label" style="font-size: 0.875rem;">Category</label>
+              <select class="form-input" id="categoryFilter" onchange="applyFilters()" style="padding: 0.5rem;">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+            
+            <!-- Date Filter -->
+            <div>
+              <label class="form-label" style="font-size: 0.875rem;">Date Range</label>
+              <select class="form-input" id="dateFilter" onchange="applyFilters()" style="padding: 0.5rem;">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+              </select>
+            </div>
+            
+            <!-- Sort Order -->
+            <div>
+              <label class="form-label" style="font-size: 0.875rem;">Sort By</label>
+              <select class="form-input" id="sortFilter" onchange="applyFilters()" style="padding: 0.5rem;">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="updated">Recently Updated</option>
+              </select>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- Notes List -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📝 Your Notes</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" onclick="selectAllNotes()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Select All</button>
+            <button class="btn btn-danger" onclick="deleteSelectedNotes()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Delete Selected</button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div id="notesList">
+            <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+              <h3 style="margin-bottom: 0.5rem;">No notes yet</h3>
+              <p>Create your first note above or try voice input!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+let filteredNotes = [];
+let selectedNotes = new Set();
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+  if (smartApp && smartApp.currentUser) {
+    loadNotes();
+    populateFilters();
+    
+    // Show admin nav if user is admin
+    if (smartApp.isAdmin) {
+      document.getElementById('adminNav').style.display = 'block';
+    }
+    
+    // Check if voice mode was requested
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('voice') === 'true') {
+      document.getElementById('noteInput').focus();
+      if (voiceAI) {
+        setTimeout(() => voiceAI.start(), 500);
+      }
+    }
+  }
+});
+
+function loadNotes() {
+  if (!smartApp) return;
+  
+  filteredNotes = [...smartApp.notes];
+  renderNotes();
+}
+
+function populateFilters() {
+  if (!smartApp) return;
+  
+  // Populate category filter
+  const categoryFilter = document.getElementById('categoryFilter');
+  const categories = [...new Set(smartApp.notes.map(note => note.category))];
+  
+  // Clear existing options except "All Categories"
+  categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+  
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+    categoryFilter.appendChild(option);
+  });
+}
+
+function renderNotes() {
+  const container = document.getElementById('notesList');
+  
+  if (filteredNotes.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+        <h3 style="margin-bottom: 0.5rem;">No notes found</h3>
+        <p>Try adjusting your filters or create a new note!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = filteredNotes.map(note => `
+    <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
+      <div class="note-header">
+        <div class="note-meta">
+          <input type="checkbox" 
+                 onchange="toggleNoteSelection('${note.id}')"
+                 ${selectedNotes.has(note.id) ? 'checked' : ''}
+                 style="margin-right: 0.5rem;">
+          ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+          <span>${smartApp.formatDate(note.created)}</span>
+          <span style="text-transform: capitalize;">${note.category}</span>
+        </div>
+        <div class="note-actions">
+          <button class="note-action-btn" onclick="editNote('${note.id}')">Edit</button>
+          <button class="note-action-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="note-content" onclick="expandNote('${note.id}')">
+        ${formatNoteContent(note.content)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function addNote() {
+  const content = document.getElementById('noteInput').value.trim();
+  
+  if (!content) {
+    smartApp.showNotification('Please enter some content', 'error');
+    return;
+  }
+  
+  const type = voiceAI && voiceAI.currentTranscript && content.includes(voiceAI.currentTranscript.trim()) ? 'voice' : 'text';
+  
+  if (smartApp.addNote(content, type)) {
+    // Clear input
+    document.getElementById('noteInput').value = '';
+    if (voiceAI) {
+      voiceAI.currentTranscript = '';
+    }
+    updateCharCount();
+    
+    // Reload notes and filters
+    loadNotes();
+    populateFilters();
+  }
+}
+
+function editNote(noteId) {
+  const note = smartApp.notes.find(n => n.id === noteId);
+  if (!note) return;
+  
+  const newContent = prompt('Edit note:', note.content);
+  if (newContent !== null && newContent.trim() !== note.content) {
+    if (smartApp.updateNote(noteId, newContent.trim())) {
+      loadNotes();
+      populateFilters();
+    }
+  }
+}
+
+function deleteNote(noteId) {
+  if (confirm('Are you sure you want to delete this note?')) {
+    if (smartApp.deleteNote(noteId)) {
+      selectedNotes.delete(noteId);
+      loadNotes();
+      populateFilters();
+    }
+  }
+}
+
+function toggleNoteSelection(noteId) {
+  if (selectedNotes.has(noteId)) {
+    selectedNotes.delete(noteId);
+  } else {
+    selectedNotes.add(noteId);
+  }
+}
+
+function selectAllNotes() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const allSelected = Array.from(checkboxes).every(cb => cb.checked);
+  
+  checkboxes.forEach(cb => {
+    cb.checked = !allSelected;
+    const noteId = cb.closest('.note-item').dataset.noteId;
+    if (!allSelected) {
+      selectedNotes.add(noteId);
+    } else {
+      selectedNotes.delete(noteId);
+    }
+  });
+}
+
+function deleteSelectedNotes() {
+  if (selectedNotes.size === 0) {
+    smartApp.showNotification('No notes selected', 'warning');
+    return;
+  }
+  
+  if (confirm(`Delete ${selectedNotes.size} selected notes?`)) {
+    let deletedCount = 0;
+    
+    selectedNotes.forEach(noteId => {
+      if (smartApp.deleteNote(noteId)) {
+        deletedCount++;
+      }
+    });
+    
+    selectedNotes.clear();
+    loadNotes();
+    populateFilters();
+    
+    smartApp.showNotification(`${deletedCount} notes deleted`, 'success');
+  }
+}
+
+function applyFilters() {
+  if (!smartApp) return;
+  
+  const typeFilter = document.getElementById('typeFilter').value;
+  const categoryFilter = document.getElementById('categoryFilter').value;
+  const dateFilter = document.getElementById('dateFilter').value;
+  const sortFilter = document.getElementById('sortFilter').value;
+  
+  // Start with all notes
+  let filtered = [...smartApp.notes];
+  
+  // Apply type filter
+  if (typeFilter !== 'all') {
+    filtered = filtered.filter(note => note.type === typeFilter);
+  }
+  
+  // Apply category filter
+  if (categoryFilter !== 'all') {
+    filtered = filtered.filter(note => note.category === categoryFilter);
+  }
+  
+  // Apply date filter
+  if (dateFilter !== 'all') {
+    filtered = smartApp.filterNotesByDate(dateFilter).filter(note => 
+      filtered.includes(note)
+    );
+  }
+  
+  // Apply sort
+  switch (sortFilter) {
+    case 'oldest':
+      filtered.sort((a, b) => new Date(a.created) - new Date(b.created));
+      break;
+    case 'updated':
+      filtered.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      break;
+    default: // newest
+      filtered.sort((a, b) => new Date(b.created) - new Date(a.created));
+  }
+  
+  filteredNotes = filtered;
+  selectedNotes.clear();
+  renderNotes();
+}
+
+function clearFilters() {
+  document.getElementById('typeFilter').value = 'all';
+  document.getElementById('categoryFilter').value = 'all';
+  document.getElementById('dateFilter').value = 'all';
+  document.getElementById('sortFilter').value = 'newest';
+  
+  applyFilters();
+}
+
+function expandNote(noteId) {
+  const note = smartApp.notes.find(n => n.id === noteId);
+  if (!note) return;
+  
+  alert(`${note.content}\n\nCreated: ${new Date(note.created).toLocaleString()}\nUpdated: ${new Date(note.updated).toLocaleString()}\nCategory: ${note.category}\nType: ${note.type}`);
+}
+
+function formatNoteContent(content) {
+  // Basic text formatting
+  return content
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+}
+
+function updateCharCount() {
+  const input = document.getElementById('noteInput');
+  const counter = document.getElementById('charCount');
+  const length = input.value.length;
+  
+  counter.textContent = `${length} / 2000`;
+  
+  if (length > 1800) {
+    counter.style.color = 'var(--warning)';
+  } else {
+    counter.style.color = 'var(--text-muted)';
+  }
+}
+</script>
+
+</body>
+</html>

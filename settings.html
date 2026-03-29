@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Voice AI Edition</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item active">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@email.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Settings</h1>
+      <p class="content-subtitle">Customize your SmartNotes experience</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- Profile Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">👤 Profile Settings</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" id="profileName" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="profileEmail" placeholder="Enter your email" readonly>
+            </div>
+            
+          </div>
+          
+          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            <button class="btn btn-secondary" onclick="loadProfile()">Reset</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Voice AI Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🎙️ Voice AI Settings</h2>
+        </div>
+        <div class="card-content">
+          
+          <!-- Voice Language -->
+          <div class="form-group">
+            <label class="form-label">Speech Recognition Language</label>
+            <select class="form-input" id="voiceLanguage" onchange="saveVoiceSettings()">
+              <option value="en-US">English (US)</option>
+              <option value="en-GB">English (UK)</option>
+              <option value="en-AU">English (Australia)</option>
+              <option value="en-CA">English (Canada)</option>
+              <option value="es-ES">Spanish (Spain)</option>
+              <option value="es-US">Spanish (US)</option>
+              <option value="fr-FR">French</option>
+              <option value="de-DE">German</option>
+              <option value="it-IT">Italian</option>
+              <option value="pt-BR">Portuguese (Brazil)</option>
+              <option value="ja-JP">Japanese</option>
+              <option value="ko-KR">Korean</option>
+              <option value="zh-CN">Chinese (Simplified)</option>
+            </select>
+          </div>
+          
+          <!-- Voice Settings -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Auto Voice Start</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Automatically start voice input on notes page
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="autoVoiceStart" onchange="saveVoiceSettings()" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Continuous Listening</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Keep listening until manually stopped
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="continuousListening" onchange="saveVoiceSettings()" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+          </div>
+          
+          <!-- Voice Test -->
+          <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+            <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">🧪 Test Voice Recognition</h4>
+            <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+              Test your microphone and voice recognition settings
+            </p>
+            <button class="btn btn-primary" onclick="testVoiceRecognition()" id="voiceTestBtn">
+              🎙️ Start Test
+            </button>
+            <div id="voiceTestResult" style="margin-top: 1rem; padding: 0.75rem; background: var(--bg-primary); border-radius: 6px; display: none;">
+              <div style="color: var(--text-muted); font-size: 0.875rem;">Test result will appear here...</div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- App Preferences -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🎨 App Preferences</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; gap: 1rem;">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Auto-Save Notes</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Automatically save notes as you type
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="autoSave" onchange="saveAppSettings()" checked style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--accent); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Show Note Previews</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Show content previews in note lists
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="showPreviews" onchange="saveAppSettings()" checked style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--accent); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Compact Mode</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Use smaller spacing for more content
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="compactMode" onchange="saveAppSettings()" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+            <!-- Notes per page -->
+            <div>
+              <label class="form-label">Notes per Page</label>
+              <select class="form-input" id="notesPerPage" onchange="saveAppSettings()" style="max-width: 200px;">
+                <option value="10">10 notes</option>
+                <option value="25" selected>25 notes</option>
+                <option value="50">50 notes</option>
+                <option value="100">100 notes</option>
+              </select>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- Data & Privacy -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🔒 Data & Privacy</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; gap: 1.5rem;">
+            
+            <!-- Export Data -->
+            <div>
+              <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">📥 Export Your Data</h4>
+              <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                Download all your notes in JSON or CSV format
+              </p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="exportData('json')">Export as JSON</button>
+                <button class="btn btn-secondary" onclick="exportData('csv')">Export as CSV</button>
+              </div>
+            </div>
+            
+            <!-- Storage Info -->
+            <div>
+              <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">💾 Storage Information</h4>
+              <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                  <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; color: var(--accent); font-weight: 700;" id="storageUsed">0 KB</div>
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Data Used</div>
+                  </div>
+                  <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; color: var(--success); font-weight: 700;" id="notesCount">0</div>
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Total Notes</div>
+                  </div>
+                  <div style="text-align: center;">
+                    <div style="font-size: 1.5rem; color: var(--warning); font-weight: 700;" id="searchesCount">0</div>
+                    <div style="color: var(--text-muted); font-size: 0.875rem;">Saved Searches</div>
+                  </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.75rem;">
+                  Data is stored locally in your browser. Clearing browser data will remove all notes.
+                </p>
+              </div>
+            </div>
+            
+            <!-- Clear Data -->
+            <div>
+              <h4 style="margin-bottom: 0.5rem; color: var(--danger);">🗑️ Clear Data</h4>
+              <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                Permanently delete specific types of data. This action cannot be undone.
+              </p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-danger" onclick="clearData('search')" style="font-size: 0.875rem;">Clear Search History</button>
+                <button class="btn btn-danger" onclick="clearData('notes')" style="font-size: 0.875rem;">Delete All Notes</button>
+                <button class="btn btn-danger" onclick="clearData('all')" style="font-size: 0.875rem;">Delete Everything</button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- About -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">ℹ️ About SmartNotes AI Pro</h2>
+        </div>
+        <div class="card-content">
+          <div style="text-align: center; padding: 1rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎙️</div>
+            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">SmartNotes AI Pro</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Voice AI Edition - v1.0.0</p>
+            <p style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.5; max-width: 500px; margin: 0 auto 1.5rem;">
+              Intelligent note-taking powered by real-time voice recognition, smart categorization, and seamless search. 
+              Built for productivity enthusiasts who value speed and organization.
+            </p>
+            <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="showKeyboardShortcuts()" style="font-size: 0.875rem;">Keyboard Shortcuts</button>
+              <button class="btn btn-secondary" onclick="showChangelog()" style="font-size: 0.875rem;">What's New</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<!-- CSS for toggles -->
+<style>
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+</style>
+
+<script src="shared.js"></script>
+<script>
+let currentSettings = {};
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+  if (smartApp && smartApp.currentUser) {
+    loadAllSettings();
+    updateStorageInfo();
+    
+    // Show admin nav if user is admin
+    if (smartApp.isAdmin) {
+      document.getElementById('adminNav').style.display = 'block';
+    }
+  }
+});
+
+function loadAllSettings() {
+  loadProfile();
+  loadVoiceSettings();
+  loadAppSettings();
+}
+
+function loadProfile() {
+  if (!smartApp || !smartApp.currentUser) return;
+  
+  document.getElementById('profileName').value = smartApp.currentUser.name || '';
+  document.getElementById('profileEmail').value = smartApp.currentUser.email || '';
+}
+
+function saveProfile() {
+  if (!smartApp || !smartApp.currentUser) return;
+  
+  const name = document.getElementById('profileName').value.trim();
+  
+  if (!name) {
+    smartApp.showNotification('Name cannot be empty', 'error');
+    return;
+  }
+  
+  // Update current user
+  smartApp.currentUser.name = name;
+  localStorage.setItem('smartnotes_user', JSON.stringify(smartApp.currentUser));
+  
+  // Update in users list
+  const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
+  const userIndex = users.findIndex(u => u.id === smartApp.currentUser.id);
+  if (userIndex !== -1) {
+    users[userIndex].name = name;
+    localStorage.setItem('smartnotes_users', JSON.stringify(users));
+  }
+  
+  // Update UI
+  smartApp.updateUserInfo();
+  smartApp.showNotification('Profile updated successfully', 'success');
+}
+
+function loadVoiceSettings() {
+  const settings = JSON.parse(localStorage.getItem(`smartnotes_voice_${smartApp.currentUser.id}`) || '{}');
+  
+  currentSettings.voice = {
+    language: settings.language || 'en-US',
+    autoStart: settings.autoStart || false,
+    continuous: settings.continuous !== undefined ? settings.continuous : true
+  };
+  
+  document.getElementById('voiceLanguage').value = currentSettings.voice.language;
+  document.getElementById('autoVoiceStart').checked = currentSettings.voice.autoStart;
+  document.getElementById('continuousListening').checked = currentSettings.voice.continuous;
+}
+
+function saveVoiceSettings() {
+  const language = document.getElementById('voiceLanguage').value;
+  const autoStart = document.getElementById('autoVoiceStart').checked;
+  const continuous = document.getElementById('continuousListening').checked;
+  
+  currentSettings.voice = { language, autoStart, continuous };
+  
+  localStorage.setItem(`smartnotes_voice_${smartApp.currentUser.id}`, JSON.stringify(currentSettings.voice));
+  
+  // Update voice AI if available
+  if (voiceAI && voiceAI.speechRecognition) {
+    voiceAI.speechRecognition.lang = language;
+    voiceAI.speechRecognition.continuous = continuous;
+  }
+  
+  smartApp.showNotification('Voice settings saved', 'success');
+}
+
+function loadAppSettings() {
+  const settings = JSON.parse(localStorage.getItem(`smartnotes_app_${smartApp.currentUser.id}`) || '{}');
+  
+  currentSettings.app = {
+    autoSave: settings.autoSave !== undefined ? settings.autoSave : true,
+    showPreviews: settings.showPreviews !== undefined ? settings.showPreviews : true,
+    compactMode: settings.compactMode || false,
+    notesPerPage: settings.notesPerPage || 25
+  };
+  
+  document.getElementById('autoSave').checked = currentSettings.app.autoSave;
+  document.getElementById('showPreviews').checked = currentSettings.app.showPreviews;
+  document.getElementById('compactMode').checked = currentSettings.app.compactMode;
+  document.getElementById('notesPerPage').value = currentSettings.app.notesPerPage;
+  
+  // Apply compact mode
+  if (currentSettings.app.compactMode) {
+    document.body.classList.add('compact-mode');
+  }
+}
+
+function saveAppSettings() {
+  const autoSave = document.getElementById('autoSave').checked;
+  const showPreviews = document.getElementById('showPreviews').checked;
+  const compactMode = document.getElementById('compactMode').checked;
+  const notesPerPage = parseInt(document.getElementById('notesPerPage').value);
+  
+  currentSettings.app = { autoSave, showPreviews, compactMode, notesPerPage };
+  
+  localStorage.setItem(`smartnotes_app_${smartApp.currentUser.id}`, JSON.stringify(currentSettings.app));
+  
+  // Apply compact mode
+  document.body.classList.toggle('compact-mode', compactMode);
+  
+  smartApp.showNotification('App settings saved', 'success');
+}
+
+function testVoiceRecognition() {
+  if (!voiceAI || !voiceAI.speechRecognition) {
+    smartApp.showNotification('Voice recognition not available', 'error');
+    return;
+  }
+  
+  const btn = document.getElementById('voiceTestBtn');
+  const result = document.getElementById('voiceTestResult');
+  
+  if (voiceAI.isListening) {
+    voiceAI.stop();
+    btn.textContent = '🎙️ Start Test';
+    result.style.display = 'none';
+    return;
+  }
+  
+  // Setup test
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div style="color: var(--success); font-size: 0.875rem; margin-bottom: 0.5rem;">
+      🎙️ Listening... Say something!
+    </div>
+    <div style="color: var(--text-muted); font-size: 0.875rem;">
+      Test will stop automatically after 5 seconds
+    </div>
+  `;
+  
+  btn.textContent = '⏹️ Stop Test';
+  
+  // Create temporary speech recognition for test
+  const testRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  testRecognition.lang = document.getElementById('voiceLanguage').value;
+  testRecognition.continuous = false;
+  testRecognition.interimResults = true;
+  
+  testRecognition.onresult = (event) => {
+    let transcript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript;
+    }
+    
+    result.innerHTML = `
+      <div style="color: var(--success); font-size: 0.875rem; margin-bottom: 0.5rem;">
+        ✅ Test successful! Voice recognition is working.
+      </div>
+      <div style="color: var(--text-primary); padding: 0.5rem; background: var(--bg-secondary); border-radius: 4px; font-style: italic;">
+        "${transcript}"
+      </div>
+    `;
+  };
+  
+  testRecognition.onerror = (event) => {
+    result.innerHTML = `
+      <div style="color: var(--danger); font-size: 0.875rem;">
+        ❌ Test failed: ${event.error}
+      </div>
+    `;
+    btn.textContent = '🎙️ Start Test';
+  };
+  
+  testRecognition.onend = () => {
+    btn.textContent = '🎙️ Start Test';
+  };
+  
+  testRecognition.start();
+  
+  // Auto-stop after 5 seconds
+  setTimeout(() => {
+    if (testRecognition) {
+      testRecognition.stop();
+    }
+  }, 5000);
+}
+
+function updateStorageInfo() {
+  if (!smartApp) return;
+  
+  // Calculate storage usage
+  let totalSize = 0;
+  
+  // User data
+  const userData = localStorage.getItem('smartnotes_user');
+  if (userData) totalSize += userData.length;
+  
+  // Notes data
+  const notesData = localStorage.getItem(`smartnotes_notes_${smartApp.currentUser.id}`);
+  if (notesData) totalSize += notesData.length;
+  
+  // Settings data
+  const voiceSettings = localStorage.getItem(`smartnotes_voice_${smartApp.currentUser.id}`);
+  if (voiceSettings) totalSize += voiceSettings.length;
+  
+  const appSettings = localStorage.getItem(`smartnotes_app_${smartApp.currentUser.id}`);
+  if (appSettings) totalSize += appSettings.length;
+  
+  // Search history
+  const searchHistory = localStorage.getItem(`smartnotes_search_${smartApp.currentUser.id}`);
+  if (searchHistory) totalSize += searchHistory.length;
+  
+  // Convert to readable format
+  let sizeText = `${totalSize} bytes`;
+  if (totalSize > 1024) {
+    sizeText = `${(totalSize / 1024).toFixed(1)} KB`;
+  }
+  if (totalSize > 1024 * 1024) {
+    sizeText = `${(totalSize / (1024 * 1024)).toFixed(1)} MB`;
+  }
+  
+  document.getElementById('storageUsed').textContent = sizeText;
+  document.getElementById('notesCount').textContent = smartApp.notes.length;
+  
+  const searches = searchHistory ? JSON.parse(searchHistory).length : 0;
+  document.getElementById('searchesCount').textContent = searches;
+}
+
+function exportData(format) {
+  if (!smartApp) return;
+  smartApp.exportNotes(format);
+}
+
+function clearData(type) {
+  if (!smartApp) return;
+  
+  let message = '';
+  let action = null;
+  
+  switch (type) {
+    case 'search':
+      message = 'Clear all search history?';
+      action = () => {
+        localStorage.removeItem(`smartnotes_search_${smartApp.currentUser.id}`);
+        updateStorageInfo();
+      };
+      break;
+    case 'notes':
+      message = 'Delete ALL your notes? This cannot be undone!';
+      action = () => {
+        smartApp.notes = [];
+        smartApp.saveUserNotes();
+        updateStorageInfo();
+      };
+      break;
+    case 'all':
+      message = 'Delete EVERYTHING (notes, settings, search history)? This cannot be undone!';
+      action = () => {
+        localStorage.removeItem(`smartnotes_notes_${smartApp.currentUser.id}`);
+        localStorage.removeItem(`smartnotes_voice_${smartApp.currentUser.id}`);
+        localStorage.removeItem(`smartnotes_app_${smartApp.currentUser.id}`);
+        localStorage.removeItem(`smartnotes_search_${smartApp.currentUser.id}`);
+        smartApp.notes = [];
+        loadAllSettings();
+        updateStorageInfo();
+      };
+      break;
+  }
+  
+  if (confirm(message)) {
+    action();
+    smartApp.showNotification('Data cleared successfully', 'success');
+  }
+}
+
+function showKeyboardShortcuts() {
+  const modal = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem;" onclick="closeModal(event)">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1.5rem;">
+          <h3>⌨️ Keyboard Shortcuts</h3>
+          <button onclick="closeModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        <div style="display: grid; gap: 0.75rem;">
+          <div style="display: flex; justify-content: between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+            <span>Create Note</span>
+            <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">Ctrl + N</code>
+          </div>
+          <div style="display: flex; justify-content: between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+            <span>Search Notes</span>
+            <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">Ctrl + F</code>
+          </div>
+          <div style="display: flex; justify-content: between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+            <span>Voice Input</span>
+            <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">Ctrl + M</code>
+          </div>
+          <div style="display: flex; justify-content: between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+            <span>Dashboard</span>
+            <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">Ctrl + D</code>
+          </div>
+          <div style="display: flex; justify-content: between; padding: 0.5rem 0;">
+            <span>Settings</span>
+            <code style="background: var(--bg-secondary); padding: 0.25rem 0.5rem; border-radius: 4px;">Ctrl + ,</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modal);
+}
+
+function showChangelog() {
+  const modal = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem;" onclick="closeModal(event)">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1.5rem;">
+          <h3>🆕 What's New</h3>
+          <button onclick="closeModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        <div style="display: grid; gap: 1rem;">
+          <div>
+            <h4 style="color: var(--accent); margin-bottom: 0.5rem;">v1.0.0 - Voice AI Edition</h4>
+            <ul style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5; margin-left: 1rem;">
+              <li>Real-time voice recognition powered by Web Speech API</li>
+              <li>Multi-page application structure for better organization</li>
+              <li>Smart auto-categorization with keyword detection</li>
+              <li>Advanced search with filters and history</li>
+              <li>Category management and analytics</li>
+              <li>Customizable settings and preferences</li>
+              <li>Mobile-first responsive design</li>
+              <li>Local data storage with export capabilities</li>
+              <li>Admin panel for user management</li>
+              <li>Stealth admin access for security</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modal);
+}
+
+function closeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  const modal = document.querySelector('[style*="position: fixed"]');
+  if (modal) modal.remove();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey) {
+    switch (e.key) {
+      case 'n':
+        e.preventDefault();
+        window.location.href = 'notes.html';
+        break;
+      case 'f':
+        e.preventDefault();
+        window.location.href = 'search.html';
+        break;
+      case 'm':
+        e.preventDefault();
+        if (voiceAI) voiceAI.toggle();
+        break;
+      case 'd':
+        e.preventDefault();
+        window.location.href = 'dashboard.html';
+        break;
+      case ',':
+        e.preventDefault();
+        // Already on settings page
+        break;
+    }
+  }
+});
+</script>
+
+</body>
+</html>

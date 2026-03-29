@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Admin Panel</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item active">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div class="user-details">
+          <h4 id="userName">Admin User</h4>
+          <p id="userEmail">admin@smartnotes.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Admin Panel</h1>
+      <p class="content-subtitle">System management and user oversight</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- System Overview -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🔍 System Overview</h2>
+        </div>
+        <div class="card-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalUsers">0</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="totalNotes">0</div>
+              <div class="stat-label">All Notes</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="activeUsers">0</div>
+              <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="systemStorage">0</div>
+              <div class="stat-label">Storage Used</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- User Management -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">👥 User Management</h2>
+          <button class="btn btn-primary" onclick="refreshUserData()">Refresh Data</button>
+        </div>
+        <div class="card-content">
+          <div id="usersList">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">👥</div>
+              <p>Loading users...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📋 Recent Activity</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <select id="activityFilter" onchange="filterActivity()" class="form-input" style="padding: 0.5rem; max-width: 150px;">
+              <option value="all">All Activity</option>
+              <option value="notes">Notes Only</option>
+              <option value="users">Users Only</option>
+            </select>
+            <button class="btn btn-secondary" onclick="refreshActivity()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Refresh</button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div id="activityList">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+              <p>Loading activity...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Content Moderation -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🛡️ Content Overview</h2>
+          <button class="btn btn-secondary" onclick="exportAllData()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Export All Data</button>
+        </div>
+        <div class="card-content">
+          <div id="contentOverview">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">🛡️</div>
+              <p>Loading content overview...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- System Settings -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">⚙️ System Settings</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; gap: 1rem;">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Maintenance Mode</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Temporarily disable new user registrations
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="maintenanceMode" onchange="toggleMaintenanceMode()" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+              <div>
+                <strong style="color: var(--text-primary);">Debug Mode</strong>
+                <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                  Enable detailed logging and diagnostics
+                </p>
+              </div>
+              <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="debugMode" onchange="toggleDebugMode()" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 34px; transition: .4s;" class="slider"></span>
+              </label>
+            </div>
+            
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+              <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">🗑️ Data Management</h4>
+              <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                Manage system data and user cleanup
+              </p>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-danger" onclick="cleanupOldData()" style="font-size: 0.875rem;">Cleanup Old Data</button>
+                <button class="btn btn-danger" onclick="resetDemoUsers()" style="font-size: 0.875rem;">Reset Demo Accounts</button>
+                <button class="btn btn-danger" onclick="clearSystemCache()" style="font-size: 0.875rem;">Clear Cache</button>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- System Logs -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📄 System Logs</h2>
+          <button class="btn btn-secondary" onclick="refreshLogs()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Refresh</button>
+        </div>
+        <div class="card-content">
+          <div id="systemLogs">
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.875rem; line-height: 1.4; max-height: 300px; overflow-y: auto;">
+              <div style="color: var(--success);">[INFO] SmartNotes AI Pro Admin Panel loaded</div>
+              <div style="color: var(--info);">[INFO] System status: Operational</div>
+              <div style="color: var(--text-muted);">[DEBUG] Voice AI: Web Speech API available</div>
+              <div style="color: var(--text-muted);">[DEBUG] Local storage: Functional</div>
+              <div style="color: var(--success);">[INFO] Admin user authenticated</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<!-- CSS for toggles -->
+<style>
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.user-row {
+  display: grid;
+  grid-template-columns: 60px 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.user-avatar-admin {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ai-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+
+.activity-icon.note { background: var(--success); }
+.activity-icon.user { background: var(--info); }
+.activity-icon.system { background: var(--warning); }
+</style>
+
+<script src="shared.js"></script>
+<script>
+let allUsers = [];
+let allNotes = [];
+let systemActivity = [];
+
+// Initialize admin panel
+document.addEventListener('DOMContentLoaded', () => {
+  // Check admin access
+  if (!smartApp || !smartApp.isAdmin) {
+    smartApp.showNotification('Access denied. Admin privileges required.', 'error');
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 2000);
+    return;
+  }
+  
+  loadAdminData();
+});
+
+function loadAdminData() {
+  if (!smartApp || !smartApp.isAdmin) return;
+  
+  // Load all users and notes
+  allUsers = smartApp.getAllUsers();
+  allNotes = smartApp.getAllNotes();
+  
+  // Generate system activity
+  generateSystemActivity();
+  
+  // Update overview stats
+  updateOverviewStats();
+  
+  // Render all sections
+  renderUsersList();
+  renderActivity();
+  renderContentOverview();
+}
+
+function updateOverviewStats() {
+  const activeUsers = allUsers.filter(user => {
+    const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
+    return userNotes.length > 0;
+  }).length;
+  
+  // Calculate total storage
+  let totalStorage = 0;
+  allUsers.forEach(user => {
+    const userNotes = localStorage.getItem(`smartnotes_notes_${user.id}`);
+    const userSearch = localStorage.getItem(`smartnotes_search_${user.id}`);
+    const userVoice = localStorage.getItem(`smartnotes_voice_${user.id}`);
+    const userApp = localStorage.getItem(`smartnotes_app_${user.id}`);
+    
+    if (userNotes) totalStorage += userNotes.length;
+    if (userSearch) totalStorage += userSearch.length;
+    if (userVoice) totalStorage += userVoice.length;
+    if (userApp) totalStorage += userApp.length;
+  });
+  
+  const storageText = totalStorage > 1024 ? `${(totalStorage / 1024).toFixed(1)} KB` : `${totalStorage} B`;
+  
+  document.getElementById('totalUsers').textContent = allUsers.length;
+  document.getElementById('totalNotes').textContent = allNotes.length;
+  document.getElementById('activeUsers').textContent = activeUsers;
+  document.getElementById('systemStorage').textContent = storageText;
+}
+
+function renderUsersList() {
+  const container = document.getElementById('usersList');
+  
+  if (allUsers.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        <p>No users found</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const usersWithStats = allUsers.map(user => {
+    const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
+    return {
+      ...user,
+      noteCount: userNotes.length,
+      lastActive: userNotes.length > 0 ? 
+        new Date(Math.max(...userNotes.map(note => new Date(note.created)))) : 
+        new Date(user.created)
+    };
+  }).sort((a, b) => b.lastActive - a.lastActive);
+  
+  container.innerHTML = usersWithStats.map(user => `
+    <div class="user-row">
+      <div class="user-avatar-admin">${user.name.charAt(0).toUpperCase()}</div>
+      <div>
+        <div style="color: var(--text-primary); font-weight: 500; margin-bottom: 0.25rem;">
+          ${user.name}
+          ${user.email === 'admin@smartnotes.com' ? '<span class="note-type" style="background: var(--danger); margin-left: 0.5rem;">Admin</span>' : ''}
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.875rem;">
+          ${user.email} • ${user.noteCount} notes • Last active: ${smartApp.formatDate(user.lastActive.toISOString())}
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-secondary" onclick="viewUserNotes('${user.id}')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+          View Notes
+        </button>
+        ${user.email !== 'admin@smartnotes.com' && user.id !== smartApp.currentUser.id ? 
+          `<button class="btn btn-danger" onclick="deleteUser('${user.id}')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Delete</button>` : 
+          ''
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderActivity() {
+  const container = document.getElementById('activityList');
+  
+  if (systemActivity.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        <p>No recent activity</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = systemActivity.slice(0, 20).map(activity => `
+    <div class="activity-item">
+      <div class="activity-icon ${activity.type}">
+        ${activity.icon}
+      </div>
+      <div style="flex: 1;">
+        <div style="color: var(--text-primary); font-size: 0.875rem;">
+          ${activity.description}
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.75rem;">
+          ${smartApp.formatDate(activity.timestamp)}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderContentOverview() {
+  const container = document.getElementById('contentOverview');
+  
+  // Calculate content statistics
+  const voiceNotes = allNotes.filter(note => note.type === 'voice').length;
+  const textNotes = allNotes.filter(note => note.type === 'text').length;
+  const categories = {};
+  
+  allNotes.forEach(note => {
+    categories[note.category] = (categories[note.category] || 0) + 1;
+  });
+  
+  const topCategories = Object.entries(categories)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 5);
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 1.5rem; color: var(--success); font-weight: 700; margin-bottom: 0.5rem;">${voiceNotes}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Voice Notes</div>
+      </div>
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 1.5rem; color: var(--info); font-weight: 700; margin-bottom: 0.5rem;">${textNotes}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Text Notes</div>
+      </div>
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 1.5rem; color: var(--warning); font-weight: 700; margin-bottom: 0.5rem;">${Object.keys(categories).length}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Categories</div>
+      </div>
+    </div>
+    
+    <div>
+      <h4 style="margin-bottom: 1rem; color: var(--text-primary);">Top Categories</h4>
+      <div style="display: grid; gap: 0.5rem;">
+        ${topCategories.length > 0 ? topCategories.map(([category, count]) => `
+          <div style="display: flex; justify-content: between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 6px;">
+            <span style="color: var(--text-primary); text-transform: capitalize;">${category}</span>
+            <span style="color: var(--text-muted); font-size: 0.875rem;">${count} notes</span>
+          </div>
+        `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: 1rem;">No categories yet</p>'}
+      </div>
+    </div>
+  `;
+}
+
+function generateSystemActivity() {
+  systemActivity = [];
+  
+  // Add user registrations
+  allUsers.forEach(user => {
+    if (user.email !== 'demo@smartnotes.com' && user.email !== 'admin@smartnotes.com') {
+      systemActivity.push({
+        type: 'user',
+        icon: '👤',
+        description: `New user registered: ${user.name}`,
+        timestamp: user.created,
+        userId: user.id
+      });
+    }
+  });
+  
+  // Add recent note activity
+  allNotes.slice(0, 50).forEach(note => {
+    systemActivity.push({
+      type: 'note',
+      icon: note.type === 'voice' ? '🎙️' : '📝',
+      description: `${note.type === 'voice' ? 'Voice' : 'Text'} note created by ${note.userName}`,
+      timestamp: note.created,
+      userId: note.userId,
+      noteId: note.id
+    });
+  });
+  
+  // Sort by timestamp (newest first)
+  systemActivity.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+}
+
+function refreshUserData() {
+  loadAdminData();
+  smartApp.showNotification('User data refreshed', 'success');
+}
+
+function refreshActivity() {
+  generateSystemActivity();
+  renderActivity();
+  smartApp.showNotification('Activity refreshed', 'success');
+}
+
+function filterActivity() {
+  const filter = document.getElementById('activityFilter').value;
+  let filteredActivity = [...systemActivity];
+  
+  if (filter !== 'all') {
+    filteredActivity = systemActivity.filter(activity => activity.type === filter);
+  }
+  
+  const container = document.getElementById('activityList');
+  container.innerHTML = filteredActivity.slice(0, 20).map(activity => `
+    <div class="activity-item">
+      <div class="activity-icon ${activity.type}">
+        ${activity.icon}
+      </div>
+      <div style="flex: 1;">
+        <div style="color: var(--text-primary); font-size: 0.875rem;">
+          ${activity.description}
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.75rem;">
+          ${smartApp.formatDate(activity.timestamp)}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function viewUserNotes(userId) {
+  const user = allUsers.find(u => u.id === userId);
+  if (!user) return;
+  
+  const userNotes = allNotes.filter(note => note.userEmail === user.email);
+  
+  const modal = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem;" onclick="closeModal(event)">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; max-width: 700px; width: 100%; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1.5rem;">
+          <h3>📝 Notes by ${user.name}</h3>
+          <button onclick="closeModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        
+        ${userNotes.length === 0 ? 
+          '<div style="text-align: center; color: var(--text-muted); padding: 2rem;"><p>No notes found for this user</p></div>' :
+          `<div style="display: grid; gap: 1rem; max-height: 400px; overflow-y: auto;">
+            ${userNotes.slice(0, 10).map(note => `
+              <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--accent);">
+                <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+                    <span style="color: var(--text-muted); font-size: 0.75rem;">${smartApp.formatDate(note.created)}</span>
+                    <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: capitalize;">${note.category}</span>
+                  </div>
+                </div>
+                <div style="color: var(--text-primary); font-size: 0.875rem; line-height: 1.4;">
+                  ${smartApp.formatContent(note.content, 150)}
+                </div>
+              </div>
+            `).join('')}
+            ${userNotes.length > 10 ? `<div style="text-align: center; color: var(--text-muted); font-size: 0.875rem;">... and ${userNotes.length - 10} more notes</div>` : ''}
+          </div>`
+        }
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modal);
+}
+
+function deleteUser(userId) {
+  const user = allUsers.find(u => u.id === userId);
+  if (!user) return;
+  
+  if (confirm(`Delete user "${user.name}" and all their data? This cannot be undone!`)) {
+    if (smartApp.deleteUser(userId)) {
+      loadAdminData();
+    }
+  }
+}
+
+function exportAllData() {
+  const allData = {
+    exportDate: new Date().toISOString(),
+    users: allUsers.map(user => ({
+      ...user,
+      password: '[REDACTED]' // Don't export passwords
+    })),
+    notes: allNotes,
+    systemStats: {
+      totalUsers: allUsers.length,
+      totalNotes: allNotes.length,
+      categories: {}
+    }
+  };
+  
+  // Calculate category stats
+  allNotes.forEach(note => {
+    allData.systemStats.categories[note.category] = (allData.systemStats.categories[note.category] || 0) + 1;
+  });
+  
+  const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `smartnotes-admin-export-${Date.now()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  smartApp.showNotification('Admin data exported successfully', 'success');
+}
+
+function toggleMaintenanceMode() {
+  const enabled = document.getElementById('maintenanceMode').checked;
+  localStorage.setItem('smartnotes_maintenance', enabled.toString());
+  smartApp.showNotification(enabled ? 'Maintenance mode enabled' : 'Maintenance mode disabled', 'info');
+}
+
+function toggleDebugMode() {
+  const enabled = document.getElementById('debugMode').checked;
+  localStorage.setItem('smartnotes_debug', enabled.toString());
+  smartApp.showNotification(enabled ? 'Debug mode enabled' : 'Debug mode disabled', 'info');
+}
+
+function cleanupOldData() {
+  if (confirm('Clean up notes older than 30 days from demo accounts?')) {
+    let deletedCount = 0;
+    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    
+    allUsers.forEach(user => {
+      if (user.email.includes('demo')) {
+        const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
+        const filtered = userNotes.filter(note => new Date(note.created) > cutoff);
+        
+        if (filtered.length < userNotes.length) {
+          deletedCount += userNotes.length - filtered.length;
+          localStorage.setItem(`smartnotes_notes_${user.id}`, JSON.stringify(filtered));
+        }
+      }
+    });
+    
+    smartApp.showNotification(`Cleaned up ${deletedCount} old notes`, 'success');
+    loadAdminData();
+  }
+}
+
+function resetDemoUsers() {
+  if (confirm('Reset all demo account data? This will clear their notes and settings.')) {
+    const demoUsers = allUsers.filter(user => user.email.includes('demo'));
+    
+    demoUsers.forEach(user => {
+      localStorage.removeItem(`smartnotes_notes_${user.id}`);
+      localStorage.removeItem(`smartnotes_search_${user.id}`);
+      localStorage.removeItem(`smartnotes_voice_${user.id}`);
+      localStorage.removeItem(`smartnotes_app_${user.id}`);
+    });
+    
+    smartApp.showNotification(`Reset ${demoUsers.length} demo accounts`, 'success');
+    loadAdminData();
+  }
+}
+
+function clearSystemCache() {
+  if (confirm('Clear system cache and temporary data?')) {
+    // Clear any cached data
+    const keys = Object.keys(localStorage);
+    let clearedCount = 0;
+    
+    keys.forEach(key => {
+      if (key.includes('_cache_') || key.includes('_temp_')) {
+        localStorage.removeItem(key);
+        clearedCount++;
+      }
+    });
+    
+    smartApp.showNotification(`Cleared ${clearedCount} cache entries`, 'success');
+  }
+}
+
+function refreshLogs() {
+  const container = document.getElementById('systemLogs');
+  const now = new Date().toLocaleTimeString();
+  
+  container.innerHTML = `
+    <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.875rem; line-height: 1.4; max-height: 300px; overflow-y: auto;">
+      <div style="color: var(--success);">[INFO] ${now} - System logs refreshed</div>
+      <div style="color: var(--info);">[INFO] ${now} - Total users: ${allUsers.length}</div>
+      <div style="color: var(--info);">[INFO] ${now} - Total notes: ${allNotes.length}</div>
+      <div style="color: var(--text-muted);">[DEBUG] ${now} - Voice AI: Available</div>
+      <div style="color: var(--text-muted);">[DEBUG] ${now} - Local storage: ${Object.keys(localStorage).length} entries</div>
+      <div style="color: var(--success);">[INFO] ${now} - System status: Operational</div>
+      <div style="color: var(--text-muted);">[DEBUG] ${now} - Admin panel: Functional</div>
+    </div>
+  `;
+}
+
+function closeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  const modal = document.querySelector('[style*="position: fixed"]');
+  if (modal) modal.remove();
+}
+
+// Load system settings on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const maintenance = localStorage.getItem('smartnotes_maintenance') === 'true';
+  const debug = localStorage.getItem('smartnotes_debug') === 'true';
+  
+  document.getElementById('maintenanceMode').checked = maintenance;
+  document.getElementById('debugMode').checked = debug;
+});
+</script>
+
+</body>
+</html>
