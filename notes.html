@@ -6,6 +6,31 @@
 <title>SmartNotes AI Pro - Notes</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
+<style>
+/* Timeline-specific styles */
+.timeline-header {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline-group {
+  margin-bottom: 2.5rem;
+}
+
+.timeline-group:last-child {
+  margin-bottom: 0;
+}
+
+.note-time {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+</style>
 </head>
 <body>
 
@@ -265,28 +290,101 @@ function renderNotes() {
     return;
   }
   
-  container.innerHTML = filteredNotes.map(note => `
-    <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
-      <div class="note-header">
-        <div class="note-meta">
-          <input type="checkbox" 
-                 onchange="toggleNoteSelection('${note.id}')"
-                 ${selectedNotes.has(note.id) ? 'checked' : ''}
-                 style="margin-right: 0.5rem;">
-          ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
-          <span>${smartApp.formatDate(note.created)}</span>
-          <span style="text-transform: capitalize;">${note.category}</span>
-        </div>
-        <div class="note-actions">
-          <button class="note-action-btn" onclick="editNote('${note.id}')">Edit</button>
-          <button class="note-action-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
+  // Group filtered notes by time periods
+  const groups = groupFilteredNotesByTime(filteredNotes);
+  
+  let html = '';
+  
+  // Render each time group
+  Object.entries(groups).forEach(([period, notes]) => {
+    if (notes.length === 0) return;
+    
+    const titles = {
+      today: 'Today',
+      yesterday: 'Yesterday', 
+      thisWeek: 'Previous 7 Days',
+      thisMonth: 'Previous 30 Days',
+      older: 'Older'
+    };
+    
+    html += `
+      <div class="timeline-group">
+        <h3 class="timeline-header">
+          ${titles[period]}
+        </h3>
+        <div style="display: grid; gap: 1rem;">
+          ${notes.map(note => `
+            <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
+              <div class="note-header">
+                <div class="note-meta">
+                  <input type="checkbox" 
+                         onchange="toggleNoteSelection('${note.id}')"
+                         ${selectedNotes.has(note.id) ? 'checked' : ''}
+                         style="margin-right: 0.5rem;">
+                  ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+                  <span class="note-time">${formatNoteTime(note.created)}</span>
+                  <span style="text-transform: capitalize; color: var(--text-muted); font-size: 0.875rem;">${note.category}</span>
+                </div>
+                <div class="note-actions">
+                  <button class="note-action-btn" onclick="editNote('${note.id}')">Edit</button>
+                  <button class="note-action-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
+                </div>
+              </div>
+              <div class="note-content" onclick="expandNote('${note.id}')">
+                ${formatNoteContent(note.content)}
+              </div>
+            </div>
+          `).join('')}
         </div>
       </div>
-      <div class="note-content" onclick="expandNote('${note.id}')">
-        ${formatNoteContent(note.content)}
-      </div>
-    </div>
-  `).join('');
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function groupFilteredNotesByTime(notes) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+  
+  const groups = {
+    today: [],
+    yesterday: [],
+    thisWeek: [],
+    thisMonth: [],
+    older: []
+  };
+  
+  notes.forEach(note => {
+    const noteDate = new Date(note.created);
+    const noteDateOnly = new Date(noteDate.getFullYear(), noteDate.getMonth(), noteDate.getDate());
+    
+    if (noteDateOnly.getTime() === today.getTime()) {
+      groups.today.push(note);
+    } else if (noteDateOnly.getTime() === yesterday.getTime()) {
+      groups.yesterday.push(note);
+    } else if (noteDate >= weekAgo) {
+      groups.thisWeek.push(note);
+    } else if (noteDate >= monthAgo) {
+      groups.thisMonth.push(note);
+    } else {
+      groups.older.push(note);
+    }
+  });
+  
+  return groups;
+}
+
+function formatNoteTime(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: true 
+  });
 }
 
 function addNote() {

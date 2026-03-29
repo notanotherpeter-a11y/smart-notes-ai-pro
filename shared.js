@@ -364,6 +364,42 @@ class SmartNotesCore {
     return timeCategory;
   }
   
+  // Group notes by time periods (like Apple Notes)
+  groupNotesByTime() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    const groups = {
+      today: [],
+      yesterday: [],
+      thisWeek: [],
+      thisMonth: [],
+      older: []
+    };
+    
+    this.notes.forEach(note => {
+      const noteDate = new Date(note.created);
+      const noteDateOnly = new Date(noteDate.getFullYear(), noteDate.getMonth(), noteDate.getDate());
+      
+      if (noteDateOnly.getTime() === today.getTime()) {
+        groups.today.push(note);
+      } else if (noteDateOnly.getTime() === yesterday.getTime()) {
+        groups.yesterday.push(note);
+      } else if (noteDate >= weekAgo) {
+        groups.thisWeek.push(note);
+      } else if (noteDate >= monthAgo) {
+        groups.thisMonth.push(note);
+      } else {
+        groups.older.push(note);
+      }
+    });
+    
+    return groups;
+  }
+  
   // Statistics
   getStats() {
     const stats = {

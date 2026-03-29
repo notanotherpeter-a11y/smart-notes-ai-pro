@@ -251,20 +251,29 @@ function loadRecentNotes() {
     return;
   }
   
-  container.innerHTML = recentNotes.map(note => `
-    <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" style="margin-bottom: 1rem;">
-      <div class="note-header">
-        <div class="note-meta">
-          ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
-          <span>${smartApp.formatDate(note.created)}</span>
-          <span>${note.category}</span>
+  container.innerHTML = recentNotes.map(note => {
+    const noteDate = new Date(note.created);
+    const timeString = noteDate.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    
+    return `
+      <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" style="margin-bottom: 1rem;">
+        <div class="note-header">
+          <div class="note-meta">
+            ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+            <span style="color: var(--text-muted); font-size: 0.875rem;">${timeString}</span>
+            <span style="color: var(--text-muted); font-size: 0.875rem; text-transform: capitalize;">${note.category}</span>
+          </div>
+        </div>
+        <div class="note-content" style="margin-bottom: 0;">
+          ${smartApp.formatContent(note.content, 100)}
         </div>
       </div>
-      <div class="note-content" style="margin-bottom: 0;">
-        ${smartApp.formatContent(note.content, 100)}
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function loadCategoriesBreakdown(categories) {
