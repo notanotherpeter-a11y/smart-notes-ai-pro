@@ -338,6 +338,14 @@ body {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .voice-controls {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
 }
 
 .voice-button {
@@ -745,7 +753,7 @@ body {
         <h2 class="notes-title">My Notes</h2>
       </div>
       
-      <!-- Voice Controls -->
+      <!-- Voice Controls & Save Button -->
       <div class="voice-controls">
         <button class="voice-button" id="voiceButton" onclick="toggleVoiceRecording()">
           🎙️
@@ -754,12 +762,15 @@ body {
           <div class="voice-status" id="voiceStatus">Click to start voice recording</div>
           <div style="font-size: 0.75rem; color: var(--text-muted);" id="voiceTimer">00:00</div>
         </div>
+        <button class="sidebar-button" onclick="app.saveCurrentNote()" style="margin-left: auto; width: auto; padding: 0.75rem 1.5rem;">
+          💾 Save Note
+        </button>
       </div>
       
       <textarea 
         id="noteInput" 
         class="note-input" 
-        placeholder="Start typing your note... (Ctrl+S to save) or use voice recording above"
+        placeholder="Start typing your note... Click 💾 Save Note button when finished, or use voice recording above"
       ></textarea>
       
       <div class="notes-list" id="notesList">
