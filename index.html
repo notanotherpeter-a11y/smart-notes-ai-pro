@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNotes AI Pro - Multi Page</title>
+<title>SmartNotes AI Pro - Light Theme</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {
@@ -13,14 +13,14 @@
 }
 
 :root {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #141414;
-  --bg-card: #1a1a1a;
-  --bg-hover: #252525;
-  --border: #2a2a2a;
-  --text-primary: #ffffff;
-  --text-secondary: #a0a0a0;
-  --text-muted: #666666;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: #f1f5f9;
+  --bg-hover: #e2e8f0;
+  --border: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
   --accent: #6366f1;
   --accent-hover: #4f46e5;
   --success: #10b981;
@@ -45,13 +45,14 @@ body {
   left: 0;
   right: 0;
   height: 60px;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
   z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .app-logo {
@@ -89,12 +90,13 @@ body {
   left: 0;
   right: 0;
   height: 70px;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.05);
 }
 
 .nav-item {
@@ -155,6 +157,7 @@ body {
   border: 1px solid var(--border);
   padding: 2rem;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
 .note-input {
@@ -270,12 +273,13 @@ body {
 }
 
 .note-card {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .note-card:hover {
@@ -339,6 +343,7 @@ body {
   border: 1px solid var(--border);
   padding: 3rem;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
 .voice-visualizer {
@@ -370,12 +375,13 @@ body {
 .search-box {
   width: 100%;
   padding: 1rem;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text-primary);
   font-size: 1rem;
   margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .search-box:focus {
@@ -412,6 +418,7 @@ body {
   border: 1px solid var(--border);
   padding: 2rem;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
 .settings-title {
@@ -468,7 +475,7 @@ body {
   position: fixed;
   top: 80px;
   right: 1rem;
-  background: var(--bg-card);
+  background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1rem;
@@ -476,6 +483,7 @@ body {
   z-index: 10001;
   transform: translateX(400px);
   transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .notification.show {
