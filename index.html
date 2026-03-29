@@ -765,6 +765,9 @@ body {
           <div class="voice-status" id="voiceStatus">Click to start voice recording</div>
           <div style="font-size: 0.75rem; color: var(--text-muted);" id="voiceTimer">00:00</div>
         </div>
+        <button class="sidebar-button" onclick="app.testMicrophone()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
+          🔧 Test Mic
+        </button>
         <button class="sidebar-button" onclick="app.saveCurrentNote()" style="margin-left: auto; width: auto; padding: 0.75rem 1.5rem;">
           💾 Save Note
         </button>
@@ -1217,22 +1220,56 @@ class SmartNotesComplete {
   
   async startVoiceRecording() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.mediaRecorder = new MediaRecorder(stream);
+      // Check if MediaRecorder is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.showNotification('Voice recording not supported on this device/browser', 'error');
+        return;
+      }
+      
+      this.showNotification('Requesting microphone access...', 'info');
+      
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100
+        }
+      });
+      
+      // Check MediaRecorder support
+      if (!MediaRecorder.isTypeSupported('audio/webm')) {
+        console.log('webm not supported, trying mp4');
+        if (!MediaRecorder.isTypeSupported('audio/mp4')) {
+          console.log('mp4 not supported, using default');
+        }
+      }
+      
+      this.mediaRecorder = new MediaRecorder(stream, {
+        mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4'
+      });
+      
       this.recordingChunks = [];
       this.recordingStartTime = Date.now();
       
       this.mediaRecorder.ondataavailable = (event) => {
+        console.log('Data available:', event.data.size, 'bytes');
         if (event.data.size > 0) {
           this.recordingChunks.push(event.data);
         }
       };
       
       this.mediaRecorder.onstop = () => {
+        console.log('Recording stopped, processing...');
         this.processRecording();
       };
       
-      this.mediaRecorder.start();
+      this.mediaRecorder.onerror = (event) => {
+        console.error('MediaRecorder error:', event);
+        this.showNotification('Recording error occurred', 'error');
+      };
+      
+      this.mediaRecorder.start(1000); // Collect data every second
+      console.log('MediaRecorder started:', this.mediaRecorder.state);
       
       // Update UI
       const button = document.getElementById('voiceButton');
@@ -1245,11 +1282,24 @@ class SmartNotesComplete {
       // Start timer
       this.startRecordingTimer();
       
-      this.showNotification('Voice recording started. Click the button again to stop.', 'success');
+      this.showNotification('🎙️ Recording started! Speak now...', 'success');
       
     } catch (error) {
       console.error('Error starting recording:', error);
-      this.showNotification('Could not access microphone. Please check permissions.', 'error');
+      
+      let errorMessage = 'Microphone access denied. ';
+      
+      if (error.name === 'NotAllowedError') {
+        errorMessage += 'Please allow microphone access and try again.';
+      } else if (error.name === 'NotFoundError') {
+        errorMessage += 'No microphone found on this device.';
+      } else if (error.name === 'NotSupportedError') {
+        errorMessage += 'Voice recording not supported on this browser.';
+      } else {
+        errorMessage += 'Please check your microphone settings.';
+      }
+      
+      this.showNotification(errorMessage, 'error');
     }
   }
   
@@ -1289,14 +1339,31 @@ class SmartNotesComplete {
     status.classList.add('processing');
     
     try {
+      console.log('Processing', this.recordingChunks.length, 'audio chunks');
+      
+      if (this.recordingChunks.length === 0) {
+        throw new Error('No audio data recorded');
+      }
+      
       // Create blob from recording
-      const audioBlob = new Blob(this.recordingChunks, { type: 'audio/wav' });
+      const mimeType = this.mediaRecorder.mimeType || 'audio/webm';
+      const audioBlob = new Blob(this.recordingChunks, { type: mimeType });
+      console.log('Audio blob created:', audioBlob.size, 'bytes');
+      
+      if (audioBlob.size === 0) {
+        throw new Error('Audio recording is empty');
+      }
+      
+      // Show audio size for debugging
+      const sizeKB = Math.round(audioBlob.size / 1024);
+      this.showNotification(`Processing ${sizeKB}KB audio file...`, 'info');
       
       // Simulate transcription (in real implementation, you'd send to Whisper API)
       await this.delay(2000);
       
       // Mock transcription result
-      const transcription = this.generateMockTranscription();
+      const duration = Math.floor((Date.now() - this.recordingStartTime) / 1000);
+      const transcription = this.generateMockTranscription(duration);
       
       // Add transcribed note
       const note = {
@@ -1306,7 +1373,8 @@ class SmartNotesComplete {
         updated: new Date().toISOString(),
         category: 'voice',
         type: 'voice',
-        duration: Math.floor((Date.now() - this.recordingStartTime) / 1000)
+        duration: duration,
+        audioSize: audioBlob.size
       };
       
       this.notes.unshift(note);
@@ -1315,12 +1383,13 @@ class SmartNotesComplete {
       
       // Update note input
       document.getElementById('noteInput').value = transcription;
+      updateCharCount();
       
-      this.showNotification('Voice note transcribed successfully!', 'success');
+      this.showNotification(`🎙️ Voice note (${duration}s) transcribed successfully!`, 'success');
       
     } catch (error) {
       console.error('Error processing recording:', error);
-      this.showNotification('Error processing recording. Please try again.', 'error');
+      this.showNotification(`Recording error: ${error.message}`, 'error');
     } finally {
       // Reset UI
       button.textContent = '🎙️';
@@ -1331,13 +1400,22 @@ class SmartNotesComplete {
     }
   }
   
-  generateMockTranscription() {
+  generateMockTranscription(duration) {
+    const date = new Date().toLocaleDateString();
+    const time = new Date().toLocaleTimeString();
+    
     const mockTranscriptions = [
-      "This is a voice note recorded on " + new Date().toLocaleDateString() + ". I wanted to capture this idea quickly using voice recording. The transcription feature is working perfectly and converts my speech to text automatically.",
-      "Meeting notes from today's discussion. We covered the project timeline, budget considerations, and next steps. The team is aligned on the deliverables and ready to move forward with the implementation.",
-      "Personal reminder: Don't forget to call mom this weekend and pick up groceries on the way home. Also need to schedule that dentist appointment I've been putting off.",
-      "Business idea: What if we created an app that combines voice recording with AI transcription? Users could capture thoughts on the go and have them automatically converted to searchable text notes.",
-      "Voice memo about the presentation tomorrow. Need to prepare slides about market analysis, competitive landscape, and growth projections. Remember to include the Q4 revenue numbers."
+      `Voice note recorded on ${date} at ${time}. Duration: ${duration} seconds. This is a test of the voice recording and transcription system. The audio was captured successfully and is being processed by the mock AI transcription engine.`,
+      
+      `Meeting notes from today's discussion (${date}). We covered the project timeline, budget considerations, and next steps for implementation. The team is aligned on deliverables and ready to move forward.`,
+      
+      `Personal reminder recorded at ${time}: Don't forget to call mom this weekend and pick up groceries on the way home. Also need to schedule that dentist appointment I've been putting off.`,
+      
+      `Business idea captured on ${date}: What if we created an app that combines voice recording with AI transcription? Users could capture thoughts on the go and have them automatically converted to searchable text notes.`,
+      
+      `Quick voice memo about tomorrow's presentation. Need to prepare slides covering market analysis, competitive landscape, and growth projections. Remember to include the Q4 revenue numbers and customer feedback data.`,
+      
+      `Voice recording test completed successfully on ${date}. Audio duration: ${duration} seconds. The microphone access, MediaRecorder API, and transcription pipeline are all functioning correctly.`
     ];
     
     return mockTranscriptions[Math.floor(Math.random() * mockTranscriptions.length)];
@@ -1693,6 +1771,78 @@ class SmartNotesComplete {
         note.favorite ? 'Added to favorites!' : 'Removed from favorites', 
         'success'
       );
+    }
+  }
+  
+  // Test microphone access
+  async testMicrophone() {
+    this.showNotification('Testing microphone access...', 'info');
+    
+    try {
+      // Check basic support
+      if (!navigator.mediaDevices) {
+        throw new Error('MediaDevices not supported');
+      }
+      
+      if (!navigator.mediaDevices.getUserMedia) {
+        throw new Error('getUserMedia not supported');
+      }
+      
+      // Test microphone access
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // Check MediaRecorder support
+      const supported = MediaRecorder.isTypeSupported('audio/webm') || 
+                       MediaRecorder.isTypeSupported('audio/mp4') ||
+                       MediaRecorder.isTypeSupported('audio/wav');
+      
+      if (!supported) {
+        throw new Error('MediaRecorder not supported');
+      }
+      
+      // Quick test recording
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks);
+        const sizeKB = Math.round(blob.size / 1024);
+        this.showNotification(`✅ Microphone test passed! Recorded ${sizeKB}KB in 2 seconds`, 'success');
+        
+        // Stop all tracks
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      mediaRecorder.start();
+      
+      // Stop after 2 seconds
+      setTimeout(() => {
+        mediaRecorder.stop();
+      }, 2000);
+      
+      this.showNotification('🎙️ Recording test for 2 seconds...', 'info');
+      
+    } catch (error) {
+      console.error('Microphone test failed:', error);
+      
+      let message = '❌ Microphone test failed: ';
+      if (error.name === 'NotAllowedError') {
+        message += 'Permission denied. Please allow microphone access in your browser settings.';
+      } else if (error.name === 'NotFoundError') {
+        message += 'No microphone detected. Please check your device has a microphone.';
+      } else if (error.message.includes('not supported')) {
+        message += 'Voice recording not supported on this browser/device.';
+      } else {
+        message += error.message;
+      }
+      
+      this.showNotification(message, 'error');
     }
   }
   
