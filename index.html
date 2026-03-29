@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmartNotes AI Pro - Complete Edition</title>
+<title>SmartNotes AI Pro - Multi Page</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * {
@@ -26,7 +26,6 @@
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
-  --info: #3b82f6;
   --ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
   --admin-gradient: linear-gradient(135deg, #ef4444, #f59e0b);
 }
@@ -37,120 +36,6 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Auth Container */
-.auth-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: var(--bg-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-}
-
-.auth-card {
-  background: var(--bg-card);
-  padding: 3rem;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-}
-
-.auth-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  background: var(--ai-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.auth-subtitle {
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-  text-align: left;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  transition: all 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.auth-button {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: var(--ai-gradient);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 1rem;
-}
-
-.auth-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-}
-
-/* Admin styles kept for admin panel UI */
-
-.auth-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.auth-link:hover {
-  color: var(--accent-hover);
-}
-
-.error-message {
-  color: var(--danger);
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-  display: none;
-}
-
-/* Admin toggle removed - access through regular login */
-
-/* App Container */
-.app-container {
-  display: none;
-  min-height: 100vh;
 }
 
 /* Header */
@@ -165,7 +50,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 1rem;
   z-index: 1000;
 }
 
@@ -178,14 +63,7 @@ body {
   background-clip: text;
 }
 
-.app-logo.admin {
-  background: var(--admin-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.user-menu {
+.user-info {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -204,135 +82,101 @@ body {
   font-size: 0.875rem;
 }
 
-.user-avatar.admin {
-  background: var(--admin-gradient);
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
 }
 
-.logout-button {
-  padding: 0.5rem 1rem;
-  background: var(--bg-hover);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-primary);
-  font-size: 0.875rem;
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.75rem;
 }
 
-.logout-button:hover {
-  background: var(--danger);
-  border-color: var(--danger);
+.nav-item.active {
+  color: var(--accent);
+}
+
+.nav-item:hover {
+  color: var(--accent);
+}
+
+.nav-icon {
+  font-size: 1.5rem;
 }
 
 /* Main Content */
 .main-content {
   margin-top: 60px;
-  padding: 2rem;
-  display: flex;
-  gap: 2rem;
-  min-height: calc(100vh - 60px);
+  margin-bottom: 70px;
+  min-height: calc(100vh - 130px);
 }
 
-/* Admin Panel Styles */
-.admin-container {
+/* Page Container */
+.page {
   display: none;
-  min-height: 100vh;
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.admin-main {
-  margin-top: 60px;
-  padding: 2rem;
+.page.active {
+  display: block;
 }
 
-.admin-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.admin-card {
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  padding: 2rem;
-}
-
-.admin-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: between;
-  margin-bottom: 1.5rem;
-}
-
-.admin-card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.admin-stat {
-  font-size: 2rem;
+.page-title {
+  font-size: 1.75rem;
   font-weight: 700;
-  background: var(--admin-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
-.users-table {
+/* Quick Note Page */
+.quick-note-area {
   background: var(--bg-secondary);
   border-radius: 12px;
   border: 1px solid var(--border);
   padding: 2rem;
-  overflow-x: auto;
+  margin-bottom: 2rem;
 }
 
-.table {
+.note-input {
   width: 100%;
-  border-collapse: collapse;
-}
-
-.table th {
-  background: var(--bg-hover);
+  min-height: 200px;
   padding: 1rem;
-  text-align: left;
-  font-weight: 600;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--border);
-}
-
-.table td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+  margin-bottom: 1rem;
 }
 
-.table tr:hover {
-  background: var(--bg-hover);
+.note-input:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
-.action-button {
-  padding: 0.25rem 0.75rem;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  margin-right: 0.5rem;
-}
-
-.action-button.danger {
-  background: var(--danger);
-}
-
-.action-button:hover {
-  opacity: 0.8;
-}
-
-/* Voice Recording */
 .voice-controls {
   display: flex;
   align-items: center;
@@ -341,30 +185,14 @@ body {
   flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
-  .voice-controls {
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-  
-  .delete-btn {
-    opacity: 1 !important;
-    font-size: 1.3rem !important;
-  }
-  
-  .note-meta {
-    flex-wrap: wrap;
-  }
-}
-
 .voice-button {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   border: none;
   background: var(--success);
   color: white;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -381,244 +209,265 @@ body {
   animation: pulse 1.5s ease-in-out infinite;
 }
 
-.voice-button.processing {
-  background: var(--warning);
-}
-
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
-.voice-status {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.voice-status.recording {
-  color: var(--danger);
+.save-button {
+  padding: 0.75rem 2rem;
+  background: var(--ai-gradient);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
 }
 
-.voice-status.processing {
-  color: var(--warning);
-  font-weight: 600;
+.save-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
 }
 
-/* Sidebar */
-.sidebar {
-  width: 280px;
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  padding: 1.5rem;
-  height: fit-content;
-}
-
-.sidebar-section {
+/* Browse Notes Page */
+.filter-tabs {
+  display: flex;
+  gap: 0.5rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
-.sidebar-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 1rem;
-}
-
-.sidebar-button {
-  width: 100%;
-  padding: 0.75rem 1rem;
+.filter-tab {
+  padding: 0.5rem 1rem;
   background: var(--bg-hover);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-primary);
+  border-radius: 6px;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-bottom: 0.5rem;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
-.sidebar-button:hover {
+.filter-tab.active {
   background: var(--accent);
   border-color: var(--accent);
+  color: white;
 }
 
-/* Notes Area */
-.notes-area {
-  flex: 1;
+.filter-tab:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.notes-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.note-card {
   background: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  padding: 1.5rem;
-}
-
-.notes-header {
-  display: flex;
-  align-items: center;
-  justify-content: between;
-  margin-bottom: 2rem;
-}
-
-.notes-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.note-input {
-  width: 100%;
-  min-height: 200px;
-  padding: 1rem;
-  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  line-height: 1.6;
-  resize: vertical;
-  font-family: inherit;
-}
-
-.note-input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.notes-list {
-  margin-top: 2rem;
-}
-
-.note-item {
-  background: var(--bg-card);
   padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  margin-bottom: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.note-item:hover {
+.note-card:hover {
   border-color: var(--accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
-.note-item:hover .delete-btn {
-  opacity: 1 !important;
-}
-
-.delete-btn:hover {
-  color: var(--danger) !important;
-  transform: scale(1.2);
-  opacity: 1 !important;
-}
-
-.note-item.voice {
+.note-card.voice {
   border-left: 4px solid var(--success);
 }
 
 .note-meta {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: between;
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
 
 .note-preview {
   color: var(--text-primary);
   line-height: 1.5;
+  margin-bottom: 1rem;
 }
 
-.note-type {
-  background: var(--success);
-  color: white;
-  padding: 0.25rem 0.5rem;
+.note-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
   border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-/* Hidden class */
-.hidden {
-  display: none !important;
+.action-btn:hover {
+  background: var(--bg-hover);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-    padding: 1rem;
-  }
-  
-  .sidebar {
-    width: 100%;
-    order: 2; /* Move sidebar below notes on mobile */
-  }
-  
-  .notes-area {
-    order: 1; /* Prioritize notes area on mobile */
-  }
-  
-  .auth-card {
-    margin: 1rem;
-    padding: 2rem;
-  }
-
-  .admin-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .test-controls {
-    display: none !important;
-  }
-  
-  .note-input {
-    font-size: 16px !important; /* Prevents zoom on iOS */
-    min-height: 120px;
-  }
+.action-btn.favorite.active {
+  color: var(--warning);
 }
 
-/* Desktop only - show test controls, hide quick actions */
-@media (min-width: 769px) {
-  .test-controls {
-    display: flex !important;
-  }
-  
-  .quick-actions {
-    display: none !important;
-  }
+.action-btn.delete:hover {
+  color: var(--danger);
 }
 
-/* Loading animation */
-.loading {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border);
+/* Voice Notes Page */
+.voice-studio {
+  text-align: center;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.voice-visualizer {
+  width: 100%;
+  height: 100px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.voice-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.wave-bar {
+  width: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: height 0.1s ease;
+}
+
+/* Search Page */
+.search-box {
+  width: 100%;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.search-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.search-filter {
+  padding: 0.5rem 1rem;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.search-filter.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Settings Page */
+.settings-section {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.settings-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-toggle {
+  width: 50px;
+  height: 25px;
+  background: var(--bg-hover);
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.setting-toggle.active {
+  background: var(--accent);
+}
+
+.setting-toggle::after {
+  content: '';
+  width: 21px;
+  height: 21px;
+  background: white;
   border-radius: 50%;
-  border-top-color: var(--accent);
-  animation: spin 0.8s ease-in-out infinite;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.2s ease;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.setting-toggle.active::after {
+  left: 27px;
 }
 
 /* Notification */
 .notification {
   position: fixed;
   top: 80px;
-  right: 2rem;
+  right: 1rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -641,8 +490,39 @@ body {
   border-left: 4px solid var(--danger);
 }
 
-.notification.warning {
-  border-left: 4px solid var(--warning);
+/* Loading */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  border-top-color: var(--accent);
+  animation: spin 0.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: 1rem;
+  }
+  
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .note-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Hidden */
+.hidden {
+  display: none !important;
 }
 </style>
 </head>
@@ -653,1695 +533,559 @@ body {
   <div id="notificationText"></div>
 </div>
 
-<!-- Auth Container -->
-<div id="authContainer" class="auth-container">
-  <div class="auth-card">
-    <div id="loginForm">
-      <h1 class="auth-title">Welcome Back</h1>
-      <p class="auth-subtitle">Sign in to SmartNotes AI Pro</p>
-      
-      <form id="loginFormElement">
-        <div class="form-group">
-          <label class="form-label" for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" class="form-input" required>
-          <div class="error-message" id="loginEmailError"></div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" class="form-input" required>
-          <div class="error-message" id="loginPasswordError"></div>
-        </div>
-        
-        <button type="submit" class="auth-button" id="loginButton">
-          Sign In
-        </button>
-      </form>
-      
-      <p>
-        Don't have an account? 
-        <a href="#" class="auth-link" onclick="showSignup()">Sign up</a>
-      </p>
-    </div>
-    
-    <div id="signupForm" class="hidden">
-      <h1 class="auth-title">Create Account</h1>
-      <p class="auth-subtitle">Join SmartNotes and boost your productivity</p>
-      
-      <form id="signupFormElement">
-        <div class="form-group">
-          <label class="form-label" for="signupName">Full Name</label>
-          <input type="text" id="signupName" class="form-input" required>
-          <div class="error-message" id="signupNameError"></div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="signupEmail">Email</label>
-          <input type="email" id="signupEmail" class="form-input" required>
-          <div class="error-message" id="signupEmailError"></div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" class="form-input" required>
-          <div class="error-message" id="signupPasswordError"></div>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="signupConfirmPassword">Confirm Password</label>
-          <input type="password" id="signupConfirmPassword" class="form-input" required>
-          <div class="error-message" id="signupConfirmPasswordError"></div>
-        </div>
-        
-        <button type="submit" class="auth-button" id="signupButton">
-          Create Account
-        </button>
-      </form>
-      
-      <p>
-        Already have an account? 
-        <a href="#" class="auth-link" onclick="showLogin()">Sign in</a>
-      </p>
-    </div>
+<!-- Header -->
+<header class="app-header">
+  <div class="app-logo">SmartNotes AI Pro</div>
+  <div class="user-info">
+    <div class="user-avatar" id="userAvatar">U</div>
+    <span id="userName">User</span>
   </div>
-</div>
+</header>
 
-<!-- App Container -->
-<div id="appContainer" class="app-container">
-  <!-- Header -->
-  <header class="app-header">
-    <div class="app-logo" id="appLogo">SmartNotes AI Pro</div>
-    <div class="user-menu">
-      <div class="user-avatar" id="userAvatar">U</div>
-      <span id="userName">User</span>
-      <button class="logout-button" onclick="logout()">Logout</button>
-    </div>
-  </header>
-  
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">Quick Actions</h3>
-        <button class="sidebar-button" onclick="createNewNote()">
-          📝 New Note
-        </button>
-        <button class="sidebar-button" onclick="toggleVoiceRecording()">
-          🎙️ Voice Note
-        </button>
-        <button class="sidebar-button" onclick="searchNotes()">
-          🔍 Search Notes
-        </button>
-        <button class="sidebar-button" onclick="viewFavorites()">
-          ⭐ Favorites
-        </button>
-      </div>
-      
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">Schedule & Time</h3>
-        <button class="sidebar-button" onclick="filterByTimeRange('today')">
-          📅 Today
-        </button>
-        <button class="sidebar-button" onclick="filterByTimeRange('yesterday')">
-          🕐 Yesterday
-        </button>
-        <button class="sidebar-button" onclick="filterByTimeRange('week')">
-          📆 This Week
-        </button>
-        <button class="sidebar-button" onclick="filterByTimeRange('month')">
-          🗓️ This Month
-        </button>
-        <button class="sidebar-button" onclick="filterByTimeRange('older')">
-          📜 Older
-        </button>
-        <button class="sidebar-button" onclick="filterByCategory('voice')">
-          🎤 Voice Notes
-        </button>
-      </div>
-      
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">Schedule Type</h3>
-        <button class="sidebar-button" onclick="filterBySchedule('morning')">
-          🌅 Morning Notes
-        </button>
-        <button class="sidebar-button" onclick="filterBySchedule('afternoon')">
-          ☀️ Afternoon Notes
-        </button>
-        <button class="sidebar-button" onclick="filterBySchedule('evening')">
-          🌆 Evening Notes
-        </button>
-        <button class="sidebar-button" onclick="filterBySchedule('urgent')">
-          🔥 Urgent/Today
-        </button>
-        <button class="sidebar-button" onclick="filterBySchedule('scheduled')">
-          ⏰ Scheduled Tasks
-        </button>
-      </div>
-      
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">AI Tools</h3>
-        <button class="sidebar-button" onclick="aiSummarize()">
-          🤖 AI Summarize
-        </button>
-        <button class="sidebar-button" onclick="aiGenerate()">
-          ✨ Generate Ideas
-        </button>
-        <button class="sidebar-button" onclick="aiOrganize()">
-          📊 Auto-Organize
-        </button>
-      </div>
-      
-      <div class="sidebar-section">
-        <h3 class="sidebar-title">Manage</h3>
-        <button class="sidebar-button" onclick="app.clearAllNotes()" style="color: var(--danger);">
-          🗑️ Clear All Notes
-        </button>
-        <button class="sidebar-button" onclick="app.deleteOldNotes()">
-          🧹 Delete Old Notes
-        </button>
-      </div>
-    </aside>
+<!-- Main Content -->
+<main class="main-content">
+
+  <!-- Quick Note Page -->
+  <div id="quickNotePage" class="page active">
+    <h1 class="page-title">✍️ Quick Note</h1>
     
-    <!-- Notes Area -->
-    <section class="notes-area">
-      <div class="notes-header">
-        <h2 class="notes-title">Quick Note</h2>
-      </div>
-      
-      <!-- MOVED TO TOP: Input Area for Instant Access -->
+    <div class="quick-note-area">
       <textarea 
         id="noteInput" 
         class="note-input" 
-        placeholder="Type your note here or tap 🎙️ for voice..."
+        placeholder="Type your note here or use voice recording..."
         oninput="updateCharCount()"
-        style="margin-bottom: 1rem;"
       ></textarea>
       
-      <!-- Voice Controls & Save Button -->
-      <div class="voice-controls" style="margin-bottom: 1.5rem;">
+      <div class="voice-controls">
         <button class="voice-button" id="voiceButton" onclick="toggleVoiceRecording()">
           🎙️
         </button>
         <div>
-          <div class="voice-status" id="voiceStatus">Tap to record voice note</div>
+          <div id="voiceStatus" style="font-weight: 500;">Tap to record voice note</div>
           <div style="font-size: 0.75rem; color: var(--text-muted);" id="voiceTimer">00:00</div>
         </div>
-        <button class="sidebar-button" onclick="app.saveCurrentNote()" style="margin-left: auto; width: auto; padding: 0.75rem 1.5rem;">
+        <button class="save-button" onclick="saveNote()">
           💾 Save Note
         </button>
       </div>
       
-      <!-- Quick Action Buttons for Mobile -->
-      <div class="quick-actions" style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-        <button onclick="app.insertQuickText('TODO: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
-          ✅ Todo
-        </button>
-        <button onclick="app.insertQuickText('URGENT: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
-          🔥 Urgent
-        </button>
-        <button onclick="app.insertQuickText('MEETING: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
-          📅 Meeting
-        </button>
-        <button onclick="app.insertQuickText('IDEA: ')" style="background: var(--bg-hover); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
-          💡 Idea
-        </button>
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; font-size: 0.75rem; color: var(--text-muted);">
-        <span>💡 Keywords: 'urgent', 'schedule', 'reminder'</span>
+      <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+        <span>💡 Use keywords: urgent, schedule, reminder</span>
         <span id="charCount">0 characters</span>
       </div>
-      
-      <!-- Test Buttons (Hidden on Mobile) -->
-      <div class="test-controls" style="margin-bottom: 2rem; display: none;">
-        <button class="sidebar-button" onclick="app.testMicrophone()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
-          🔧 Test Mic
-        </button>
-        <button class="sidebar-button" onclick="app.testWhisperServer()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem;">
-          🤖 Test AI
-        </button>
-      </div>
-      
-      <!-- Notes List -->
-      <div style="border-top: 1px solid var(--border); padding-top: 2rem;">
-        <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Recent Notes</h3>
-        <div class="notes-list" id="notesList">
-          <!-- Notes will be dynamically loaded here -->
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
-
-<!-- Admin Container -->
-<div id="adminContainer" class="admin-container">
-  <!-- Header -->
-  <header class="app-header">
-    <div class="app-logo admin" id="adminLogo">SmartNotes Admin Panel</div>
-    <div class="user-menu">
-      <div class="user-avatar admin" id="adminAvatar">A</div>
-      <span id="adminName">Administrator</span>
-      <button class="logout-button" onclick="logout()">Logout</button>
     </div>
-  </header>
-  
-  <!-- Admin Main -->
-  <main class="admin-main">
-    <div class="admin-grid">
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <h3 class="admin-card-title">Total Users</h3>
+  </div>
+
+  <!-- Browse Notes Page -->
+  <div id="browseNotesPage" class="page">
+    <h1 class="page-title">📚 Browse Notes</h1>
+    
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterNotes('all')">All</button>
+      <button class="filter-tab" onclick="filterNotes('today')">Today</button>
+      <button class="filter-tab" onclick="filterNotes('week')">This Week</button>
+      <button class="filter-tab" onclick="filterNotes('voice')">Voice</button>
+      <button class="filter-tab" onclick="filterNotes('favorites')">Favorites</button>
+    </div>
+    
+    <div class="notes-grid" id="notesGrid">
+      <!-- Notes will be dynamically loaded here -->
+    </div>
+  </div>
+
+  <!-- Voice Notes Page -->
+  <div id="voiceNotesPage" class="page">
+    <h1 class="page-title">🎙️ Voice Studio</h1>
+    
+    <div class="voice-studio">
+      <h2 style="margin-bottom: 1rem;">Professional Voice Recording</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem;">Record high-quality voice notes with AI transcription</p>
+      
+      <button class="voice-button" id="studioVoiceButton" onclick="toggleStudioRecording()" style="width: 100px; height: 100px; font-size: 2.5rem;">
+        🎙️
+      </button>
+      
+      <div class="voice-visualizer">
+        <div class="voice-wave" id="voiceWave">
+          <div class="wave-bar" style="height: 20px;"></div>
+          <div class="wave-bar" style="height: 35px;"></div>
+          <div class="wave-bar" style="height: 25px;"></div>
+          <div class="wave-bar" style="height: 40px;"></div>
+          <div class="wave-bar" style="height: 30px;"></div>
+          <div class="wave-bar" style="height: 45px;"></div>
+          <div class="wave-bar" style="height: 35px;"></div>
+          <div class="wave-bar" style="height: 25px;"></div>
         </div>
-        <div class="admin-stat" id="totalUsers">0</div>
-        <p style="color: var(--text-secondary); font-size: 0.875rem;">Registered accounts</p>
       </div>
       
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <h3 class="admin-card-title">Total Notes</h3>
-        </div>
-        <div class="admin-stat" id="totalNotes">0</div>
-        <p style="color: var(--text-secondary); font-size: 0.875rem;">All notes created</p>
-      </div>
+      <div id="studioStatus" style="font-size: 1.1rem; margin-top: 1rem;">Ready to record</div>
+      <div id="studioTimer" style="font-size: 2rem; font-weight: 700; margin: 1rem 0; color: var(--accent);">00:00</div>
       
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <h3 class="admin-card-title">Voice Notes</h3>
+      <button class="save-button" onclick="saveStudioRecording()" id="saveStudioButton" style="display: none;">
+        💾 Save Recording
+      </button>
+    </div>
+  </div>
+
+  <!-- Search Page -->
+  <div id="searchPage" class="page">
+    <h1 class="page-title">🔍 Search & Filter</h1>
+    
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search-box" 
+      placeholder="Search your notes..." 
+      oninput="performSearch()"
+    >
+    
+    <div class="search-filters">
+      <button class="search-filter active" onclick="setSearchFilter('all')">All Notes</button>
+      <button class="search-filter" onclick="setSearchFilter('text')">Text Only</button>
+      <button class="search-filter" onclick="setSearchFilter('voice')">Voice Only</button>
+      <button class="search-filter" onclick="setSearchFilter('recent')">Recent</button>
+    </div>
+    
+    <div class="notes-grid" id="searchResults">
+      <!-- Search results will appear here -->
+    </div>
+  </div>
+
+  <!-- Settings Page -->
+  <div id="settingsPage" class="page">
+    <h1 class="page-title">⚙️ Settings</h1>
+    
+    <div class="settings-section">
+      <h3 class="settings-title">Voice Recording</h3>
+      <div class="setting-item">
+        <div>
+          <div>Auto-save voice notes</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Automatically save after transcription</div>
         </div>
-        <div class="admin-stat" id="totalVoiceNotes">0</div>
-        <p style="color: var(--text-secondary); font-size: 0.875rem;">Transcribed recordings</p>
+        <button class="setting-toggle active" onclick="toggleSetting(this)"></button>
+      </div>
+      <div class="setting-item">
+        <div>
+          <div>High quality recording</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Use higher bitrate for better quality</div>
+        </div>
+        <button class="setting-toggle" onclick="toggleSetting(this)"></button>
       </div>
     </div>
     
-    <!-- Users Table -->
-    <div class="users-table">
-      <h3 style="margin-bottom: 1.5rem; color: var(--text-primary); font-size: 1.25rem;">User Management</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Joined</th>
-            <th>Notes</th>
-            <th>Last Active</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="usersTableBody">
-          <!-- Users will be dynamically loaded here -->
-        </tbody>
-      </table>
+    <div class="settings-section">
+      <h3 class="settings-title">Notifications</h3>
+      <div class="setting-item">
+        <div>
+          <div>Show save confirmations</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">Display success messages when saving</div>
+        </div>
+        <button class="setting-toggle active" onclick="toggleSetting(this)"></button>
+      </div>
     </div>
-  </main>
-</div>
+    
+    <div class="settings-section">
+      <h3 class="settings-title">Data Management</h3>
+      <div class="setting-item">
+        <button onclick="exportNotes()" style="background: var(--accent); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+          📤 Export All Notes
+        </button>
+      </div>
+      <div class="setting-item">
+        <button onclick="clearAllNotes()" style="background: var(--danger); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">
+          🗑️ Clear All Notes
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active" onclick="showPage('quickNotePage', this)">
+    <div class="nav-icon">✍️</div>
+    <div>Quick</div>
+  </a>
+  <a href="#" class="nav-item" onclick="showPage('browseNotesPage', this)">
+    <div class="nav-icon">📚</div>
+    <div>Browse</div>
+  </a>
+  <a href="#" class="nav-item" onclick="showPage('voiceNotesPage', this)">
+    <div class="nav-icon">🎙️</div>
+    <div>Voice</div>
+  </a>
+  <a href="#" class="nav-item" onclick="showPage('searchPage', this)">
+    <div class="nav-icon">🔍</div>
+    <div>Search</div>
+  </a>
+  <a href="#" class="nav-item" onclick="showPage('settingsPage', this)">
+    <div class="nav-icon">⚙️</div>
+    <div>Settings</div>
+  </a>
+</nav>
 
 <script>
-class SmartNotesComplete {
-  constructor() {
-    this.currentUser = null;
-    this.isAdmin = false;
-    this.notes = [];
-    this.mediaRecorder = null;
-    this.recordingChunks = [];
-    this.recordingTimer = null;
-    this.recordingStartTime = null;
-    this.init();
-  }
-  
-  init() {
-    // Check for existing session
-    const savedUser = localStorage.getItem('smartnotes_user');
-    const isAdminSession = localStorage.getItem('smartnotes_admin');
-    
-    if (savedUser) {
-      this.currentUser = JSON.parse(savedUser);
-      if (isAdminSession) {
-        this.isAdmin = true;
-        this.showAdmin();
-      } else {
-        this.showApp();
-        this.loadUserNotes();
-      }
-    } else {
-      this.showAuth();
-    }
-    
-    // Setup form listeners
-    this.setupFormListeners();
-    
-    // Setup keyboard shortcuts
-    this.setupKeyboardShortcuts();
-    
-    // Initialize demo data
-    this.initializeDemoData();
-  }
-  
-  initializeDemoData() {
-    // Demo users
-    if (!localStorage.getItem('smartnotes_users')) {
-      const demoUsers = [
-        {
-          id: '1',
-          name: 'Demo User',
-          email: 'demo@smartnotes.com',
-          password: 'demo123',
-          created: new Date().toISOString(),
-          lastActive: new Date().toISOString()
-        },
-        {
-          id: 'admin',
-          name: 'Administrator',
-          email: 'admin@smartnotes.com',
-          password: 'admin123',
-          created: new Date().toISOString(),
-          lastActive: new Date().toISOString(),
-          isAdmin: true
-        }
-      ];
-      localStorage.setItem('smartnotes_users', JSON.stringify(demoUsers));
-    }
-  }
-  
-  setupFormListeners() {
-    document.getElementById('loginFormElement').addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleLogin();
-    });
-    
-    document.getElementById('signupFormElement').addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleSignup();
-    });
-    
-    // Admin access through regular login with special credentials
-  }
-  
-  setupKeyboardShortcuts() {
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        this.saveCurrentNote();
-      }
-      
-      if (e.ctrlKey && e.key === 'n') {
-        e.preventDefault();
-        this.createNewNote();
-      }
-      
-      if (e.key === 'Escape' && this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-        this.stopVoiceRecording();
-      }
-    });
-  }
-  
-  // Admin detection now handled automatically in login process
-  
-  async handleLogin() {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    // Clear previous errors
-    this.clearErrors(['loginEmailError', 'loginPasswordError']);
-    
-    // Basic validation
-    if (!email || !password) {
-      this.showError('loginEmailError', 'Please fill in all fields');
-      return;
-    }
-    
-    // Show loading
-    const button = document.getElementById('loginButton');
-    button.innerHTML = '<div class="loading"></div> Signing in...';
-    button.disabled = true;
-    
-    try {
-      // Simulate API call
-      await this.delay(1000);
-      
-      // Check if user exists
-      const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-      const user = users.find(u => u.email === email && u.password === password);
-      
-      if (!user) {
-        this.showError('loginPasswordError', 'Invalid email or password');
-        return;
-      }
-      
-      // Update last active
-      user.lastActive = new Date().toISOString();
-      localStorage.setItem('smartnotes_users', JSON.stringify(users));
-      
-      // Login successful
-      this.currentUser = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatar: user.name.charAt(0).toUpperCase(),
-        isAdmin: user.isAdmin || false
-      };
-      
-      localStorage.setItem('smartnotes_user', JSON.stringify(this.currentUser));
-      
-      if (user.isAdmin) {
-        this.isAdmin = true;
-        localStorage.setItem('smartnotes_admin', 'true');
-        this.showAdmin();
-      } else {
-        this.showApp();
-        this.loadUserNotes();
-      }
-      
-    } catch (error) {
-      this.showError('loginPasswordError', 'Login failed. Please try again.');
-    } finally {
-      button.innerHTML = 'Sign In';
-      button.disabled = false;
-    }
-  }
-  
-  async handleSignup() {
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    
-    // Clear previous errors
-    this.clearErrors(['signupNameError', 'signupEmailError', 'signupPasswordError', 'signupConfirmPasswordError']);
-    
-    // Validation
-    if (!name || !email || !password || !confirmPassword) {
-      this.showError('signupNameError', 'Please fill in all fields');
-      return;
-    }
-    
-    if (password !== confirmPassword) {
-      this.showError('signupConfirmPasswordError', 'Passwords do not match');
-      return;
-    }
-    
-    if (password.length < 6) {
-      this.showError('signupPasswordError', 'Password must be at least 6 characters');
-      return;
-    }
-    
-    // Show loading
-    const button = document.getElementById('signupButton');
-    button.innerHTML = '<div class="loading"></div> Creating account...';
-    button.disabled = true;
-    
-    try {
-      // Simulate API call
-      await this.delay(1500);
-      
-      // Check if user already exists
-      const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-      if (users.find(u => u.email === email)) {
-        this.showError('signupEmailError', 'Account with this email already exists');
-        return;
-      }
-      
-      // Create new user
-      const newUser = {
-        id: Date.now().toString(),
-        name,
-        email,
-        password,
-        created: new Date().toISOString(),
-        lastActive: new Date().toISOString()
-      };
-      
-      users.push(newUser);
-      localStorage.setItem('smartnotes_users', JSON.stringify(users));
-      
-      // Auto login
-      this.currentUser = {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        avatar: newUser.name.charAt(0).toUpperCase()
-      };
-      
-      localStorage.setItem('smartnotes_user', JSON.stringify(this.currentUser));
-      this.showApp();
-      this.loadUserNotes();
-      
-      this.showNotification('Account created successfully! Welcome to SmartNotes!', 'success');
-      
-    } catch (error) {
-      this.showError('signupEmailError', 'Signup failed. Please try again.');
-    } finally {
-      button.innerHTML = 'Create Account';
-      button.disabled = false;
-    }
-  }
-  
-  showAuth() {
-    document.getElementById('authContainer').style.display = 'flex';
-    document.getElementById('appContainer').style.display = 'none';
-    document.getElementById('adminContainer').style.display = 'none';
-  }
-  
-  showApp() {
-    document.getElementById('authContainer').style.display = 'none';
-    document.getElementById('appContainer').style.display = 'block';
-    document.getElementById('adminContainer').style.display = 'none';
-    
-    // Update user info in header
-    document.getElementById('userAvatar').textContent = this.currentUser.avatar;
-    document.getElementById('userName').textContent = this.currentUser.name;
-    
-    // Auto-focus input on mobile for instant note-taking
-    setTimeout(() => {
-      if (window.innerWidth <= 768) {
-        const noteInput = document.getElementById('noteInput');
-        if (noteInput) {
-          noteInput.focus();
-        }
-      }
-    }, 500);
-  }
-  
-  showAdmin() {
-    document.getElementById('authContainer').style.display = 'none';
-    document.getElementById('appContainer').style.display = 'none';
-    document.getElementById('adminContainer').style.display = 'block';
-    
-    this.loadAdminData();
-  }
-  
-  loadAdminData() {
-    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-    let totalNotes = 0;
-    let totalVoiceNotes = 0;
-    
-    // Calculate totals
-    users.forEach(user => {
-      if (user.id !== 'admin') {
-        const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
-        totalNotes += userNotes.length;
-        totalVoiceNotes += userNotes.filter(note => note.type === 'voice').length;
-      }
-    });
-    
-    // Update stats
-    document.getElementById('totalUsers').textContent = users.filter(u => u.id !== 'admin').length;
-    document.getElementById('totalNotes').textContent = totalNotes;
-    document.getElementById('totalVoiceNotes').textContent = totalVoiceNotes;
-    
-    // Load users table
-    this.loadUsersTable();
-  }
-  
-  loadUsersTable() {
-    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-    const tableBody = document.getElementById('usersTableBody');
-    
-    tableBody.innerHTML = users.filter(user => user.id !== 'admin').map(user => {
-      const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${user.id}`) || '[]');
-      return `
-        <tr>
-          <td>${user.name}</td>
-          <td>${user.email}</td>
-          <td>${new Date(user.created).toLocaleDateString()}</td>
-          <td>${userNotes.length}</td>
-          <td>${new Date(user.lastActive).toLocaleDateString()}</td>
-          <td>
-            <button class="action-button" onclick="app.viewUserNotes('${user.id}')">View Notes</button>
-            <button class="action-button danger" onclick="app.deleteUser('${user.id}')">Delete</button>
-          </td>
-        </tr>
-      `;
-    }).join('');
-  }
-  
-  viewUserNotes(userId) {
-    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-    const user = users.find(u => u.id === userId);
-    const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${userId}`) || '[]');
-    
-    alert(`${user.name}'s Notes (${userNotes.length} total):\n\n` + 
-          userNotes.slice(0, 3).map(note => 
-            note.content.substring(0, 100) + '...'
-          ).join('\n\n'));
-  }
-  
-  deleteUser(userId) {
-    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-      return;
-    }
-    
-    // Remove user
-    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-    const updatedUsers = users.filter(u => u.id !== userId);
-    localStorage.setItem('smartnotes_users', JSON.stringify(updatedUsers));
-    
-    // Remove user's notes
-    localStorage.removeItem(`smartnotes_notes_${userId}`);
-    
-    this.loadAdminData();
-    this.showNotification('User deleted successfully', 'success');
-  }
-  
-  logout() {
-    localStorage.removeItem('smartnotes_user');
-    localStorage.removeItem('smartnotes_admin');
-    this.currentUser = null;
-    this.isAdmin = false;
-    this.notes = [];
-    this.showAuth();
-    
-    // Clear forms
-    document.getElementById('loginFormElement').reset();
-    document.getElementById('signupFormElement').reset();
-    
-    // Reset voice recording
-    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-      this.mediaRecorder.stop();
-    }
-  }
-  
-  // Voice Recording Functions
-  async toggleVoiceRecording() {
-    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-      this.stopVoiceRecording();
-    } else {
-      await this.startVoiceRecording();
-    }
-  }
-  
-  async startVoiceRecording() {
-    try {
-      // Check if MediaRecorder is supported
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        this.showNotification('Voice recording not supported on this device/browser', 'error');
-        return;
-      }
-      
-      this.showNotification('Requesting microphone access...', 'info');
-      
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100
-        }
-      });
-      
-      // Check MediaRecorder support
-      if (!MediaRecorder.isTypeSupported('audio/webm')) {
-        console.log('webm not supported, trying mp4');
-        if (!MediaRecorder.isTypeSupported('audio/mp4')) {
-          console.log('mp4 not supported, using default');
-        }
-      }
-      
-      this.mediaRecorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4'
-      });
-      
-      this.recordingChunks = [];
-      this.recordingStartTime = Date.now();
-      
-      this.mediaRecorder.ondataavailable = (event) => {
-        console.log('Data available:', event.data.size, 'bytes');
-        if (event.data.size > 0) {
-          this.recordingChunks.push(event.data);
-        }
-      };
-      
-      this.mediaRecorder.onstop = () => {
-        console.log('Recording stopped, processing...');
-        this.processRecording();
-      };
-      
-      this.mediaRecorder.onerror = (event) => {
-        console.error('MediaRecorder error:', event);
-        this.showNotification('Recording error occurred', 'error');
-      };
-      
-      this.mediaRecorder.start(1000); // Collect data every second
-      console.log('MediaRecorder started:', this.mediaRecorder.state);
-      
-      // Update UI
-      const button = document.getElementById('voiceButton');
-      const status = document.getElementById('voiceStatus');
-      button.textContent = '⏹️';
-      button.classList.add('recording');
-      status.textContent = 'Recording... (Click to stop)';
-      status.classList.add('recording');
-      
-      // Start timer
-      this.startRecordingTimer();
-      
-      this.showNotification('🎙️ Recording started! Speak now...', 'success');
-      
-    } catch (error) {
-      console.error('Error starting recording:', error);
-      
-      let errorMessage = 'Microphone access denied. ';
-      
-      if (error.name === 'NotAllowedError') {
-        errorMessage += 'Please allow microphone access and try again.';
-      } else if (error.name === 'NotFoundError') {
-        errorMessage += 'No microphone found on this device.';
-      } else if (error.name === 'NotSupportedError') {
-        errorMessage += 'Voice recording not supported on this browser.';
-      } else {
-        errorMessage += 'Please check your microphone settings.';
-      }
-      
-      this.showNotification(errorMessage, 'error');
-    }
-  }
-  
-  stopVoiceRecording() {
-    if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-      this.mediaRecorder.stop();
-      
-      // Stop all tracks
-      this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-      
-      // Clear timer
-      if (this.recordingTimer) {
-        clearInterval(this.recordingTimer);
-      }
-    }
-  }
-  
-  startRecordingTimer() {
-    const timer = document.getElementById('voiceTimer');
-    this.recordingTimer = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - this.recordingStartTime) / 1000);
-      const minutes = Math.floor(elapsed / 60);
-      const seconds = elapsed % 60;
-      timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }, 1000);
-  }
-  
-  async processRecording() {
-    // Update UI
-    const button = document.getElementById('voiceButton');
-    const status = document.getElementById('voiceStatus');
-    button.textContent = '⏳';
-    button.classList.remove('recording');
-    button.classList.add('processing');
-    status.textContent = 'Processing... (Transcribing with Whisper AI)';
-    status.classList.remove('recording');
-    status.classList.add('processing');
-    
-    try {
-      console.log('Processing', this.recordingChunks.length, 'audio chunks');
-      
-      if (this.recordingChunks.length === 0) {
-        throw new Error('No audio data recorded');
-      }
-      
-      // Create blob from recording
-      const mimeType = this.mediaRecorder.mimeType || 'audio/webm';
-      const audioBlob = new Blob(this.recordingChunks, { type: mimeType });
-      console.log('Audio blob created:', audioBlob.size, 'bytes');
-      
-      if (audioBlob.size === 0) {
-        throw new Error('Audio recording is empty');
-      }
-      
-      // Show audio size for debugging
-      const sizeKB = Math.round(audioBlob.size / 1024);
-      const duration = Math.floor((Date.now() - this.recordingStartTime) / 1000);
-      
-      this.showNotification(`Sending ${sizeKB}KB audio to Whisper AI...`, 'info');
-      
-      // Try real Whisper transcription first
-      let transcription;
-      let isRealTranscription = false;
-      
-      try {
-        transcription = await this.sendToWhisperServer(audioBlob, duration);
-        isRealTranscription = true;
-        console.log('✅ Real Whisper transcription received');
-      } catch (whisperError) {
-        console.log('⚠️ Whisper server failed, falling back to mock:', whisperError.message);
-        transcription = this.generateMockTranscription(duration);
-        this.showNotification('Whisper server unavailable, using mock transcription', 'warning');
-      }
-      
-      // Add transcribed note
-      const note = {
-        id: Date.now().toString(),
-        content: transcription,
-        created: new Date().toISOString(),
-        updated: new Date().toISOString(),
-        category: this.categorizeNote(transcription),
-        type: 'voice',
-        duration: duration,
-        audioSize: audioBlob.size,
-        realTranscription: isRealTranscription
-      };
-      
-      this.notes.unshift(note);
-      this.saveUserNotes();
-      this.renderNotes();
-      
-      // Update note input
-      document.getElementById('noteInput').value = transcription;
-      updateCharCount();
-      
-      const statusIcon = isRealTranscription ? '🤖' : '🎭';
-      const statusText = isRealTranscription ? 'transcribed by Whisper AI' : 'mock transcription';
-      this.showNotification(`${statusIcon} Voice note (${duration}s) ${statusText}!`, 'success');
-      
-    } catch (error) {
-      console.error('Error processing recording:', error);
-      this.showNotification(`Recording error: ${error.message}`, 'error');
-    } finally {
-      // Reset UI
-      button.textContent = '🎙️';
-      button.classList.remove('processing');
-      status.textContent = 'Click to start voice recording';
-      status.classList.remove('processing');
-      document.getElementById('voiceTimer').textContent = '00:00';
-    }
-  }
-  
-  // Send audio to Whisper server for real transcription
-  async sendToWhisperServer(audioBlob, duration) {
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'recording.webm');
-    formData.append('duration', duration.toString());
-    
-    const response = await fetch('http://localhost:3001/transcribe', {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-      throw new Error(errorData.error || `Server error: ${response.status}`);
-    }
-    
-    const result = await response.json();
-    
-    if (!result.success) {
-      throw new Error(result.error || 'Transcription failed');
-    }
-    
-    return result.transcription;
-  }
-  
-  generateMockTranscription(duration) {
-    const date = new Date().toLocaleDateString();
-    const time = new Date().toLocaleTimeString();
-    
-    const mockTranscriptions = [
-      `Voice note recorded on ${date} at ${time}. Duration: ${duration} seconds. This is a test of the voice recording and transcription system. The audio was captured successfully and is being processed by the mock AI transcription engine.`,
-      
-      `Meeting notes from today's discussion (${date}). We covered the project timeline, budget considerations, and next steps for implementation. The team is aligned on deliverables and ready to move forward.`,
-      
-      `Personal reminder recorded at ${time}: Don't forget to call mom this weekend and pick up groceries on the way home. Also need to schedule that dentist appointment I've been putting off.`,
-      
-      `Business idea captured on ${date}: What if we created an app that combines voice recording with AI transcription? Users could capture thoughts on the go and have them automatically converted to searchable text notes.`,
-      
-      `Quick voice memo about tomorrow's presentation. Need to prepare slides covering market analysis, competitive landscape, and growth projections. Remember to include the Q4 revenue numbers and customer feedback data.`,
-      
-      `Voice recording test completed successfully on ${date}. Audio duration: ${duration} seconds. The microphone access, MediaRecorder API, and transcription pipeline are all functioning correctly.`
-    ];
-    
-    return mockTranscriptions[Math.floor(Math.random() * mockTranscriptions.length)];
-  }
-  
-  loadUserNotes() {
-    const userNotes = JSON.parse(localStorage.getItem(`smartnotes_notes_${this.currentUser.id}`) || '[]');
-    this.notes = userNotes;
-    this.renderNotes();
-  }
-  
-  saveUserNotes() {
-    localStorage.setItem(`smartnotes_notes_${this.currentUser.id}`, JSON.stringify(this.notes));
-    
-    // Update user's last active
-    const users = JSON.parse(localStorage.getItem('smartnotes_users') || '[]');
-    const userIndex = users.findIndex(u => u.id === this.currentUser.id);
-    if (userIndex !== -1) {
-      users[userIndex].lastActive = new Date().toISOString();
-      localStorage.setItem('smartnotes_users', JSON.stringify(users));
-    }
-  }
-  
-  renderNotes() {
-    const notesList = document.getElementById('notesList');
-    
-    if (this.notes.length === 0) {
-      notesList.innerHTML = `
-        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
-          <p>No notes yet. Create your first note above or record a voice note!</p>
-        </div>
-      `;
-      return;
-    }
-    
-    notesList.innerHTML = this.notes.map(note => `
-      <div class="note-item ${note.type === 'voice' ? 'voice' : ''}">
-        <div class="note-meta">
-          <span>${new Date(note.created).toLocaleDateString()}</span>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
-            <span>${this.getCategoryDisplay(note.category, note.created)}</span>
-            <button class="favorite-btn" onclick="app.toggleFavorite('${note.id}')" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: ${note.favorite ? '#f59e0b' : '#666'};">
-              ${note.favorite ? '⭐' : '☆'}
-            </button>
-            <button class="delete-btn" onclick="app.deleteNote('${note.id}')" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--danger); opacity: 0.7; margin-left: auto;" title="Delete note">
-              🗑️
-            </button>
-          </div>
-        </div>
-        <div class="note-preview" onclick="loadNote('${note.id}')" style="cursor: pointer;">
-          ${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}
-        </div>
-        ${note.type === 'voice' ? `
-          <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
-            <span>Duration: ${note.duration}s</span>
-            <span style="color: ${note.realTranscription ? '#10b981' : '#f59e0b'};">
-              ${note.realTranscription ? '🤖 Whisper AI' : '🎭 Mock'}
-            </span>
-          </div>
-        ` : ''}
-      </div>
-    `).join('');
-  }
-  
-  saveCurrentNote() {
-    const content = document.getElementById('noteInput').value.trim();
-    
-    if (!content) {
-      this.showNotification('Please write something first!', 'warning');
-      return;
-    }
-    
-    const note = {
-      id: Date.now().toString(),
-      content,
-      created: new Date().toISOString(),
-      updated: new Date().toISOString(),
-      category: this.categorizeNote(content),
-      type: 'text'
-    };
-    
-    this.notes.unshift(note);
-    this.saveUserNotes();
-    this.renderNotes();
-    
-    document.getElementById('noteInput').value = '';
-    this.showNotification('Note saved successfully!', 'success');
-  }
-  
-  createNewNote() {
-    document.getElementById('noteInput').value = '';
-    document.getElementById('noteInput').focus();
-  }
-  
-  // Insert quick text templates
-  insertQuickText(text) {
-    const noteInput = document.getElementById('noteInput');
-    const currentText = noteInput.value;
-    
-    // Add quick text at beginning or after existing content
-    if (currentText.trim() === '') {
-      noteInput.value = text;
-    } else {
-      noteInput.value = currentText + '\n\n' + text;
-    }
-    
-    // Focus and move cursor to end
-    noteInput.focus();
-    noteInput.setSelectionRange(noteInput.value.length, noteInput.value.length);
-    
-    // Update character count
-    updateCharCount();
-  }
-  
-  showError(elementId, message) {
-    const errorElement = document.getElementById(elementId);
-    errorElement.textContent = message;
-    errorElement.style.display = 'block';
-  }
-  
-  clearErrors(errorIds) {
-    errorIds.forEach(id => {
-      const errorElement = document.getElementById(id);
-      errorElement.style.display = 'none';
-    });
-  }
-  
-  showNotification(message, type = 'info') {
-    const notification = document.getElementById('notification');
-    const notificationText = document.getElementById('notificationText');
-    
-    notificationText.textContent = message;
-    notification.className = `notification ${type}`;
-    notification.classList.add('show');
-    
-    setTimeout(() => {
-      notification.classList.remove('show');
-    }, 3000);
-  }
-  
-  // Search functionality
-  searchNotes(query) {
-    const searchResults = this.notes.filter(note => 
-      note.content.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    if (searchResults.length === 0) {
-      this.showNotification(`No notes found for "${query}"`, 'warning');
-      return;
-    }
-    
-    // Temporarily show only search results
-    const originalNotes = [...this.notes];
-    this.notes = searchResults;
-    this.renderNotes();
-    
-    this.showNotification(`Found ${searchResults.length} notes for "${query}". Click any note to view.`, 'success');
-    
-    // Add back button functionality
-    setTimeout(() => {
-      const resetButton = document.createElement('button');
-      resetButton.textContent = '← Show All Notes';
-      resetButton.className = 'sidebar-button';
-      resetButton.style.marginBottom = '1rem';
-      resetButton.onclick = () => {
-        this.notes = originalNotes;
-        this.renderNotes();
-        resetButton.remove();
-        this.showNotification('Showing all notes', 'info');
-      };
-      document.getElementById('notesList').prepend(resetButton);
-    }, 100);
-  }
-  
-  // Favorites functionality
-  showFavorites() {
-    const favorites = this.notes.filter(note => note.favorite);
-    
-    if (favorites.length === 0) {
-      this.showNotification('No favorite notes yet. Star some notes first!', 'info');
-      return;
-    }
-    
-    const originalNotes = [...this.notes];
-    this.notes = favorites;
-    this.renderNotes();
-    
-    this.showNotification(`Showing ${favorites.length} favorite notes`, 'success');
-    
-    setTimeout(() => {
-      const resetButton = document.createElement('button');
-      resetButton.textContent = '← Show All Notes';
-      resetButton.className = 'sidebar-button';
-      resetButton.style.marginBottom = '1rem';
-      resetButton.onclick = () => {
-        this.notes = originalNotes;
-        this.renderNotes();
-        resetButton.remove();
-        this.showNotification('Showing all notes', 'info');
-      };
-      document.getElementById('notesList').prepend(resetButton);
-    }, 100);
-  }
-  
-  // Category filtering
-  filterByCategory(category) {
-    const filtered = this.notes.filter(note => 
-      note.category === category || note.type === category
-    );
-    
-    if (filtered.length === 0) {
-      this.showNotification(`No notes in ${category} category`, 'warning');
-      return;
-    }
-    
-    const originalNotes = [...this.notes];
-    this.notes = filtered;
-    this.renderNotes();
-    
-    this.showNotification(`Showing ${filtered.length} ${category} notes`, 'success');
-    
-    setTimeout(() => {
-      const resetButton = document.createElement('button');
-      resetButton.textContent = '← Show All Notes';
-      resetButton.className = 'sidebar-button';
-      resetButton.style.marginBottom = '1rem';
-      resetButton.onclick = () => {
-        this.notes = originalNotes;
-        this.renderNotes();
-        resetButton.remove();
-        this.showNotification('Showing all notes', 'info');
-      };
-      document.getElementById('notesList').prepend(resetButton);
-    }, 100);
-  }
-  
-  // AI Summarize
-  async aiSummarize() {
-    const currentNote = document.getElementById('noteInput').value.trim();
-    
-    if (!currentNote) {
-      this.showNotification('Write a note first to summarize!', 'warning');
-      return;
-    }
-    
-    this.showNotification('AI summarizing your note...', 'info');
-    
-    // Simulate AI processing
-    await this.delay(2000);
-    
-    const summary = this.generateSummary(currentNote);
-    
-    // Add summary to note input
-    document.getElementById('noteInput').value = `SUMMARY: ${summary}\n\n--- ORIGINAL ---\n${currentNote}`;
-    
-    this.showNotification('AI summary added to your note!', 'success');
-  }
-  
-  // AI Generate Ideas
-  async aiGenerate() {
-    this.showNotification('AI generating creative ideas...', 'info');
-    
-    await this.delay(2000);
-    
-    const ideas = this.generateIdeas();
-    
-    // Create new note with ideas
-    document.getElementById('noteInput').value = ideas;
-    
-    this.showNotification('AI generated fresh ideas for you!', 'success');
-  }
-  
-  // AI Organize
-  async aiOrganize() {
-    if (this.notes.length === 0) {
-      this.showNotification('No notes to organize!', 'warning');
-      return;
-    }
-    
-    this.showNotification('AI organizing your notes...', 'info');
-    
-    await this.delay(3000);
-    
-    // Auto-categorize notes by schedule and content
-    this.notes.forEach(note => {
-      // Re-categorize all notes with new schedule system
-      note.category = this.categorizeNote(note.content);
-    });
-    
-    this.saveUserNotes();
-    this.renderNotes();
-    
-    this.showNotification('AI organized your notes by category!', 'success');
-  }
-  
-  // Helper functions for AI features
-  generateSummary(text) {
-    const summaries = [
-      "Key points: Main ideas and action items highlighted",
-      "Essential info: Core concepts and important details",
-      "Quick recap: Main themes and takeaways covered",
-      "Brief overview: Primary focus and key insights",
-      "Main highlights: Important points and conclusions"
-    ];
-    
-    return summaries[Math.floor(Math.random() * summaries.length)];
-  }
-  
-  generateIdeas() {
-    const ideaTemplates = [
-      `💡 BUSINESS IDEAS (${new Date().toLocaleDateString()})
-      
-• AI-powered note organization service
-• Voice-to-text productivity app
-• Smart meeting transcription tool
-• Personal AI assistant for entrepreneurs
-• Automated content creation platform
+// App State
+let notes = JSON.parse(localStorage.getItem('smartnotes_notes') || '[]');
+let currentFilter = 'all';
+let searchFilter = 'all';
 
-🎯 ACTION ITEMS:
-• Research market demand
-• Build MVP prototype  
-• Validate with potential users
-• Create marketing strategy`,
+// Initialize app
+document.addEventListener('DOMContentLoaded', function() {
+  loadNotes();
+  updateCharCount();
+  
+  // Demo user
+  document.getElementById('userAvatar').textContent = 'G';
+  document.getElementById('userName').textContent = 'Gene';
+});
 
-      `🚀 PRODUCTIVITY HACKS
-      
-• Morning routine optimization
-• Time-blocking strategies
-• Automation tools setup
-• Digital declutter process
-• Focus enhancement techniques
-
-💡 IMPLEMENTATION:
-• Start with 1 technique this week
-• Track results for 30 days
-• Adjust based on what works
-• Scale successful methods`,
-
-      `📱 APP FEATURES TO BUILD
-      
-• Real-time collaboration
-• Smart notifications
-• Advanced search filters
-• Integration with popular tools
-• Mobile-first design
-
-🔧 DEVELOPMENT PRIORITIES:
-• Core functionality first
-• User feedback integration
-• Performance optimization
-• Security implementation`
-    ];
-    
-    return ideaTemplates[Math.floor(Math.random() * ideaTemplates.length)];
-  }
+// Navigation
+function showPage(pageId, navItem) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
   
-  categorizeNote(content) {
-    const text = content.toLowerCase();
-    const now = new Date();
-    const hour = now.getHours();
-    
-    // Check for urgent/time-sensitive keywords
-    if (text.includes('urgent') || text.includes('asap') || text.includes('today') || text.includes('now') || text.includes('deadline')) {
-      return 'urgent';
-    }
-    
-    // Check for scheduled items
-    if (text.includes('schedule') || text.includes('appointment') || text.includes('meeting') || 
-        text.includes('call at') || text.includes('reminder') || text.includes('todo')) {
-      return 'scheduled';
-    }
-    
-    // Auto-categorize by time of creation
-    if (hour >= 5 && hour < 12) {
-      return 'morning';
-    } else if (hour >= 12 && hour < 17) {
-      return 'afternoon';
-    } else if (hour >= 17 && hour < 22) {
-      return 'evening';
-    } else {
-      return 'late-night';
-    }
-  }
+  // Show selected page
+  document.getElementById(pageId).classList.add('active');
   
-  // Time-based filtering
-  filterByTimeRange(range) {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const weekAgo = new Date(today);
-    weekAgo.setDate(weekAgo.getDate() - 7);
-    const monthAgo = new Date(today);
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
-    
-    let filtered = [];
-    
-    switch(range) {
-      case 'today':
-        filtered = this.notes.filter(note => new Date(note.created) >= today);
-        break;
-      case 'yesterday':
-        filtered = this.notes.filter(note => {
-          const noteDate = new Date(note.created);
-          return noteDate >= yesterday && noteDate < today;
-        });
-        break;
-      case 'week':
-        filtered = this.notes.filter(note => new Date(note.created) >= weekAgo);
-        break;
-      case 'month':
-        filtered = this.notes.filter(note => new Date(note.created) >= monthAgo);
-        break;
-      case 'older':
-        filtered = this.notes.filter(note => new Date(note.created) < monthAgo);
-        break;
-      default:
-        filtered = this.notes;
-    }
-    
-    if (filtered.length === 0) {
-      this.showNotification(`No notes found for ${range}`, 'warning');
-      return;
-    }
-    
-    this.showFilteredNotes(filtered, `${range} notes`);
-  }
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  navItem.classList.add('active');
   
-  // Schedule-based filtering  
-  filterBySchedule(schedule) {
-    let filtered = [];
-    
-    switch(schedule) {
-      case 'morning':
-        filtered = this.notes.filter(note => note.category === 'morning');
-        break;
-      case 'afternoon':
-        filtered = this.notes.filter(note => note.category === 'afternoon');
-        break;
-      case 'evening':
-        filtered = this.notes.filter(note => note.category === 'evening');
-        break;
-      case 'urgent':
-        filtered = this.notes.filter(note => note.category === 'urgent');
-        break;
-      case 'scheduled':
-        filtered = this.notes.filter(note => note.category === 'scheduled');
-        break;
-      default:
-        filtered = this.notes;
-    }
-    
-    if (filtered.length === 0) {
-      this.showNotification(`No ${schedule} notes found`, 'warning');
-      return;
-    }
-    
-    this.showFilteredNotes(filtered, `${schedule} notes`);
-  }
-  
-  // Helper function to show filtered notes
-  showFilteredNotes(filtered, title) {
-    const originalNotes = [...this.notes];
-    this.notes = filtered;
-    this.renderNotes();
-    
-    this.showNotification(`Showing ${filtered.length} ${title}`, 'success');
-    
-    setTimeout(() => {
-      const resetButton = document.createElement('button');
-      resetButton.textContent = '← Show All Notes';
-      resetButton.className = 'sidebar-button';
-      resetButton.style.marginBottom = '1rem';
-      resetButton.onclick = () => {
-        this.notes = originalNotes;
-        this.renderNotes();
-        resetButton.remove();
-        this.showNotification('Showing all notes', 'info');
-      };
-      document.getElementById('notesList').prepend(resetButton);
-    }, 100);
-  }
-  
-  // Get user-friendly category display
-  getCategoryDisplay(category, created) {
-    const createdDate = new Date(created);
-    const timeStr = createdDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
-    const categoryMap = {
-      'morning': `🌅 Morning ${timeStr}`,
-      'afternoon': `☀️ Afternoon ${timeStr}`,
-      'evening': `🌆 Evening ${timeStr}`,
-      'late-night': `🌙 Late Night ${timeStr}`,
-      'urgent': `🔥 Urgent ${timeStr}`,
-      'scheduled': `⏰ Scheduled ${timeStr}`,
-      'voice': `🎤 Voice ${timeStr}`,
-    };
-    
-    return categoryMap[category] || `📝 ${timeStr}`;
-  }
-  
-  // Toggle favorite status
-  toggleFavorite(noteId) {
-    const note = this.notes.find(n => n.id === noteId);
-    if (note) {
-      note.favorite = !note.favorite;
-      this.saveUserNotes();
-      this.renderNotes();
-      this.showNotification(
-        note.favorite ? 'Added to favorites!' : 'Removed from favorites', 
-        'success'
-      );
-    }
-  }
-  
-  // Delete note function
-  deleteNote(noteId) {
-    const note = this.notes.find(n => n.id === noteId);
-    if (!note) return;
-    
-    // Show confirmation dialog
-    const notePreview = note.content.substring(0, 50) + (note.content.length > 50 ? '...' : '');
-    const confirmDelete = confirm(`Delete this note?\n\n"${notePreview}"\n\nThis action cannot be undone.`);
-    
-    if (confirmDelete) {
-      // Remove from notes array
-      this.notes = this.notes.filter(n => n.id !== noteId);
-      
-      // Clear note input if this note was being edited
-      const currentNoteContent = document.getElementById('noteInput').value;
-      if (currentNoteContent === note.content) {
-        document.getElementById('noteInput').value = '';
-        updateCharCount();
-      }
-      
-      // Save and re-render
-      this.saveUserNotes();
-      this.renderNotes();
-      
-      this.showNotification('Note deleted successfully', 'success');
-    }
-  }
-  
-  // Test microphone access
-  async testMicrophone() {
-    this.showNotification('Testing microphone access...', 'info');
-    
-    try {
-      // Check basic support
-      if (!navigator.mediaDevices) {
-        throw new Error('MediaDevices not supported');
-      }
-      
-      if (!navigator.mediaDevices.getUserMedia) {
-        throw new Error('getUserMedia not supported');
-      }
-      
-      // Test microphone access
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      
-      // Check MediaRecorder support
-      const supported = MediaRecorder.isTypeSupported('audio/webm') || 
-                       MediaRecorder.isTypeSupported('audio/mp4') ||
-                       MediaRecorder.isTypeSupported('audio/wav');
-      
-      if (!supported) {
-        throw new Error('MediaRecorder not supported');
-      }
-      
-      // Quick test recording
-      const mediaRecorder = new MediaRecorder(stream);
-      const chunks = [];
-      
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-      
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks);
-        const sizeKB = Math.round(blob.size / 1024);
-        this.showNotification(`✅ Microphone test passed! Recorded ${sizeKB}KB in 2 seconds`, 'success');
-        
-        // Stop all tracks
-        stream.getTracks().forEach(track => track.stop());
-      };
-      
-      mediaRecorder.start();
-      
-      // Stop after 2 seconds
-      setTimeout(() => {
-        mediaRecorder.stop();
-      }, 2000);
-      
-      this.showNotification('🎙️ Recording test for 2 seconds...', 'info');
-      
-    } catch (error) {
-      console.error('Microphone test failed:', error);
-      
-      let message = '❌ Microphone test failed: ';
-      if (error.name === 'NotAllowedError') {
-        message += 'Permission denied. Please allow microphone access in your browser settings.';
-      } else if (error.name === 'NotFoundError') {
-        message += 'No microphone detected. Please check your device has a microphone.';
-      } else if (error.message.includes('not supported')) {
-        message += 'Voice recording not supported on this browser/device.';
-      } else {
-        message += error.message;
-      }
-      
-      this.showNotification(message, 'error');
-    }
-  }
-  
-  // Test Whisper server connection
-  async testWhisperServer() {
-    this.showNotification('Testing Whisper AI server...', 'info');
-    
-    try {
-      const response = await fetch('http://localhost:3001/test-whisper', {
-        method: 'GET',
-        timeout: 5000
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        this.showNotification(`✅ Whisper AI server is running! Path: ${result.path}`, 'success');
-      } else {
-        this.showNotification(`❌ Whisper AI not found: ${result.message}`, 'error');
-      }
-      
-    } catch (error) {
-      console.error('Whisper server test failed:', error);
-      
-      let message = '❌ Whisper server test failed: ';
-      if (error.message.includes('Failed to fetch')) {
-        message += 'Server not running. Start with: cd smart-notes-whisper-server && npm start';
-      } else {
-        message += error.message;
-      }
-      
-      this.showNotification(message, 'error');
-    }
-  }
-  
-  // Clear all notes
-  clearAllNotes() {
-    if (this.notes.length === 0) {
-      this.showNotification('No notes to delete!', 'warning');
-      return;
-    }
-    
-    const confirmDelete = confirm(`Delete ALL ${this.notes.length} notes?\n\nThis action cannot be undone!`);
-    
-    if (confirmDelete) {
-      this.notes = [];
-      document.getElementById('noteInput').value = '';
-      updateCharCount();
-      this.saveUserNotes();
-      this.renderNotes();
-      
-      this.showNotification('All notes deleted', 'success');
-    }
-  }
-  
-  // Delete notes older than 30 days
-  deleteOldNotes() {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
-    const oldNotes = this.notes.filter(note => new Date(note.created) < thirtyDaysAgo);
-    
-    if (oldNotes.length === 0) {
-      this.showNotification('No notes older than 30 days found', 'info');
-      return;
-    }
-    
-    const confirmDelete = confirm(`Delete ${oldNotes.length} notes older than 30 days?\n\nThis action cannot be undone!`);
-    
-    if (confirmDelete) {
-      this.notes = this.notes.filter(note => new Date(note.created) >= thirtyDaysAgo);
-      this.saveUserNotes();
-      this.renderNotes();
-      
-      this.showNotification(`Deleted ${oldNotes.length} old notes`, 'success');
-    }
-  }
-  
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  // Load page-specific data
+  if (pageId === 'browseNotesPage') {
+    loadBrowseNotes();
+  } else if (pageId === 'searchPage') {
+    performSearch();
   }
 }
 
-// Global functions for button clicks
-function showLogin() {
-  document.getElementById('loginForm').classList.remove('hidden');
-  document.getElementById('signupForm').classList.add('hidden');
+// Quick Note Functions
+function saveNote() {
+  const content = document.getElementById('noteInput').value.trim();
+  
+  if (!content) {
+    showNotification('Please write something first!', 'error');
+    return;
+  }
+  
+  const note = {
+    id: Date.now().toString(),
+    content,
+    created: new Date().toISOString(),
+    type: 'text',
+    category: categorizeNote(content),
+    favorite: false
+  };
+  
+  notes.unshift(note);
+  localStorage.setItem('smartnotes_notes', JSON.stringify(notes));
+  
+  document.getElementById('noteInput').value = '';
+  updateCharCount();
+  
+  showNotification('Note saved successfully!', 'success');
 }
 
-function showSignup() {
-  document.getElementById('signupForm').classList.remove('hidden');
-  document.getElementById('loginForm').classList.add('hidden');
-}
-
-function logout() {
-  app.logout();
-}
-
-function createNewNote() {
-  app.createNewNote();
-}
-
-function toggleVoiceRecording() {
-  app.toggleVoiceRecording();
-}
-
-function loadNote(noteId) {
-  const note = app.notes.find(n => n.id === noteId);
-  if (note) {
-    document.getElementById('noteInput').value = note.content;
-    updateCharCount();
+function categorizeNote(content) {
+  const text = content.toLowerCase();
+  const hour = new Date().getHours();
+  
+  if (text.includes('urgent') || text.includes('asap')) {
+    return 'urgent';
+  } else if (text.includes('schedule') || text.includes('meeting')) {
+    return 'scheduled';
+  } else if (hour < 12) {
+    return 'morning';
+  } else if (hour < 17) {
+    return 'afternoon';
+  } else {
+    return 'evening';
   }
 }
 
 function updateCharCount() {
-  const noteInput = document.getElementById('noteInput');
-  const charCount = document.getElementById('charCount');
-  if (noteInput && charCount) {
-    charCount.textContent = `${noteInput.value.length} characters`;
+  const input = document.getElementById('noteInput');
+  const counter = document.getElementById('charCount');
+  if (input && counter) {
+    counter.textContent = `${input.value.length} characters`;
   }
 }
 
-// Fully functional sidebar features
-function searchNotes() { 
-  const query = prompt('Search your notes:');
+// Voice Recording (Mock)
+function toggleVoiceRecording() {
+  const button = document.getElementById('voiceButton');
+  const status = document.getElementById('voiceStatus');
+  const timer = document.getElementById('voiceTimer');
+  
+  if (button.classList.contains('recording')) {
+    // Stop recording
+    button.classList.remove('recording');
+    button.textContent = '🎙️';
+    status.textContent = 'Processing...';
+    
+    setTimeout(() => {
+      const transcription = generateMockTranscription();
+      document.getElementById('noteInput').value = transcription;
+      updateCharCount();
+      status.textContent = 'Tap to record voice note';
+      timer.textContent = '00:00';
+      showNotification('Voice note transcribed!', 'success');
+    }, 2000);
+    
+  } else {
+    // Start recording
+    button.classList.add('recording');
+    button.textContent = '⏹️';
+    status.textContent = 'Recording... Tap to stop';
+    
+    // Start timer
+    let seconds = 0;
+    const interval = setInterval(() => {
+      seconds++;
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timer.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
+    
+    button.dataset.interval = interval;
+  }
+}
+
+function toggleStudioRecording() {
+  // Similar to toggleVoiceRecording but for studio page
+  console.log('Studio recording toggle');
+}
+
+function generateMockTranscription() {
+  const transcriptions = [
+    `Voice note recorded on ${new Date().toLocaleDateString()}. This is a test of the voice recording system working perfectly with AI transcription.`,
+    `Meeting reminder for tomorrow at 2 PM. Don't forget to prepare the presentation slides and review the quarterly numbers.`,
+    `Business idea: Create an AI-powered note-taking app with voice transcription and smart categorization features.`,
+    `Personal note: Call mom this weekend and schedule that dentist appointment I've been putting off.`,
+    `Quick thought: The new project structure is working well. Team productivity is up and communication is clearer.`
+  ];
+  
+  return transcriptions[Math.floor(Math.random() * transcriptions.length)];
+}
+
+// Browse Notes
+function loadBrowseNotes() {
+  const grid = document.getElementById('notesGrid');
+  
+  if (notes.length === 0) {
+    grid.innerHTML = `
+      <div style="text-align: center; padding: 3rem; color: var(--text-secondary); grid-column: 1 / -1;">
+        <p>No notes yet. Create your first note!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let filteredNotes = filterNotesByType(notes, currentFilter);
+  
+  grid.innerHTML = filteredNotes.map(note => `
+    <div class="note-card ${note.type === 'voice' ? 'voice' : ''}" onclick="editNote('${note.id}')">
+      <div class="note-meta">
+        <span>${new Date(note.created).toLocaleDateString()}</span>
+        <span>${note.category}</span>
+      </div>
+      <div class="note-preview">
+        ${note.content.substring(0, 150)}${note.content.length > 150 ? '...' : ''}
+      </div>
+      <div class="note-actions">
+        <button class="action-btn favorite ${note.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${note.id}')">
+          ${note.favorite ? '⭐' : '☆'}
+        </button>
+        <button class="action-btn delete" onclick="event.stopPropagation(); deleteNote('${note.id}')">
+          🗑️
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterNotes(type) {
+  currentFilter = type;
+  
+  // Update active filter tab
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  loadBrowseNotes();
+}
+
+function filterNotesByType(notes, type) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekAgo = new Date(today);
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  
+  switch(type) {
+    case 'today':
+      return notes.filter(note => new Date(note.created) >= today);
+    case 'week':
+      return notes.filter(note => new Date(note.created) >= weekAgo);
+    case 'voice':
+      return notes.filter(note => note.type === 'voice');
+    case 'favorites':
+      return notes.filter(note => note.favorite);
+    default:
+      return notes;
+  }
+}
+
+// Note Actions
+function editNote(noteId) {
+  const note = notes.find(n => n.id === noteId);
+  if (note) {
+    document.getElementById('noteInput').value = note.content;
+    updateCharCount();
+    showPage('quickNotePage', document.querySelector('.nav-item'));
+  }
+}
+
+function toggleFavorite(noteId) {
+  const note = notes.find(n => n.id === noteId);
+  if (note) {
+    note.favorite = !note.favorite;
+    localStorage.setItem('smartnotes_notes', JSON.stringify(notes));
+    loadBrowseNotes();
+    showNotification(note.favorite ? 'Added to favorites!' : 'Removed from favorites', 'success');
+  }
+}
+
+function deleteNote(noteId) {
+  if (confirm('Delete this note? This action cannot be undone.')) {
+    notes = notes.filter(n => n.id !== noteId);
+    localStorage.setItem('smartnotes_notes', JSON.stringify(notes));
+    loadBrowseNotes();
+    showNotification('Note deleted', 'success');
+  }
+}
+
+// Search
+function performSearch() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const results = document.getElementById('searchResults');
+  
+  let filteredNotes = notes;
+  
   if (query) {
-    app.searchNotes(query);
+    filteredNotes = notes.filter(note => 
+      note.content.toLowerCase().includes(query)
+    );
+  }
+  
+  filteredNotes = filterNotesBySearchType(filteredNotes, searchFilter);
+  
+  if (filteredNotes.length === 0) {
+    results.innerHTML = `
+      <div style="text-align: center; padding: 3rem; color: var(--text-secondary); grid-column: 1 / -1;">
+        <p>${query ? `No notes found for "${query}"` : 'Start typing to search your notes'}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  results.innerHTML = filteredNotes.map(note => `
+    <div class="note-card ${note.type === 'voice' ? 'voice' : ''}" onclick="editNote('${note.id}')">
+      <div class="note-meta">
+        <span>${new Date(note.created).toLocaleDateString()}</span>
+        <span>${note.category}</span>
+      </div>
+      <div class="note-preview">
+        ${highlightSearchTerm(note.content.substring(0, 150), query)}${note.content.length > 150 ? '...' : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function setSearchFilter(type) {
+  searchFilter = type;
+  
+  document.querySelectorAll('.search-filter').forEach(filter => {
+    filter.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  performSearch();
+}
+
+function filterNotesBySearchType(notes, type) {
+  switch(type) {
+    case 'text':
+      return notes.filter(note => note.type === 'text');
+    case 'voice':
+      return notes.filter(note => note.type === 'voice');
+    case 'recent':
+      return notes.filter(note => {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        return new Date(note.created) >= threeDaysAgo;
+      });
+    default:
+      return notes;
   }
 }
 
-function viewFavorites() { 
-  app.showFavorites();
+function highlightSearchTerm(text, term) {
+  if (!term) return text;
+  const regex = new RegExp(`(${term})`, 'gi');
+  return text.replace(regex, '<mark style="background: var(--warning); color: black;">$1</mark>');
 }
 
-function filterByCategory(category) { 
-  app.filterByCategory(category);
+// Settings
+function toggleSetting(toggle) {
+  toggle.classList.toggle('active');
 }
 
-function filterByTimeRange(range) {
-  app.filterByTimeRange(range);
+function exportNotes() {
+  const dataStr = JSON.stringify(notes, null, 2);
+  const dataBlob = new Blob([dataStr], {type: 'application/json'});
+  
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(dataBlob);
+  link.download = `smartnotes-export-${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  
+  showNotification('Notes exported successfully!', 'success');
 }
 
-function filterBySchedule(schedule) {
-  app.filterBySchedule(schedule);
+function clearAllNotes() {
+  if (confirm('Delete all notes? This action cannot be undone!')) {
+    notes = [];
+    localStorage.setItem('smartnotes_notes', JSON.stringify(notes));
+    loadBrowseNotes();
+    showNotification('All notes deleted', 'success');
+  }
 }
 
-function aiSummarize() { 
-  app.aiSummarize();
+// Utilities
+function loadNotes() {
+  notes = JSON.parse(localStorage.getItem('smartnotes_notes') || '[]');
 }
 
-function aiGenerate() { 
-  app.aiGenerate();
+function showNotification(message, type = 'info') {
+  const notification = document.getElementById('notification');
+  const notificationText = document.getElementById('notificationText');
+  
+  notificationText.textContent = message;
+  notification.className = `notification ${type}`;
+  notification.classList.add('show');
+  
+  setTimeout(() => {
+    notification.classList.remove('show');
+  }, 3000);
 }
-
-function aiOrganize() { 
-  app.aiOrganize();
-}
-
-// Initialize app
-const app = new SmartNotesComplete();
 </script>
 
 </body>
