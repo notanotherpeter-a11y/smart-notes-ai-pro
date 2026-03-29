@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - App Icon Generator</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f0f0f0;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon-preview {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  width: 300px;
+  height: 300px;
+  border-radius: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.icon-content {
+  text-align: center;
+  color: white;
+}
+
+.icon-emoji {
+  font-size: 120px;
+  margin-bottom: -10px;
+  display: block;
+  text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.icon-text {
+  font-size: 24px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  letter-spacing: -0.5px;
+}
+
+.icon-ai {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.2);
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+
+canvas {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.controls {
+  margin: 20px 0;
+  text-align: center;
+}
+
+button {
+  background: #6366f1;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+button:hover {
+  background: #4f46e5;
+}
+
+.size-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+}
+
+.size-item {
+  text-align: center;
+}
+
+.size-label {
+  font-weight: 600;
+  margin: 10px 0 5px 0;
+  color: #333;
+}
+</style>
+</head>
+<body>
+
+<h1>📱 SmartNotes AI Pro - App Icon</h1>
+
+<div class="icon-preview" id="iconPreview">
+  <div class="icon-content">
+    <span class="icon-emoji">📝</span>
+    <div class="icon-text">SmartNotes</div>
+  </div>
+  <div class="icon-ai">AI</div>
+</div>
+
+<div class="controls">
+  <button onclick="generateIcons()">🎨 Generate All Icon Sizes</button>
+  <button onclick="downloadIcon(1024)">⬇️ Download 1024x1024</button>
+</div>
+
+<div class="size-grid" id="iconGrid">
+  <!-- Icons will be generated here -->
+</div>
+
+<script>
+function createIcon(size) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = size;
+  canvas.height = size;
+  
+  // Create gradient background
+  const gradient = ctx.createLinearGradient(0, 0, size, size);
+  gradient.addColorStop(0, '#6366f1');
+  gradient.addColorStop(1, '#8b5cf6');
+  
+  // Background with rounded corners
+  const radius = size * 0.2; // 20% radius like iOS
+  ctx.beginPath();
+  ctx.moveTo(radius, 0);
+  ctx.lineTo(size - radius, 0);
+  ctx.quadraticCurveTo(size, 0, size, radius);
+  ctx.lineTo(size, size - radius);
+  ctx.quadraticCurveTo(size, size, size - radius, size);
+  ctx.lineTo(radius, size);
+  ctx.quadraticCurveTo(0, size, 0, size - radius);
+  ctx.lineTo(0, radius);
+  ctx.quadraticCurveTo(0, 0, radius, 0);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  
+  // Add shadow effect
+  ctx.shadowColor = 'rgba(0,0,0,0.3)';
+  ctx.shadowBlur = size * 0.02;
+  ctx.shadowOffsetY = size * 0.01;
+  
+  // Main emoji/icon
+  ctx.font = `${size * 0.4}px -apple-system, system-ui`;
+  ctx.fillStyle = 'white';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('📝', size / 2, size * 0.4);
+  
+  // Text
+  ctx.font = `${size * 0.08}px -apple-system, system-ui`;
+  ctx.fontWeight = '700';
+  ctx.fillText('SmartNotes', size / 2, size * 0.7);
+  
+  // AI badge
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  const badgeSize = size * 0.15;
+  const badgeX = size * 0.75;
+  const badgeY = size * 0.25;
+  ctx.beginPath();
+  ctx.roundRect(badgeX - badgeSize/2, badgeY - badgeSize/4, badgeSize, badgeSize/2, badgeSize/8);
+  ctx.fill();
+  
+  ctx.fillStyle = 'white';
+  ctx.font = `${size * 0.06}px -apple-system, system-ui`;
+  ctx.fontWeight = '600';
+  ctx.fillText('AI', badgeX, badgeY);
+  
+  return canvas;
+}
+
+function generateIcons() {
+  const sizes = [
+    { size: 1024, label: 'App Store (iOS/Android)' },
+    { size: 512, label: 'Large Icon' },
+    { size: 180, label: 'iPhone App (60pt @3x)' },
+    { size: 120, label: 'iPhone App (60pt @2x)' },
+    { size: 87, label: 'iPhone Settings (29pt @3x)' },
+    { size: 80, label: 'iPhone Spotlight (40pt @2x)' },
+    { size: 192, label: 'Android Adaptive' },
+    { size: 144, label: 'Android Legacy' },
+    { size: 72, label: 'Android Medium' },
+    { size: 48, label: 'Android Small' }
+  ];
+  
+  const grid = document.getElementById('iconGrid');
+  grid.innerHTML = '';
+  
+  sizes.forEach(({ size, label }) => {
+    const canvas = createIcon(size);
+    const container = document.createElement('div');
+    container.className = 'size-item';
+    
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'size-label';
+    labelDiv.textContent = `${size}x${size}px`;
+    
+    const descDiv = document.createElement('div');
+    descDiv.textContent = label;
+    descDiv.style.fontSize = '12px';
+    descDiv.style.color = '#666';
+    
+    const downloadBtn = document.createElement('button');
+    downloadBtn.textContent = 'Download';
+    downloadBtn.style.fontSize = '12px';
+    downloadBtn.style.padding = '6px 12px';
+    downloadBtn.onclick = () => downloadCanvas(canvas, `smartnotes-icon-${size}x${size}.png`);
+    
+    container.appendChild(labelDiv);
+    container.appendChild(descDiv);
+    container.appendChild(canvas);
+    container.appendChild(downloadBtn);
+    grid.appendChild(container);
+  });
+}
+
+function downloadIcon(size) {
+  const canvas = createIcon(size);
+  downloadCanvas(canvas, `smartnotes-app-icon-${size}x${size}.png`);
+}
+
+function downloadCanvas(canvas, filename) {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL();
+  link.click();
+}
+
+// Auto-generate icons on load
+setTimeout(generateIcons, 500);
+
+</script>
+
+</body>
+</html>

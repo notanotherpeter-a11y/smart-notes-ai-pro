@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Categories</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Voice AI Edition</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item active">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@email.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Categories</h1>
+      <p class="content-subtitle">Organize your notes by category</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- Categories Overview -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🏷️ Categories Overview</h2>
+        </div>
+        <div class="card-content">
+          <div id="categoriesOverview">
+            <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🏷️</div>
+              <h3 style="margin-bottom: 0.5rem;">No categories yet</h3>
+              <p>Create some notes to see automatic categories</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Auto-Categorization Rules -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🤖 Auto-Categorization Rules</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; gap: 1rem;">
+            
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.5rem;">🚨</span>
+                <strong style="color: var(--text-primary);">Urgent Suffix</strong>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Keywords <code>urgent</code>, <code>asap</code>, <code>important</code> add "-urgent" suffix
+              </p>
+              <div style="display: flex; gap: 0.5rem;">
+                <span class="note-type" style="background: var(--danger);">Time-urgent</span>
+                <span style="color: var(--text-muted); font-size: 0.875rem;" id="urgentCount">0 notes</span>
+              </div>
+            </div>
+            
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.5rem;">📅</span>
+                <strong style="color: var(--text-primary);">Task Suffix</strong>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Keywords <code>todo</code>, <code>task</code>, <code>remind</code> add "-task" suffix
+              </p>
+              <div style="display: flex; gap: 0.5rem;">
+                <span class="note-type" style="background: var(--info);">Time-task</span>
+                <span style="color: var(--text-muted); font-size: 0.875rem;" id="scheduledCount">0 notes</span>
+              </div>
+            </div>
+            
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.5rem;">🤝</span>
+                <strong style="color: var(--text-primary);">Meeting Suffix</strong>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Keywords <code>meeting</code>, <code>call</code>, <code>appointment</code> add "-meeting" suffix
+              </p>
+              <div style="display: flex; gap: 0.5rem;">
+                <span class="note-type" style="background: var(--warning);">Time-meeting</span>
+                <span style="color: var(--text-muted); font-size: 0.875rem;" id="meetingCount">0 notes</span>
+              </div>
+            </div>
+            
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.5rem;">💡</span>
+                <strong style="color: var(--text-primary);">Idea Suffix</strong>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                Keywords <code>idea</code>, <code>thought</code>, <code>brainstorm</code> add "-idea" suffix
+              </p>
+              <div style="display: flex; gap: 0.5rem;">
+                <span class="note-type" style="background: var(--success);">Time-idea</span>
+                <span style="color: var(--text-muted); font-size: 0.875rem;" id="ideaCount">0 notes</span>
+              </div>
+            </div>
+            
+            <div style="background: var(--bg-secondary); border-radius: 8px; padding: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.5rem;">⏰</span>
+                <strong style="color: var(--text-primary);">Time-Based Categories (Primary)</strong>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                All notes are primarily categorized by creation time, with optional keyword suffixes
+              </p>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="note-type" style="background: var(--accent);">Morning (0-12h)</span>
+                <span class="note-type" style="background: var(--accent);">Afternoon (12-17h)</span>
+                <span class="note-type" style="background: var(--accent);">Evening (17-24h)</span>
+              </div>
+              <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">
+                Examples: "morning", "afternoon-urgent", "evening-task", "morning-meeting"
+              </p>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- Category Statistics -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📊 Category Statistics</h2>
+        </div>
+        <div class="card-content">
+          <div id="categoryStats">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              <p>No statistics available yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Category Browser -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🗂️ Browse by Category</h2>
+        </div>
+        <div class="card-content">
+          <div id="categoryBrowser">
+            <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🗂️</div>
+              <h3 style="margin-bottom: 0.5rem;">No categories to browse</h3>
+              <p>Create some notes to see them organized by category</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tips for Better Categorization -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">💡 Tips for Better Categorization</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; gap: 1rem;">
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">🎯</span>
+              <div>
+                <strong>Use Keywords</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                  Start your notes with keywords like "urgent", "todo", "meeting", or "idea" for automatic categorization.
+                </p>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">⏰</span>
+              <div>
+                <strong>Time-Based Organization</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                  Notes without specific keywords are categorized by creation time: Morning, Afternoon, or Evening.
+                </p>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">🎙️</span>
+              <div>
+                <strong>Voice Recognition</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                  Speak keywords naturally - "This is urgent" or "Meeting with team" will be categorized correctly.
+                </p>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">🔍</span>
+              <div>
+                <strong>Easy Searching</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">
+                  Use the search page to find notes by category, or click on category tags to filter notes.
+                </p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+let categoriesData = {};
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+  if (smartApp && smartApp.currentUser) {
+    loadCategoriesData();
+    
+    // Show admin nav if user is admin
+    if (smartApp.isAdmin) {
+      document.getElementById('adminNav').style.display = 'block';
+    }
+  }
+});
+
+function loadCategoriesData() {
+  if (!smartApp) return;
+  
+  const stats = smartApp.getStats();
+  categoriesData = stats.categories;
+  
+  // Update rule counts
+  updateRuleCounts();
+  
+  // Render categories overview
+  renderCategoriesOverview();
+  
+  // Render category statistics
+  renderCategoryStatistics();
+  
+  // Render category browser
+  renderCategoryBrowser();
+}
+
+function updateRuleCounts() {
+  // Count notes by specific categories
+  const urgentNotes = smartApp.notes.filter(note => note.category === 'urgent').length;
+  const scheduledNotes = smartApp.notes.filter(note => note.category === 'scheduled').length;
+  const meetingNotes = smartApp.notes.filter(note => note.category === 'meeting').length;
+  const ideaNotes = smartApp.notes.filter(note => note.category === 'idea').length;
+  
+  document.getElementById('urgentCount').textContent = `${urgentNotes} note${urgentNotes === 1 ? '' : 's'}`;
+  document.getElementById('scheduledCount').textContent = `${scheduledNotes} note${scheduledNotes === 1 ? '' : 's'}`;
+  document.getElementById('meetingCount').textContent = `${meetingNotes} note${meetingNotes === 1 ? '' : 's'}`;
+  document.getElementById('ideaCount').textContent = `${ideaNotes} note${ideaNotes === 1 ? '' : 's'}`;
+}
+
+function renderCategoriesOverview() {
+  const container = document.getElementById('categoriesOverview');
+  
+  if (Object.keys(categoriesData).length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🏷️</div>
+        <h3 style="margin-bottom: 0.5rem;">No categories yet</h3>
+        <p>Create some notes to see automatic categories</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const sortedCategories = Object.entries(categoriesData)
+    .sort(([,a], [,b]) => b - a);
+  
+  const totalNotes = smartApp.notes.length;
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+      ${sortedCategories.map(([category, count]) => {
+        const percentage = totalNotes > 0 ? Math.round((count / totalNotes) * 100) : 0;
+        return `
+          <div style="background: var(--bg-secondary); border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s;" onclick="browseCategoryNotes('${category}')">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 1.5rem;">${getCategoryIcon(category)}</span>
+                <div>
+                  <h3 style="margin-bottom: 0.25rem; text-transform: capitalize; color: var(--text-primary);">${category}</h3>
+                  <p style="color: var(--text-muted); font-size: 0.875rem;">${count} note${count === 1 ? '' : 's'}</p>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent);">${percentage}%</div>
+              </div>
+            </div>
+            <div style="background: var(--bg-primary); border-radius: 4px; height: 6px; overflow: hidden;">
+              <div style="background: var(--accent); height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderCategoryStatistics() {
+  const container = document.getElementById('categoryStats');
+  
+  if (Object.keys(categoriesData).length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        <p>No statistics available yet</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const totalNotes = smartApp.notes.length;
+  const totalCategories = Object.keys(categoriesData).length;
+  const mostUsedCategory = Object.entries(categoriesData)
+    .sort(([,a], [,b]) => b - a)[0];
+  
+  // Calculate notes per day
+  const oldestNote = smartApp.notes.reduce((oldest, note) => {
+    return new Date(note.created) < new Date(oldest.created) ? note : oldest;
+  }, smartApp.notes[0]);
+  
+  const daysSinceFirst = oldestNote ? 
+    Math.ceil((new Date() - new Date(oldestNote.created)) / (1000 * 60 * 60 * 24)) : 1;
+  const notesPerDay = (totalNotes / daysSinceFirst).toFixed(1);
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+      
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 2rem; color: var(--accent); font-weight: 700; margin-bottom: 0.5rem;">${totalCategories}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Total Categories</div>
+      </div>
+      
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 2rem; color: var(--success); font-weight: 700; margin-bottom: 0.5rem;">${mostUsedCategory ? mostUsedCategory[1] : 0}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Most Used: ${mostUsedCategory ? mostUsedCategory[0] : 'None'}</div>
+      </div>
+      
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 2rem; color: var(--warning); font-weight: 700; margin-bottom: 0.5rem;">${notesPerDay}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Notes per Day</div>
+      </div>
+      
+      <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 8px;">
+        <div style="font-size: 2rem; color: var(--info); font-weight: 700; margin-bottom: 0.5rem;">${(totalNotes / totalCategories).toFixed(1)}</div>
+        <div style="color: var(--text-secondary); font-size: 0.875rem;">Avg Notes per Category</div>
+      </div>
+      
+    </div>
+  `;
+}
+
+function renderCategoryBrowser() {
+  const container = document.getElementById('categoryBrowser');
+  
+  if (Object.keys(categoriesData).length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🗂️</div>
+        <h3 style="margin-bottom: 0.5rem;">No categories to browse</h3>
+        <p>Create some notes to see them organized by category</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const sortedCategories = Object.entries(categoriesData)
+    .sort(([,a], [,b]) => b - a);
+  
+  container.innerHTML = `
+    <div style="display: grid; gap: 1rem;">
+      ${sortedCategories.map(([category, count]) => {
+        const categoryNotes = smartApp.notes
+          .filter(note => note.category === category)
+          .slice(0, 3); // Show first 3 notes
+        
+        return `
+          <div style="background: var(--bg-secondary); border-radius: 12px; padding: 1.5rem;">
+            <div style="display: flex; align-items: center; justify-content: between; margin-bottom: 1rem; cursor: pointer;" onclick="browseCategoryNotes('${category}')">
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                <span style="font-size: 1.5rem;">${getCategoryIcon(category)}</span>
+                <div>
+                  <h3 style="margin-bottom: 0.25rem; text-transform: capitalize; color: var(--text-primary);">${category}</h3>
+                  <p style="color: var(--text-muted); font-size: 0.875rem;">${count} note${count === 1 ? '' : 's'}</p>
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="event.stopPropagation(); browseCategoryNotes('${category}')" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                View All
+              </button>
+            </div>
+            
+            ${categoryNotes.length > 0 ? `
+              <div style="display: grid; gap: 0.75rem;">
+                ${categoryNotes.map(note => `
+                  <div style="background: var(--bg-primary); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--accent);">
+                    <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 0.5rem;">
+                      <div style="flex: 1;">
+                        <p style="color: var(--text-primary); font-size: 0.875rem; line-height: 1.4;">
+                          ${smartApp.formatContent(note.content, 80)}
+                        </p>
+                      </div>
+                      ${note.type === 'voice' ? '<span class="note-type" style="margin-left: 0.5rem;">Voice</span>' : ''}
+                    </div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem;">
+                      ${smartApp.formatDate(note.created)}
+                    </div>
+                  </div>
+                `).join('')}
+                
+                ${count > 3 ? `
+                  <div style="text-align: center; padding: 0.75rem;">
+                    <span style="color: var(--text-muted); font-size: 0.875rem;">
+                      and ${count - 3} more note${count - 3 === 1 ? '' : 's'}...
+                    </span>
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function getCategoryIcon(category) {
+  // Handle time-based categories with suffixes
+  if (category.includes('morning')) return '🌅';
+  if (category.includes('afternoon')) return '☀️';
+  if (category.includes('evening')) return '🌙';
+  
+  // Handle suffix types
+  if (category.includes('urgent')) return '🚨';
+  if (category.includes('task')) return '📅';
+  if (category.includes('meeting')) return '🤝';
+  if (category.includes('idea')) return '💡';
+  
+  // Legacy support and fallback
+  const icons = {
+    morning: '🌅',
+    afternoon: '☀️',
+    evening: '🌙',
+    voice: '🎙️',
+    text: '📝'
+  };
+  
+  return icons[category] || '📝';
+}
+
+function browseCategoryNotes(category) {
+  // Redirect to notes page with category filter
+  window.location.href = `notes.html?category=${encodeURIComponent(category)}`;
+}
+</script>
+
+</body>
+</html>

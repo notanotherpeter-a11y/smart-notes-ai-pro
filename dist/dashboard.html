@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Voice AI Edition</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@email.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Dashboard</h1>
+      <p class="content-subtitle">Your productivity overview</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalNotesCount">0</div>
+          <div class="stat-label">Total Notes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="voiceNotesCount">0</div>
+          <div class="stat-label">Voice Notes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="recentNotesCount">0</div>
+          <div class="stat-label">This Week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="categoriesCount">0</div>
+          <div class="stat-label">Categories</div>
+        </div>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🚀 Quick Actions</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a href="notes.html" class="btn btn-primary">
+              <span>📝</span>
+              Create Note
+            </a>
+            <a href="notes.html?voice=true" class="btn btn-secondary">
+              <span>🎙️</span>
+              Voice Note
+            </a>
+            <a href="search.html" class="btn btn-secondary">
+              <span>🔍</span>
+              Search Notes
+            </a>
+            <button class="btn btn-secondary" onclick="exportNotes()">
+              <span>📥</span>
+              Export Notes
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📋 Recent Activity</h2>
+          <a href="notes.html" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1rem;">View All</a>
+        </div>
+        <div class="card-content">
+          <div id="recentNotesList">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">📝</div>
+              <p>No recent notes. <a href="notes.html" style="color: var(--accent);">Create your first note</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Categories Overview -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🏷️ Categories Breakdown</h2>
+          <a href="categories.html" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Manage</a>
+        </div>
+        <div class="card-content">
+          <div id="categoriesBreakdown">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              <div style="font-size: 2rem; margin-bottom: 1rem;">🏷️</div>
+              <p>No categories yet. Notes are automatically categorized.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tips -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">💡 Tips & Tricks</h2>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; gap: 1rem;">
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">🎙️</span>
+              <div>
+                <strong>Voice Recognition</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Click the microphone button to start voice input. Works best in Chrome and Safari.</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">🏷️</span>
+              <div>
+                <strong>Auto Categories</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Use keywords like "urgent", "meeting", "todo" for smart categorization.</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">🔍</span>
+              <div>
+                <strong>Quick Search</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Search through all your notes instantly by content or category.</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="font-size: 1.5rem;">📱</span>
+              <div>
+                <strong>Mobile Optimized</strong>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Use the quick action buttons for faster note creation on mobile.</p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Dashboard-specific functionality
+document.addEventListener('DOMContentLoaded', () => {
+  if (smartApp && smartApp.currentUser) {
+    loadDashboardData();
+    
+    // Show admin nav if user is admin
+    if (smartApp.isAdmin) {
+      document.getElementById('adminNav').style.display = 'block';
+    }
+  }
+});
+
+function loadDashboardData() {
+  if (!smartApp) return;
+  
+  const stats = smartApp.getStats();
+  
+  // Update stats cards
+  document.getElementById('totalNotesCount').textContent = stats.totalNotes;
+  document.getElementById('voiceNotesCount').textContent = stats.voiceNotes;
+  document.getElementById('recentNotesCount').textContent = stats.recentNotes;
+  document.getElementById('categoriesCount').textContent = Object.keys(stats.categories).length;
+  
+  // Load recent notes
+  loadRecentNotes();
+  
+  // Load categories breakdown
+  loadCategoriesBreakdown(stats.categories);
+}
+
+function loadRecentNotes() {
+  const recentNotes = smartApp.notes.slice(0, 5); // Last 5 notes
+  const container = document.getElementById('recentNotesList');
+  
+  if (recentNotes.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">📝</div>
+        <p>No recent notes. <a href="notes.html" style="color: var(--accent);">Create your first note</a></p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = recentNotes.map(note => {
+    const noteDate = new Date(note.created);
+    const timeString = noteDate.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    
+    return `
+      <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" style="margin-bottom: 1rem;">
+        <div class="note-header">
+          <div class="note-meta">
+            ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+            <span style="color: var(--text-muted); font-size: 0.875rem;">${timeString}</span>
+            <span style="color: var(--text-muted); font-size: 0.875rem; text-transform: capitalize;">${note.category}</span>
+          </div>
+        </div>
+        <div class="note-content" style="margin-bottom: 0;">
+          ${smartApp.formatContent(note.content, 100)}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function loadCategoriesBreakdown(categories) {
+  const container = document.getElementById('categoriesBreakdown');
+  
+  if (Object.keys(categories).length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">🏷️</div>
+        <p>No categories yet. Notes are automatically categorized.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const sortedCategories = Object.entries(categories)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 6); // Top 6 categories
+  
+  container.innerHTML = `
+    <div style="display: grid; gap: 0.75rem;">
+      ${sortedCategories.map(([category, count]) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px;">
+          <span style="color: var(--text-primary); font-weight: 500; text-transform: capitalize;">
+            ${getCategoryIcon(category)} ${category}
+          </span>
+          <span style="color: var(--text-muted); font-size: 0.875rem;">${count} notes</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function getCategoryIcon(category) {
+  // Handle time-based categories with suffixes
+  if (category.includes('morning')) return '🌅';
+  if (category.includes('afternoon')) return '☀️';
+  if (category.includes('evening')) return '🌙';
+  
+  // Handle suffix types
+  if (category.includes('urgent')) return '🚨';
+  if (category.includes('task')) return '📅';
+  if (category.includes('meeting')) return '🤝';
+  if (category.includes('idea')) return '💡';
+  
+  // Legacy support and fallback
+  const icons = {
+    morning: '🌅',
+    afternoon: '☀️',
+    evening: '🌙',
+    voice: '🎙️',
+    text: '📝'
+  };
+  
+  return icons[category] || '📝';
+}
+
+function exportNotes() {
+  if (!smartApp) return;
+  
+  if (smartApp.notes.length === 0) {
+    smartApp.showNotification('No notes to export', 'warning');
+    return;
+  }
+  
+  // Show export options
+  const format = confirm('Export as JSON? (Cancel for CSV)') ? 'json' : 'csv';
+  smartApp.exportNotes(format);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* Timeline-specific styles */
+.timeline-header {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline-group {
+  margin-bottom: 2.5rem;
+}
+
+.timeline-group:last-child {
+  margin-bottom: 0;
+}
+
+.note-time {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Time Tabs */
+.time-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+
+.time-tab {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.time-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.time-tab.active {
+  background: var(--bg-card);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .time-tabs {
+    padding: 1rem 1rem 0;
+    gap: 0.25rem;
+  }
+  
+  .time-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Voice AI Edition</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item active">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@email.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Notes</h1>
+      <p class="content-subtitle">Create and manage your notes</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- Note Creation -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">✨ Create New Note</h2>
+        </div>
+        <div class="card-content">
+          
+          <!-- Voice Controls -->
+          <div class="voice-controls">
+            <button class="voice-button" id="voiceButton" onclick="toggleVoice()">🎙️</button>
+            <div>
+              <div class="voice-status" id="voiceStatus">Click to start voice input</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Powered by Web Speech API</div>
+            </div>
+          </div>
+          
+          <!-- Text Input -->
+          <div class="form-group">
+            <textarea 
+              class="form-input form-textarea" 
+              id="noteInput" 
+              placeholder="Type your note here or use voice input above..."
+              maxlength="2000"
+              oninput="updateCharCount()"
+              style="min-height: 120px;"
+            ></textarea>
+          </div>
+          
+          <!-- Input Actions -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="addQuickPrefix('📋 TODO: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Todo</button>
+              <button class="btn btn-secondary" onclick="addQuickPrefix('🚨 URGENT: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Urgent</button>
+              <button class="btn btn-secondary" onclick="addQuickPrefix('🤝 MEETING: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Meeting</button>
+              <button class="btn btn-secondary" onclick="addQuickPrefix('💡 IDEA: ')" style="font-size: 0.875rem; padding: 0.5rem 0.75rem;">Idea</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span style="color: var(--text-muted); font-size: 0.75rem;" id="charCount">0 / 2000</span>
+              <button class="btn btn-primary" onclick="addNote()">Add Note</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- Notes List -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📝 Your Notes</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary" onclick="selectAllNotes()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Select All</button>
+            <button class="btn btn-danger" onclick="deleteSelectedNotes()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Delete Selected</button>
+          </div>
+        </div>
+        
+        <!-- Time Period Tabs -->
+        <div class="time-tabs">
+          <button class="time-tab active" data-period="all" onclick="switchTab('all')">📋 All Notes</button>
+          <button class="time-tab" data-period="today" onclick="switchTab('today')">📅 Today</button>
+          <button class="time-tab" data-period="yesterday" onclick="switchTab('yesterday')">🕐 Yesterday</button>
+          <button class="time-tab" data-period="thisWeek" onclick="switchTab('thisWeek')">📆 This Week</button>
+          <button class="time-tab" data-period="thisMonth" onclick="switchTab('thisMonth')">🗓️ This Month</button>
+          <button class="time-tab" data-period="older" onclick="switchTab('older')">📜 Older</button>
+          <button class="time-tab" data-period="voice" onclick="switchTab('voice')">🎙️ Voice</button>
+        </div>
+        
+        <div class="card-content">
+          <div id="notesList">
+            <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+              <h3 style="margin-bottom: 0.5rem;">No notes yet</h3>
+              <p>Create your first note above or try voice input!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+let selectedNotes = new Set();
+let currentTimeFilter = 'all';
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+  if (smartApp && smartApp.currentUser) {
+    loadNotes();
+    
+    // Show admin nav if user is admin
+    if (smartApp.isAdmin) {
+      document.getElementById('adminNav').style.display = 'block';
+    }
+    
+    // Check if voice mode was requested
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('voice') === 'true') {
+      document.getElementById('noteInput').focus();
+      if (voiceAI) {
+        setTimeout(() => voiceAI.start(), 500);
+      }
+    }
+  }
+});
+
+function loadNotes() {
+  if (!smartApp) return;
+  renderNotes();
+}
+
+function renderNotes() {
+  const container = document.getElementById('notesList');
+  let notes = smartApp.notes || [];
+  
+  // Filter notes based on current tab
+  notes = filterNotesByTab(notes, currentTimeFilter);
+  
+  if (notes.length === 0) {
+    const emptyMessage = currentTimeFilter === 'all' ? 
+      'No notes yet' : 
+      `No notes in ${getTabDisplayName(currentTimeFilter).toLowerCase()}`;
+    
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+        <h3 style="margin-bottom: 0.5rem;">${emptyMessage}</h3>
+        <p>${currentTimeFilter === 'all' ? 'Create your first note above or try voice input!' : 'Try selecting a different time period'}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // For 'all' tab, group by time periods
+  if (currentTimeFilter === 'all') {
+    const groups = groupNotesByTime(notes);
+    let html = '';
+    
+    Object.entries(groups).forEach(([period, groupNotes]) => {
+      if (groupNotes.length === 0) return;
+      
+      const titles = {
+        today: 'Today',
+        yesterday: 'Yesterday', 
+        thisWeek: 'Previous 7 Days',
+        thisMonth: 'Previous 30 Days',
+        older: 'Older'
+      };
+      
+      html += `
+        <div class="timeline-group">
+          <h3 class="timeline-header">
+            ${titles[period]}
+          </h3>
+          <div style="display: grid; gap: 1rem;">
+            ${groupNotes.map(note => renderNoteItem(note)).join('')}
+          </div>
+        </div>
+      `;
+    });
+    
+    container.innerHTML = html;
+  } else {
+    // For specific time periods, show flat list with single header
+    const header = getTabDisplayName(currentTimeFilter);
+    let html = `
+      <div class="timeline-group">
+        <h3 class="timeline-header">
+          ${header} (${notes.length})
+        </h3>
+        <div style="display: grid; gap: 1rem;">
+          ${notes.map(note => renderNoteItem(note)).join('')}
+        </div>
+      </div>
+    `;
+    
+    container.innerHTML = html;
+  }
+}
+
+function renderNoteItem(note) {
+  return `
+    <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" data-note-id="${note.id}">
+      <div class="note-header">
+        <div class="note-meta">
+          <input type="checkbox" 
+                 onchange="toggleNoteSelection('${note.id}')"
+                 ${selectedNotes.has(note.id) ? 'checked' : ''}
+                 style="margin-right: 0.5rem;">
+          ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+          <span class="note-time">${formatNoteTime(note.created)}</span>
+          <span style="text-transform: capitalize; color: var(--text-muted); font-size: 0.875rem;">${note.category}</span>
+        </div>
+        <div class="note-actions">
+          <button class="note-action-btn" onclick="editNote('${note.id}')">Edit</button>
+          <button class="note-action-btn delete-btn" onclick="deleteNote('${note.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="note-content" onclick="expandNote('${note.id}')">
+        ${formatNoteContent(note.content)}
+      </div>
+    </div>
+  `;
+}
+
+function groupNotesByTime(notes) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+  
+  const groups = {
+    today: [],
+    yesterday: [],
+    thisWeek: [],
+    thisMonth: [],
+    older: []
+  };
+  
+  notes.forEach(note => {
+    const noteDate = new Date(note.created);
+    const noteDateOnly = new Date(noteDate.getFullYear(), noteDate.getMonth(), noteDate.getDate());
+    
+    if (noteDateOnly.getTime() === today.getTime()) {
+      groups.today.push(note);
+    } else if (noteDateOnly.getTime() === yesterday.getTime()) {
+      groups.yesterday.push(note);
+    } else if (noteDate >= weekAgo) {
+      groups.thisWeek.push(note);
+    } else if (noteDate >= monthAgo) {
+      groups.thisMonth.push(note);
+    } else {
+      groups.older.push(note);
+    }
+  });
+  
+  return groups;
+}
+
+function formatNoteTime(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: true 
+  });
+}
+
+function addNote() {
+  const content = document.getElementById('noteInput').value.trim();
+  
+  if (!content) {
+    smartApp.showNotification('Please enter some content', 'error');
+    return;
+  }
+  
+  const type = voiceAI && voiceAI.currentTranscript && content.includes(voiceAI.currentTranscript.trim()) ? 'voice' : 'text';
+  
+  if (smartApp.addNote(content, type)) {
+    // Clear input
+    document.getElementById('noteInput').value = '';
+    if (voiceAI) {
+      voiceAI.currentTranscript = '';
+    }
+    updateCharCount();
+    
+    // Reload notes
+    loadNotes();
+  }
+}
+
+function editNote(noteId) {
+  const note = smartApp.notes.find(n => n.id === noteId);
+  if (!note) return;
+  
+  const newContent = prompt('Edit note:', note.content);
+  if (newContent !== null && newContent.trim() !== note.content) {
+    if (smartApp.updateNote(noteId, newContent.trim())) {
+      loadNotes();
+    }
+  }
+}
+
+function deleteNote(noteId) {
+  if (confirm('Are you sure you want to delete this note?')) {
+    if (smartApp.deleteNote(noteId)) {
+      selectedNotes.delete(noteId);
+      loadNotes();
+    }
+  }
+}
+
+function toggleNoteSelection(noteId) {
+  if (selectedNotes.has(noteId)) {
+    selectedNotes.delete(noteId);
+  } else {
+    selectedNotes.add(noteId);
+  }
+}
+
+function selectAllNotes() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const allSelected = Array.from(checkboxes).every(cb => cb.checked);
+  
+  checkboxes.forEach(cb => {
+    cb.checked = !allSelected;
+    const noteId = cb.closest('.note-item').dataset.noteId;
+    if (!allSelected) {
+      selectedNotes.add(noteId);
+    } else {
+      selectedNotes.delete(noteId);
+    }
+  });
+}
+
+function deleteSelectedNotes() {
+  if (selectedNotes.size === 0) {
+    smartApp.showNotification('No notes selected', 'warning');
+    return;
+  }
+  
+  if (confirm(`Delete ${selectedNotes.size} selected notes?`)) {
+    let deletedCount = 0;
+    
+    selectedNotes.forEach(noteId => {
+      if (smartApp.deleteNote(noteId)) {
+        deletedCount++;
+      }
+    });
+    
+    selectedNotes.clear();
+    loadNotes();
+    
+    smartApp.showNotification(`${deletedCount} notes deleted`, 'success');
+  }
+}
+
+function expandNote(noteId) {
+  const note = smartApp.notes.find(n => n.id === noteId);
+  if (!note) return;
+  
+  alert(`${note.content}\n\nCreated: ${new Date(note.created).toLocaleString()}\nUpdated: ${new Date(note.updated).toLocaleString()}\nCategory: ${note.category}\nType: ${note.type}`);
+}
+
+function formatNoteContent(content) {
+  // Basic text formatting
+  return content
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+}
+
+function updateCharCount() {
+  const input = document.getElementById('noteInput');
+  const counter = document.getElementById('charCount');
+  const length = input.value.length;
+  
+  counter.textContent = `${length} / 2000`;
+  
+  if (length > 1800) {
+    counter.style.color = 'var(--warning)';
+  } else {
+    counter.style.color = 'var(--text-muted)';
+  }
+}
+
+function switchTab(period) {
+  // Update active tab styling
+  document.querySelectorAll('.time-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelector(`[data-period="${period}"]`).classList.add('active');
+  
+  // Update current filter and re-render
+  currentTimeFilter = period;
+  selectedNotes.clear(); // Clear selections when switching tabs
+  renderNotes();
+}
+
+function filterNotesByTab(notes, period) {
+  if (period === 'all') return notes;
+  if (period === 'voice') return notes.filter(note => note.type === 'voice');
+  
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+  
+  return notes.filter(note => {
+    const noteDate = new Date(note.created);
+    const noteDateOnly = new Date(noteDate.getFullYear(), noteDate.getMonth(), noteDate.getDate());
+    
+    switch(period) {
+      case 'today':
+        return noteDateOnly.getTime() === today.getTime();
+      case 'yesterday':
+        return noteDateOnly.getTime() === yesterday.getTime();
+      case 'thisWeek':
+        return noteDate >= weekAgo && noteDateOnly.getTime() < today.getTime();
+      case 'thisMonth':
+        return noteDate >= monthAgo && noteDate < weekAgo;
+      case 'older':
+        return noteDate < monthAgo;
+      default:
+        return true;
+    }
+  });
+}
+
+function getTabDisplayName(period) {
+  const names = {
+    all: 'All Notes',
+    today: 'Today',
+    yesterday: 'Yesterday',
+    thisWeek: 'This Week',
+    thisMonth: 'This Month',
+    older: 'Older Notes',
+    voice: 'Voice Notes'
+  };
+  return names[period] || period;
+}
+
+function addQuickPrefix(prefix) {
+  const input = document.getElementById('noteInput');
+  const currentValue = input.value;
+  
+  if (currentValue.trim() === '') {
+    input.value = prefix;
+  } else {
+    input.value = prefix + currentValue;
+  }
+  
+  input.focus();
+  updateCharCount();
+}
+</script>
+
+</body>
+</html>

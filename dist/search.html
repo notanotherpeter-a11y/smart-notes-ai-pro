@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartNotes AI Pro - Search</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-title">SmartNotes AI Pro</h1>
+      <p class="app-subtitle">Voice AI Edition</p>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Main</div>
+        <a href="dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+        <a href="notes.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          Notes
+        </a>
+        <a href="search.html" class="nav-item active">
+          <span class="nav-icon">🔍</span>
+          Search
+        </a>
+        <a href="categories.html" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Categories
+        </a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Tools</div>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+        <a href="admin.html" class="nav-item" id="adminNav" style="display: none;">
+          <span class="nav-icon">👑</span>
+          Admin
+        </a>
+      </div>
+    </div>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@email.com</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Header -->
+    <div class="content-header">
+      <h1 class="content-title">Search</h1>
+      <p class="content-subtitle">Find your notes instantly</p>
+    </div>
+    
+    <!-- Content Body -->
+    <div class="content-body">
+      
+      <!-- Search Input -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🔍 Search Your Notes</h2>
+        </div>
+        <div class="card-content">
+          
+          <!-- Main Search -->
+          <div class="form-group">
+            <div style="position: relative;">
+              <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.125rem;">🔍</span>
+              <input 
+                type="text" 
+                class="form-input" 
+                id="searchInput"
+                placeholder="Search notes by content, category, or type..."
+                style="padding-left: 3rem; font-size: 1.125rem;"
+                oninput="performSearch()"
+                onkeydown="handleSearchKeydown(event)"
+              >
+            </div>
+          </div>
+          
+          <!-- Quick Filters -->
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;">
+            <button class="btn btn-secondary search-filter" onclick="quickFilter('voice')" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              🎙️ Voice Notes
+            </button>
+            <button class="btn btn-secondary search-filter" onclick="quickFilter('urgent')" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              🚨 Urgent
+            </button>
+            <button class="btn btn-secondary search-filter" onclick="quickFilter('meeting')" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              🤝 Meetings
+            </button>
+            <button class="btn btn-secondary search-filter" onclick="quickFilter('todo')" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              📋 Todos
+            </button>
+            <button class="btn btn-secondary search-filter" onclick="quickFilter('idea')" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              💡 Ideas
+            </button>
+            <button class="btn btn-secondary" onclick="clearSearch()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              Clear All
+            </button>
+          </div>
+          
+        </div>
+      </div>
+      
+      <!-- Advanced Filters -->
+      <div class="card" id="advancedFilters" style="display: none;">
+        <div class="card-header">
+          <h2 class="card-title">🎛️ Advanced Filters</h2>
+          <button class="btn btn-secondary" onclick="toggleAdvancedFilters()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Hide</button>
+        </div>
+        <div class="card-content">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            
+            <!-- Date Range -->
+            <div>
+              <label class="form-label" style="font-size: 0.875rem;">Date Range</label>
+              <select class="form-input" id="dateRangeFilter" onchange="performSearch()" style="padding: 0.5rem;">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="custom">Custom Range</option>
+              </select>
+            </div>
+            
+            <!-- Custom Date Range -->
+            <div id="customDateRange" style="display: none;">
+              <label class="form-label" style="font-size: 0.875rem;">From Date</label>
+              <input type="date" class="form-input" id="fromDate" onchange="performSearch()" style="padding: 0.5rem;">
+            </div>
+            
+            <div id="customDateRangeTo" style="display: none;">
+              <label class="form-label" style="font-size: 0.875rem;">To Date</label>
+              <input type="date" class="form-input" id="toDate" onchange="performSearch()" style="padding: 0.5rem;">
+            </div>
+            
+            <!-- Content Length -->
+            <div>
+              <label class="form-label" style="font-size: 0.875rem;">Content Length</label>
+              <select class="form-input" id="lengthFilter" onchange="performSearch()" style="padding: 0.5rem;">
+                <option value="all">Any Length</option>
+                <option value="short">Short (< 100 chars)</option>
+                <option value="medium">Medium (100-500 chars)</option>
+                <option value="long">Long (> 500 chars)</option>
+              </select>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+      <!-- Search Results -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title" id="resultsTitle">📋 Search Results</h2>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn btn-secondary" onclick="toggleAdvancedFilters()" id="advancedToggle" style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+              Advanced
+            </button>
+            <span id="resultsCount" style="color: var(--text-muted); font-size: 0.875rem;"></span>
+          </div>
+        </div>
+        <div class="card-content">
+          <div id="searchResults">
+            <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+              <h3 style="margin-bottom: 0.5rem;">Start searching</h3>
+              <p>Enter keywords above to find your notes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Search History -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🕐 Recent Searches</h2>
+          <button class="btn btn-secondary" onclick="clearSearchHistory()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Clear</button>
+        </div>
+        <div class="card-content">
+          <div id="searchHistory">
+            <div style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
+              <p>No recent searches</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+</div>
+
+<script src="shared.js"></script>
+<script>
+let searchResults = [];
+let searchHistory = [];
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+  if (smartApp && smartApp.currentUser) {
+    loadSearchHistory();
+    
+    // Show admin nav if user is admin
+    if (smartApp.isAdmin) {
+      document.getElementById('adminNav').style.display = 'block';
+    }
+    
+    // Auto-focus search input
+    document.getElementById('searchInput').focus();
+  }
+});
+
+function performSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  
+  if (!query) {
+    showEmptyState();
+    return;
+  }
+  
+  // Add to search history
+  addToSearchHistory(query);
+  
+  // Perform search
+  let results = smartApp.searchNotes(query);
+  
+  // Apply advanced filters
+  results = applyAdvancedFilters(results);
+  
+  // Update results
+  searchResults = results;
+  renderSearchResults(query);
+  
+  // Update results count
+  updateResultsCount(results.length, query);
+}
+
+function applyAdvancedFilters(notes) {
+  let filtered = [...notes];
+  
+  // Date range filter
+  const dateRange = document.getElementById('dateRangeFilter').value;
+  if (dateRange !== 'all') {
+    filtered = filterByDateRange(filtered, dateRange);
+  }
+  
+  // Length filter
+  const lengthFilter = document.getElementById('lengthFilter').value;
+  if (lengthFilter !== 'all') {
+    filtered = filterByLength(filtered, lengthFilter);
+  }
+  
+  return filtered;
+}
+
+function filterByDateRange(notes, range) {
+  const now = new Date();
+  let startDate;
+  
+  switch (range) {
+    case 'today':
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      break;
+    case 'yesterday':
+      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      startDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
+      const endDate = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate() + 1);
+      return notes.filter(note => {
+        const noteDate = new Date(note.created);
+        return noteDate >= startDate && noteDate < endDate;
+      });
+    case 'week':
+      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      break;
+    case 'month':
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      break;
+    case 'custom':
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      if (fromDate && toDate) {
+        return notes.filter(note => {
+          const noteDate = new Date(note.created).toDateString();
+          return noteDate >= new Date(fromDate).toDateString() && 
+                 noteDate <= new Date(toDate).toDateString();
+        });
+      }
+      return notes;
+    default:
+      return notes;
+  }
+  
+  return notes.filter(note => new Date(note.created) >= startDate);
+}
+
+function filterByLength(notes, length) {
+  switch (length) {
+    case 'short':
+      return notes.filter(note => note.content.length < 100);
+    case 'medium':
+      return notes.filter(note => note.content.length >= 100 && note.content.length <= 500);
+    case 'long':
+      return notes.filter(note => note.content.length > 500);
+    default:
+      return notes;
+  }
+}
+
+function quickFilter(type) {
+  let searchTerm = '';
+  
+  switch (type) {
+    case 'voice':
+      searchTerm = 'type:voice';
+      break;
+    case 'urgent':
+      searchTerm = 'urgent';
+      break;
+    case 'meeting':
+      searchTerm = 'meeting';
+      break;
+    case 'todo':
+      searchTerm = 'todo';
+      break;
+    case 'idea':
+      searchTerm = 'idea';
+      break;
+  }
+  
+  document.getElementById('searchInput').value = searchTerm;
+  performSearch();
+  
+  // Highlight active filter
+  document.querySelectorAll('.search-filter').forEach(btn => btn.classList.remove('btn-primary'));
+  event.target.classList.add('btn-primary');
+  event.target.classList.remove('btn-secondary');
+}
+
+function renderSearchResults(query) {
+  const container = document.getElementById('searchResults');
+  
+  if (searchResults.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">😔</div>
+        <h3 style="margin-bottom: 0.5rem;">No results found</h3>
+        <p>Try different keywords or adjust your filters</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = searchResults.map((note, index) => `
+    <div class="note-item ${note.type === 'voice' ? 'voice' : ''}" style="margin-bottom: 1rem;">
+      <div class="note-header">
+        <div class="note-meta">
+          ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+          <span>${smartApp.formatDate(note.created)}</span>
+          <span style="text-transform: capitalize;">${note.category}</span>
+          <span style="color: var(--text-muted);">${note.content.length} chars</span>
+        </div>
+        <div class="note-actions">
+          <button class="note-action-btn" onclick="viewFullNote('${note.id}')">View</button>
+          <button class="note-action-btn" onclick="editSearchResult('${note.id}')">Edit</button>
+        </div>
+      </div>
+      <div class="note-content">
+        ${highlightSearchTerm(smartApp.formatContent(note.content, 200), query)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function highlightSearchTerm(content, term) {
+  if (!term) return content;
+  
+  const regex = new RegExp(`(${term})`, 'gi');
+  return content.replace(regex, '<mark style="background: var(--warning); color: var(--bg-primary); padding: 0.125rem 0.25rem; border-radius: 4px;">$1</mark>');
+}
+
+function showEmptyState() {
+  const container = document.getElementById('searchResults');
+  container.innerHTML = `
+    <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+      <h3 style="margin-bottom: 0.5rem;">Start searching</h3>
+      <p>Enter keywords above to find your notes</p>
+    </div>
+  `;
+  
+  document.getElementById('resultsTitle').textContent = '📋 Search Results';
+  document.getElementById('resultsCount').textContent = '';
+}
+
+function updateResultsCount(count, query) {
+  const title = document.getElementById('resultsTitle');
+  const counter = document.getElementById('resultsCount');
+  
+  if (count === 0) {
+    title.textContent = `📋 No Results`;
+    counter.textContent = `0 notes found for "${query}"`;
+  } else {
+    title.textContent = `📋 Search Results`;
+    counter.textContent = `${count} note${count === 1 ? '' : 's'} found`;
+  }
+}
+
+function toggleAdvancedFilters() {
+  const filters = document.getElementById('advancedFilters');
+  const toggle = document.getElementById('advancedToggle');
+  
+  if (filters.style.display === 'none') {
+    filters.style.display = 'block';
+    toggle.textContent = 'Hide Advanced';
+  } else {
+    filters.style.display = 'none';
+    toggle.textContent = 'Advanced';
+  }
+}
+
+function handleSearchKeydown(event) {
+  if (event.key === 'Enter') {
+    performSearch();
+  } else if (event.key === 'Escape') {
+    clearSearch();
+  }
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  
+  // Reset advanced filters
+  document.getElementById('dateRangeFilter').value = 'all';
+  document.getElementById('lengthFilter').value = 'all';
+  document.getElementById('fromDate').value = '';
+  document.getElementById('toDate').value = '';
+  
+  // Clear active quick filters
+  document.querySelectorAll('.search-filter').forEach(btn => {
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-secondary');
+  });
+  
+  showEmptyState();
+}
+
+function viewFullNote(noteId) {
+  const note = smartApp.notes.find(n => n.id === noteId);
+  if (!note) return;
+  
+  const modal = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.8); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 2rem;" onclick="closeModal(event)">
+      <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
+        <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 1rem;">
+          <div style="flex: 1;">
+            <h3 style="margin-bottom: 0.5rem;">Full Note</h3>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+              ${note.type === 'voice' ? '<span class="note-type">Voice</span>' : ''}
+              <span style="color: var(--text-muted); font-size: 0.875rem;">${new Date(note.created).toLocaleString()}</span>
+              <span style="color: var(--text-muted); font-size: 0.875rem; text-transform: capitalize;">${note.category}</span>
+            </div>
+          </div>
+          <button onclick="closeModal()" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        <div style="color: var(--text-primary); line-height: 1.6; white-space: pre-wrap;">${note.content}</div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: flex-end;">
+          <button onclick="editSearchResult('${note.id}')" class="btn btn-primary">Edit</button>
+          <button onclick="closeModal()" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modal);
+}
+
+function closeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  const modal = document.querySelector('[style*="position: fixed"]');
+  if (modal) modal.remove();
+}
+
+function editSearchResult(noteId) {
+  closeModal();
+  // Redirect to notes page with edit mode
+  window.location.href = `notes.html?edit=${noteId}`;
+}
+
+function addToSearchHistory(query) {
+  if (!query || searchHistory.includes(query)) return;
+  
+  searchHistory.unshift(query);
+  
+  // Keep only last 10 searches
+  if (searchHistory.length > 10) {
+    searchHistory = searchHistory.slice(0, 10);
+  }
+  
+  saveSearchHistory();
+  renderSearchHistory();
+}
+
+function loadSearchHistory() {
+  const saved = localStorage.getItem(`smartnotes_search_${smartApp.currentUser.id}`);
+  if (saved) {
+    searchHistory = JSON.parse(saved);
+    renderSearchHistory();
+  }
+}
+
+function saveSearchHistory() {
+  localStorage.setItem(`smartnotes_search_${smartApp.currentUser.id}`, JSON.stringify(searchHistory));
+}
+
+function renderSearchHistory() {
+  const container = document.getElementById('searchHistory');
+  
+  if (searchHistory.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
+        <p>No recent searches</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = `
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+      ${searchHistory.map(term => `
+        <button 
+          onclick="useSearchTerm('${term}')" 
+          class="btn btn-secondary" 
+          style="font-size: 0.875rem; padding: 0.5rem 0.75rem;"
+        >
+          ${term}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function useSearchTerm(term) {
+  document.getElementById('searchInput').value = term;
+  performSearch();
+}
+
+function clearSearchHistory() {
+  if (confirm('Clear all search history?')) {
+    searchHistory = [];
+    saveSearchHistory();
+    renderSearchHistory();
+    smartApp.showNotification('Search history cleared', 'success');
+  }
+}
+
+// Date range filter change handler
+document.addEventListener('DOMContentLoaded', () => {
+  const dateRangeFilter = document.getElementById('dateRangeFilter');
+  if (dateRangeFilter) {
+    dateRangeFilter.addEventListener('change', (e) => {
+      const customRange = document.getElementById('customDateRange');
+      const customRangeTo = document.getElementById('customDateRangeTo');
+      
+      if (e.target.value === 'custom') {
+        customRange.style.display = 'block';
+        customRangeTo.style.display = 'block';
+      } else {
+        customRange.style.display = 'none';
+        customRangeTo.style.display = 'none';
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>
