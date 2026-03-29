@@ -797,6 +797,9 @@ body {
         <button class="sidebar-button" onclick="app.testMicrophone()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
           🔧 Test Mic
         </button>
+        <button class="sidebar-button" onclick="app.testWhisperServer()" style="width: auto; padding: 0.5rem 1rem; font-size: 0.75rem; margin-right: 0.5rem;">
+          🤖 Test AI
+        </button>
         <button class="sidebar-button" onclick="app.saveCurrentNote()" style="margin-left: auto; width: auto; padding: 0.75rem 1.5rem;">
           💾 Save Note
         </button>
@@ -1363,7 +1366,7 @@ class SmartNotesComplete {
     button.textContent = '⏳';
     button.classList.remove('recording');
     button.classList.add('processing');
-    status.textContent = 'Processing... (Transcribing audio)';
+    status.textContent = 'Processing... (Transcribing with Whisper AI)';
     status.classList.remove('recording');
     status.classList.add('processing');
     
@@ -1385,14 +1388,23 @@ class SmartNotesComplete {
       
       // Show audio size for debugging
       const sizeKB = Math.round(audioBlob.size / 1024);
-      this.showNotification(`Processing ${sizeKB}KB audio file...`, 'info');
-      
-      // Simulate transcription (in real implementation, you'd send to Whisper API)
-      await this.delay(2000);
-      
-      // Mock transcription result
       const duration = Math.floor((Date.now() - this.recordingStartTime) / 1000);
-      const transcription = this.generateMockTranscription(duration);
+      
+      this.showNotification(`Sending ${sizeKB}KB audio to Whisper AI...`, 'info');
+      
+      // Try real Whisper transcription first
+      let transcription;
+      let isRealTranscription = false;
+      
+      try {
+        transcription = await this.sendToWhisperServer(audioBlob, duration);
+        isRealTranscription = true;
+        console.log('✅ Real Whisper transcription received');
+      } catch (whisperError) {
+        console.log('⚠️ Whisper server failed, falling back to mock:', whisperError.message);
+        transcription = this.generateMockTranscription(duration);
+        this.showNotification('Whisper server unavailable, using mock transcription', 'warning');
+      }
       
       // Add transcribed note
       const note = {
@@ -1403,7 +1415,8 @@ class SmartNotesComplete {
         category: 'voice',
         type: 'voice',
         duration: duration,
-        audioSize: audioBlob.size
+        audioSize: audioBlob.size,
+        realTranscription: isRealTranscription
       };
       
       this.notes.unshift(note);
@@ -1414,7 +1427,9 @@ class SmartNotesComplete {
       document.getElementById('noteInput').value = transcription;
       updateCharCount();
       
-      this.showNotification(`🎙️ Voice note (${duration}s) transcribed successfully!`, 'success');
+      const statusIcon = isRealTranscription ? '🤖' : '🎭';
+      const statusText = isRealTranscription ? 'transcribed by Whisper AI' : 'mock transcription';
+      this.showNotification(`${statusIcon} Voice note (${duration}s) ${statusText}!`, 'success');
       
     } catch (error) {
       console.error('Error processing recording:', error);
@@ -1427,6 +1442,31 @@ class SmartNotesComplete {
       status.classList.remove('processing');
       document.getElementById('voiceTimer').textContent = '00:00';
     }
+  }
+  
+  // Send audio to Whisper server for real transcription
+  async sendToWhisperServer(audioBlob, duration) {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'recording.webm');
+    formData.append('duration', duration.toString());
+    
+    const response = await fetch('http://localhost:3001/transcribe', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Network error' }));
+      throw new Error(errorData.error || `Server error: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Transcription failed');
+    }
+    
+    return result.transcription;
   }
   
   generateMockTranscription(duration) {
@@ -1498,7 +1538,14 @@ class SmartNotesComplete {
         <div class="note-preview" onclick="loadNote('${note.id}')" style="cursor: pointer;">
           ${note.content.substring(0, 200)}${note.content.length > 200 ? '...' : ''}
         </div>
-        ${note.type === 'voice' ? `<div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">Duration: ${note.duration}s</div>` : ''}
+        ${note.type === 'voice' ? `
+          <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+            <span>Duration: ${note.duration}s</span>
+            <span style="color: ${note.realTranscription ? '#10b981' : '#f59e0b'};">
+              ${note.realTranscription ? '🤖 Whisper AI' : '🎭 Mock'}
+            </span>
+          </div>
+        ` : ''}
       </div>
     `).join('');
   }
@@ -1898,6 +1945,42 @@ class SmartNotesComplete {
         message += 'No microphone detected. Please check your device has a microphone.';
       } else if (error.message.includes('not supported')) {
         message += 'Voice recording not supported on this browser/device.';
+      } else {
+        message += error.message;
+      }
+      
+      this.showNotification(message, 'error');
+    }
+  }
+  
+  // Test Whisper server connection
+  async testWhisperServer() {
+    this.showNotification('Testing Whisper AI server...', 'info');
+    
+    try {
+      const response = await fetch('http://localhost:3001/test-whisper', {
+        method: 'GET',
+        timeout: 5000
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        this.showNotification(`✅ Whisper AI server is running! Path: ${result.path}`, 'success');
+      } else {
+        this.showNotification(`❌ Whisper AI not found: ${result.message}`, 'error');
+      }
+      
+    } catch (error) {
+      console.error('Whisper server test failed:', error);
+      
+      let message = '❌ Whisper server test failed: ';
+      if (error.message.includes('Failed to fetch')) {
+        message += 'Server not running. Start with: cd smart-notes-whisper-server && npm start';
       } else {
         message += error.message;
       }
